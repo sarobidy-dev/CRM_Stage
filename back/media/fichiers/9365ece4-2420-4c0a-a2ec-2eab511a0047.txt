@@ -1,0 +1,101 @@
+CREATE TABLE Utilisateur (
+  id_utilisateur INT PRIMARY KEY,
+  nom VARCHAR(50),
+  prenom VARCHAR(50),
+  email VARCHAR(100),
+  role_de_passe VARCHAR(100)
+);
+CREATE TABLE Contact (
+  id_contact INT PRIMARY KEY,
+  nom VARCHAR(50),
+  prenom VARCHAR(50),
+  entreprise VARCHAR(100),
+  telephone VARCHAR(20),
+  email VARCHAR(100),
+  adresse TEXT,
+  fonction VARCHAR(50),
+  source VARCHAR(50),
+  secteur VARCHAR(50),
+  type VARCHAR(20),
+  id_utilisateur INT,
+  FOREIGN KEY (id_utilisateur) REFERENCES Utilisateur(id_utilisateur)
+);
+CREATE TABLE Entreprise (
+  id_entreprise INT PRIMARY KEY,
+  nom VARCHAR(100),
+  adresse TEXT,
+  secteur VARCHAR(50),
+  telephone VARCHAR(20),
+  email VARCHAR(100)
+);
+CREATE TABLE Interaction (
+  id_interaction INT PRIMARY KEY,
+  type VARCHAR(50),
+  date_interaction DATETIME,
+  contenu TEXT,
+  fichier_joint VARCHAR(255),
+  id_contact INT,
+  FOREIGN KEY (id_contact) REFERENCES Contact(id_contact)
+);
+CREATE TABLE Opportunite (
+  id_opportunite INT PRIMARY KEY,
+  titre VARCHAR(100),
+  description TEXT,
+  date_interaction DATETIME,
+  contenu TEXT,
+  date_creation DATE,
+  prob_abill_suc INT,
+  statut VARCHAR(30),
+  etape_pipeline VARCHAR(50),
+  id_utilisateur INT,
+  id_entreprise INT,
+  FOREIGN KEY (id_utilisateur) REFERENCES Utilisateur(id_utilisateur),
+  FOREIGN KEY (id_entreprise) REFERENCES Entreprise(id_entreprise)
+);
+CREATE TABLE Tache (
+  id_tache INT PRIMARY KEY,
+  titre VARCHAR(100),
+  description TEXT,
+  date_echeance DATE,
+  est_recurrente BOOLEAN,
+  rappel DATETIME,
+  statut VARCHAR(30),
+  id_opportunite INT,
+  FOREIGN KEY (id_opportunite) REFERENCES Opportunite(id_opportunite)
+);
+
+
+
+
+Résumé des relations :
+Utilisateur possède plusieurs Contact et crée plusieurs Opportunité
+
+Opportunité est liée à un Entreprise
+
+Contact est associé à plusieurs Interaction
+
+Opportunité peut avoir plusieurs Tâche
+
+
+
+
+
+INSERT INTO Utilisateur VALUES
+(1, 'Dupont', 'Jean', 'jean.dupont@email.com', 'Admin123');
+
+INSERT INTO Contact VALUES
+(1, 'Martin', 'Claire', 'ACME Inc.', '0601020304', 'claire.martin@acme.com', '10 rue des Lilas, Paris', 'Responsable achats', 'LinkedIn', 'Industrie', 'prospect', 1);
+
+INSERT INTO Entreprise VALUES
+(1, 'ACME Inc.', '10 rue des Lilas, Paris', 'Industrie', '0155667788', 'contact@acme.com');
+
+
+INSERT INTO Interaction VALUES
+(1, 'appel', '2025-06-20 10:30:00', 'Appel de prospection réussi', NULL, 1);
+
+INSERT INTO Opportunite VALUES
+(1, 'Contrat annuel ACME', 'Proposition de contrat annuel pour maintenance', '2025-06-20 11:00:00', 'Présentation envoyée', '2025-06-15', 75, 'en cours', 'Présentation', 1, 1);
+
+INSERT INTO Tache VALUES
+(1, 'Relancer ACME', 'Envoyer un email de relance suite à présentation', '2025-07-01', FALSE, '2025-06-30 09:00:00', 'à faire', 1);
+

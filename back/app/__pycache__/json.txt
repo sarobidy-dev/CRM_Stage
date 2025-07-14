@@ -1,0 +1,8 @@
+Endpoint:
+http://localhost:8000/api/send-email
+
+{
+   "destinator": "recipient@example.com",
+   "subject": "The subject of the email",
+   "body": "The body of the email" 
+}
