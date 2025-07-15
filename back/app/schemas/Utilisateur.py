@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 class UtilisateurBase(BaseModel):
+    
     nom: str
     email: EmailStr
     mot2pass: str
@@ -22,7 +23,7 @@ class UtilisateurRead(UtilisateurBase):
     email: EmailStr
     mot2pass: str
     role: str
-    actif: Optional[bool] = None 
+    actif: Optional[bool] = None    
     photo_profil: Optional[str] = None
 
 class UtilisateurDelete(BaseModel):

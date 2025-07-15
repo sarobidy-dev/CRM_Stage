@@ -1,9 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    status,
+    UploadFile,
+    File,
+    Form,
+)
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List
-import os, uuid, aiofiles 
+from typing import List, Optional
+import os, uuid, aiofiles
 
-from schemas.Utilisateur import UtilisateurRead, UtilisateurCreate, UtilisateurUpdate
+from schemas.Utilisateur import UtilisateurRead
 from crud.Utilisateur import (
     get_utilisateurs,
     get_utilisateur,
@@ -14,99 +22,115 @@ from crud.Utilisateur import (
 from database import get_async_session
 
 router = APIRouter()
+UPLOAD_DIR = "media/photos"
+os.makedirs(UPLOAD_DIR, exist_ok=True)  # s’assure que le dossier existe
 
+
+# ---------------------------------------------------------
+# utilitaire d’upload asynchrone
+# ---------------------------------------------------------
+async def _save_photo(file: UploadFile) -> str:
+    ext = os.path.splitext(file.filename)[1]
+    filename = f"{uuid.uuid4()}{ext}"
+    path = os.path.join(UPLOAD_DIR, filename)
+    async with aiofiles.open(path, "wb") as out:
+        await out.write(await file.read())
+    return path
+
+
+# ---------------------------------------------------------
+# GET
+# ---------------------------------------------------------
 @router.get("/utilisateurs", response_model=List[UtilisateurRead])
 async def read_utilisateurs(db: AsyncSession = Depends(get_async_session)):
     return await get_utilisateurs(db)
 
+
 @router.get("/utilisateurs/{utilisateur_id}", response_model=UtilisateurRead)
-async def read_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_async_session)):
+async def read_utilisateur(
+    utilisateur_id: int, db: AsyncSession = Depends(get_async_session)
+):
     utilisateur = await get_utilisateur(db, utilisateur_id)
-    if utilisateur is None:
+    if not utilisateur:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
     return utilisateur
 
-@router.post("/utilisateurs", response_model=UtilisateurRead, status_code=status.HTTP_201_CREATED)
-async def create_new_utilisateur(
+
+# ---------------------------------------------------------
+# POST  — tous les champs requis sauf photo_profil
+# ---------------------------------------------------------
+@router.post(
+    "/utilisateurs",
+    response_model=UtilisateurRead,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_utilisateur_endpoint(
     nom: str = Form(...),
+    email: str = Form(...),
     mot2pass: str = Form(...),
-    email: str = Form(...),
     role: str = Form(...),
-    photo_profil: UploadFile = File(None),
-    db: AsyncSession = Depends(get_async_session)
+    actif: bool = Form(True),
+    photo_profil: UploadFile | None = File(None),
+    db: AsyncSession = Depends(get_async_session),
 ):
-    chemin_photo = None
-    if photo_profil:
-        extension = os.path.splitext(photo_profil.filename)[1]
-        nom_fichier = f"{uuid.uuid4()}{extension}"
-        dossier = "media/photos"
-        os.makedirs(dossier, exist_ok=True)
-        chemin_photo = os.path.join(dossier, nom_fichier)
+    photo_path: Optional[str] = (
+        await _save_photo(photo_profil) if photo_profil else None
+    )
 
-        async with aiofiles.open(chemin_photo, "wb") as out_file:
-            content = await photo_profil.read()
-            await out_file.write(content)
-
-    utilisateur_dict = {
+    data = {
         "nom": nom,
-        "mot2pass": mot2pass,
         "email": email,
+        "mot2pass": mot2pass,
         "role": role,
-        "photo_profil": chemin_photo
+        "actif": actif,
+        "photo_profil": photo_path,
     }
+    return await create_utilisateur(db, data)
 
-    utilisateur = await create_utilisateur(db, utilisateur_dict)
-    return utilisateur
 
+# ---------------------------------------------------------
+# PUT  — mêmes champs mais tous optionnels
+# ---------------------------------------------------------
 @router.put("/utilisateurs/{utilisateur_id}", response_model=UtilisateurRead)
-async def update_existing_utilisateur(
+async def update_utilisateur_endpoint(
     utilisateur_id: int,
-    nom: str = Form(...),
-    prenom: str = Form(...),
-    email: str = Form(...),
-    role: str = Form(...),
-    numero_tel: str = Form(...),
-    photo_profil: UploadFile = File(None),
-    db: AsyncSession = Depends(get_async_session)
+    nom: str | None = Form(None),
+    email: str | None = Form(None),
+    mot2pass: str | None = Form(None),
+    role: str | None = Form(None),
+    actif: bool | None = Form(None),
+    photo_profil: UploadFile | None = File(None),
+    db: AsyncSession = Depends(get_async_session),
 ):
-    # Traitement de la photo de profil
-    chemin_photo = None
-    if photo_profil:
-        contents = await photo_profil.read()
-        
-        # S'assurer que le dossier existe
-        os.makedirs("images", exist_ok=True)
-        
-        # Nom unique pour éviter les conflits
-        extension = os.path.splitext(photo_profil.filename)[1]
-        nom_unique = f"{uuid.uuid4().hex}{extension}"
-        chemin_photo = os.path.join("images", nom_unique)
+    photo_path: Optional[str] = (
+        await _save_photo(photo_profil) if photo_profil else None
+    )
 
-        # Écriture du fichier
-        with open(chemin_photo, "wb") as f:
-            f.write(contents)
-
-    # Création du dictionnaire d'update
     update_dict = {
         "nom": nom,
-        "prenom": prenom,
         "email": email,
+        "mot2pass": mot2pass,
         "role": role,
-        "numero_tel": numero_tel,
-        "photo_profil": chemin_photo
+        "actif": actif,
+        "photo_profil": photo_path,
     }
-
-    # Nettoyage des champs None (ex: si photo_profil pas envoyé)
+    # on enlève les clés restées à None
     update_dict = {k: v for k, v in update_dict.items() if v is not None}
 
     utilisateur = await update_utilisateur(db, utilisateur_id, update_dict)
-    if utilisateur is None:
+    if not utilisateur:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
-
     return utilisateur
+
+
+# ---------------------------------------------------------
+# DELETE
+# ---------------------------------------------------------
 @router.delete("/utilisateurs/{utilisateur_id}", response_model=UtilisateurRead)
-async def delete_existing_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_async_session)):
+async def delete_utilisateur_endpoint(
+    utilisateur_id: int, db: AsyncSession = Depends(get_async_session)
+):
     utilisateur = await delete_utilisateur(db, utilisateur_id)
-    if utilisateur is None:
+    if not utilisateur:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
     return utilisateur
