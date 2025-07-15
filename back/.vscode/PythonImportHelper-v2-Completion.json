@@ -546,6 +546,62 @@
         "documentation": {}
     },
     {
+        "label": "APIRouter",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Depends",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "status",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "UploadFile",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "File",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Form",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
         "label": "FastAPI",
         "importPath": "fastapi",
         "description": "fastapi",
@@ -842,62 +898,6 @@
         "documentation": {}
     },
     {
-        "label": "APIRouter",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "Depends",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "HTTPException",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "status",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "UploadFile",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "File",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "Form",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
         "label": "FastAPI",
         "importPath": "fastapi",
         "description": "fastapi",
@@ -906,11 +906,163 @@
         "documentation": {}
     },
     {
-        "label": "RtcTokenBuilder",
-        "importPath": "agora_token_builder",
-        "description": "agora_token_builder",
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
         "isExtraImport": true,
-        "detail": "agora_token_builder",
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
         "documentation": {}
     },
     {
@@ -923,171 +1075,83 @@
         "documentation": {}
     },
     {
-        "label": "EmailService",
-        "importPath": "crud.email_service",
-        "description": "crud.email_service",
+        "label": "JSONResponse",
+        "importPath": "fastapi.responses",
+        "description": "fastapi.responses",
         "isExtraImport": true,
-        "detail": "crud.email_service",
+        "detail": "fastapi.responses",
         "documentation": {}
     },
     {
-        "label": "EmailRequest",
-        "importPath": "schemas.email",
-        "description": "schemas.email",
+        "label": "UtilisateurRead",
+        "importPath": "schemas.Utilisateur",
+        "description": "schemas.Utilisateur",
         "isExtraImport": true,
-        "detail": "schemas.email",
+        "detail": "schemas.Utilisateur",
         "documentation": {}
     },
     {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "UtilisateurCreate",
+        "importPath": "schemas.Utilisateur",
+        "description": "schemas.Utilisateur",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "schemas.Utilisateur",
         "documentation": {}
     },
     {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "UtilisateurUpdate",
+        "importPath": "schemas.Utilisateur",
+        "description": "schemas.Utilisateur",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "schemas.Utilisateur",
         "documentation": {}
     },
     {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "get_utilisateurs",
+        "importPath": "crud.Utilisateur",
+        "description": "crud.Utilisateur",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "crud.Utilisateur",
         "documentation": {}
     },
     {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "get_utilisateur",
+        "importPath": "crud.Utilisateur",
+        "description": "crud.Utilisateur",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "crud.Utilisateur",
         "documentation": {}
     },
     {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "create_utilisateur",
+        "importPath": "crud.Utilisateur",
+        "description": "crud.Utilisateur",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "crud.Utilisateur",
         "documentation": {}
     },
     {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "update_utilisateur",
+        "importPath": "crud.Utilisateur",
+        "description": "crud.Utilisateur",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "crud.Utilisateur",
         "documentation": {}
     },
     {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "delete_utilisateur",
+        "importPath": "crud.Utilisateur",
+        "description": "crud.Utilisateur",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "crud.Utilisateur",
         "documentation": {}
     },
     {
-        "label": "Dict",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "get_async_session",
+        "importPath": "database",
+        "description": "database",
         "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Any",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Dict",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Any",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
+        "detail": "database",
         "documentation": {}
     },
     {
@@ -1187,14 +1251,6 @@
         "documentation": {}
     },
     {
-        "label": "get_async_session",
-        "importPath": "database",
-        "description": "database",
-        "isExtraImport": true,
-        "detail": "database",
-        "documentation": {}
-    },
-    {
         "label": "engine",
         "importPath": "database",
         "description": "database",
@@ -1216,6 +1272,30 @@
         "description": "database",
         "isExtraImport": true,
         "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "RtcTokenBuilder",
+        "importPath": "agora_token_builder",
+        "description": "agora_token_builder",
+        "isExtraImport": true,
+        "detail": "agora_token_builder",
+        "documentation": {}
+    },
+    {
+        "label": "EmailService",
+        "importPath": "crud.email_service",
+        "description": "crud.email_service",
+        "isExtraImport": true,
+        "detail": "crud.email_service",
+        "documentation": {}
+    },
+    {
+        "label": "EmailRequest",
+        "importPath": "schemas.email",
+        "description": "schemas.email",
+        "isExtraImport": true,
+        "detail": "schemas.email",
         "documentation": {}
     },
     {
@@ -1733,6 +1813,22 @@
         "documentation": {}
     },
     {
+        "label": "BaseModel",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
+        "documentation": {}
+    },
+    {
+        "label": "EmailStr",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
+        "documentation": {}
+    },
+    {
         "label": "VideoCallService",
         "importPath": "crud.video_service",
         "description": "crud.video_service",
@@ -1921,70 +2017,6 @@
         "documentation": {}
     },
     {
-        "label": "UtilisateurRead",
-        "importPath": "schemas.Utilisateur",
-        "description": "schemas.Utilisateur",
-        "isExtraImport": true,
-        "detail": "schemas.Utilisateur",
-        "documentation": {}
-    },
-    {
-        "label": "UtilisateurCreate",
-        "importPath": "schemas.Utilisateur",
-        "description": "schemas.Utilisateur",
-        "isExtraImport": true,
-        "detail": "schemas.Utilisateur",
-        "documentation": {}
-    },
-    {
-        "label": "UtilisateurUpdate",
-        "importPath": "schemas.Utilisateur",
-        "description": "schemas.Utilisateur",
-        "isExtraImport": true,
-        "detail": "schemas.Utilisateur",
-        "documentation": {}
-    },
-    {
-        "label": "get_utilisateurs",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
-        "isExtraImport": true,
-        "detail": "crud.Utilisateur",
-        "documentation": {}
-    },
-    {
-        "label": "get_utilisateur",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
-        "isExtraImport": true,
-        "detail": "crud.Utilisateur",
-        "documentation": {}
-    },
-    {
-        "label": "create_utilisateur",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
-        "isExtraImport": true,
-        "detail": "crud.Utilisateur",
-        "documentation": {}
-    },
-    {
-        "label": "update_utilisateur",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
-        "isExtraImport": true,
-        "detail": "crud.Utilisateur",
-        "documentation": {}
-    },
-    {
-        "label": "delete_utilisateur",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
-        "isExtraImport": true,
-        "detail": "crud.Utilisateur",
-        "documentation": {}
-    },
-    {
         "label": "CORSMiddleware",
         "importPath": "fastapi.middleware.cors",
         "description": "fastapi.middleware.cors",
@@ -2002,10 +2034,10 @@
     },
     {
         "label": "Utilisateur",
-        "importPath": "routers",
-        "description": "routers",
+        "importPath": "api",
+        "description": "api",
         "isExtraImport": true,
-        "detail": "routers",
+        "detail": "api",
         "documentation": {}
     },
     {
@@ -2042,6 +2074,15 @@
         "description": "alembic.env",
         "peekOfCode": "target_metadata = Base.metadata\ndef run_migrations_offline() -> None:\n    \"\"\"Exécuter les migrations en mode 'offline'.\"\"\"\n    url = config.get_main_option(\"sqlalchemy.url\")\n    context.configure(\n        url=url,\n        target_metadata=target_metadata,\n        literal_binds=True,\n        dialect_opts={\"paramstyle\": \"named\"},\n    )",
         "detail": "alembic.env",
+        "documentation": {}
+    },
+    {
+        "label": "router",
+        "kind": 5,
+        "importPath": "app.api.Utilisateur",
+        "description": "app.api.Utilisateur",
+        "peekOfCode": "router = APIRouter()\n@router.get(\"/utilisateurs\", response_model=List[UtilisateurRead])\nasync def read_utilisateurs(db: AsyncSession = Depends(get_async_session)):\n    return await get_utilisateurs(db)\n@router.get(\"/utilisateurs/{utilisateur_id}\")\nasync def read_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_async_session)):\n    utilisateur = await get_utilisateur(db, utilisateur_id)\n    if utilisateur is None:\n         return JSONResponse(\n            status_code=404,",
+        "detail": "app.api.Utilisateur",
         "documentation": {}
     },
     {
@@ -2369,20 +2410,11 @@
         "documentation": {}
     },
     {
-        "label": "router",
-        "kind": 5,
-        "importPath": "app.routers.Utilisateur",
-        "description": "app.routers.Utilisateur",
-        "peekOfCode": "router = APIRouter()\n@router.get(\"/utilisateurs\", response_model=List[UtilisateurRead])\nasync def read_utilisateurs(db: AsyncSession = Depends(get_async_session)):\n    return await get_utilisateurs(db)\n@router.get(\"/utilisateurs/{utilisateur_id}\", response_model=UtilisateurRead)\nasync def read_utilisateur(\n    utilisateur_id: int, db: AsyncSession = Depends(get_async_session)\n):\n    utilisateur = await get_utilisateur(db, utilisateur_id)\n    if utilisateur is None:",
-        "detail": "app.routers.Utilisateur",
-        "documentation": {}
-    },
-    {
         "label": "UtilisateurBase",
         "kind": 6,
         "importPath": "app.schemas.Utilisateur",
         "description": "app.schemas.Utilisateur",
-        "peekOfCode": "class UtilisateurBase(BaseModel):\n    nom: str\n    email: EmailStr\n    mot2pass: str\n    role: str\n    actif : bool\n    photo_profil: Optional[str] = None  # Nouveau champ\nclass UtilisateurCreate(UtilisateurBase):\n    nom: str\n    email: EmailStr",
+        "peekOfCode": "class UtilisateurBase(BaseModel):\n    id:Optional[int] = None\n    nom: str\n    email: EmailStr\n    mot2pass: str\n    role: str\n    actif : Optional[bool] = None\n    photo_profil: Optional[str] = None  # Nouveau champ\nclass UtilisateurCreate(UtilisateurBase):\n    nom: str",
         "detail": "app.schemas.Utilisateur",
         "documentation": {}
     },
@@ -2391,7 +2423,7 @@
         "kind": 6,
         "importPath": "app.schemas.Utilisateur",
         "description": "app.schemas.Utilisateur",
-        "peekOfCode": "class UtilisateurCreate(UtilisateurBase):\n    nom: str\n    email: EmailStr\n    mot2pass: str\n    role: str\n    actif : bool\n    photo_profil: Optional[str] = None\nclass UtilisateurRead(UtilisateurBase):\n    nom: str\n    email: EmailStr",
+        "peekOfCode": "class UtilisateurCreate(UtilisateurBase):\n    nom: str\n    email: EmailStr\n    mot2pass: str\n    role: str\n    actif : Optional[bool] = None\n    photo_profil: Optional[str] = None\n    model_config = {\n        \"from_attributes\": True  # ✅ correcte avec Pydantic v2\n    }",
         "detail": "app.schemas.Utilisateur",
         "documentation": {}
     },
@@ -2400,7 +2432,7 @@
         "kind": 6,
         "importPath": "app.schemas.Utilisateur",
         "description": "app.schemas.Utilisateur",
-        "peekOfCode": "class UtilisateurRead(UtilisateurBase):\n    nom: str\n    email: EmailStr\n    mot2pass: str\n    role: str\n    actif: Optional[bool] = None \n    photo_profil: Optional[str] = None\nclass UtilisateurDelete(BaseModel):\n    confirmation: bool\nclass UtilisateurUpdate(BaseModel):",
+        "peekOfCode": "class UtilisateurRead(UtilisateurBase):\n    id: int\n    nom: str\n    email: EmailStr\n    mot2pass: str\n    role: str\n    actif: Optional[bool] = None \n    photo_profil: Optional[str] = None\nclass UtilisateurDelete(BaseModel):\n    confirmation: bool",
         "detail": "app.schemas.Utilisateur",
         "documentation": {}
     },
@@ -2409,7 +2441,7 @@
         "kind": 6,
         "importPath": "app.schemas.Utilisateur",
         "description": "app.schemas.Utilisateur",
-        "peekOfCode": "class UtilisateurDelete(BaseModel):\n    confirmation: bool\nclass UtilisateurUpdate(BaseModel):\n    nom: Optional[str] = None\n    mot2pass: Optional[str] = None\n    email: Optional[EmailStr] = None\n    role: Optional[str] = None\n    photo_profil: Optional[str] = None  \n    class Config:\n        orm_mode = True",
+        "peekOfCode": "class UtilisateurDelete(BaseModel):\n    confirmation: bool\nclass UtilisateurUpdate(BaseModel):\n    nom: Optional[str] = None\n    mot2pass: Optional[str] = None\n    email: Optional[EmailStr] = None\n    role: Optional[str] = None\n    photo_profil: Optional[str] = None  \n    model_config = {\n        \"from_attributes\": True",
         "detail": "app.schemas.Utilisateur",
         "documentation": {}
     },
@@ -2418,7 +2450,7 @@
         "kind": 6,
         "importPath": "app.schemas.Utilisateur",
         "description": "app.schemas.Utilisateur",
-        "peekOfCode": "class UtilisateurUpdate(BaseModel):\n    nom: Optional[str] = None\n    mot2pass: Optional[str] = None\n    email: Optional[EmailStr] = None\n    role: Optional[str] = None\n    photo_profil: Optional[str] = None  \n    class Config:\n        orm_mode = True",
+        "peekOfCode": "class UtilisateurUpdate(BaseModel):\n    nom: Optional[str] = None\n    mot2pass: Optional[str] = None\n    email: Optional[EmailStr] = None\n    role: Optional[str] = None\n    photo_profil: Optional[str] = None  \n    model_config = {\n        \"from_attributes\": True\n    }",
         "detail": "app.schemas.Utilisateur",
         "documentation": {}
     },
@@ -2663,6 +2695,33 @@
         "description": "app.main",
         "peekOfCode": "origins = [\"http://localhost:3000\"]\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=origins,\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n# Inclusion des routes\napp.include_router(Utilisateur.router)",
         "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "FakeUtilisateur",
+        "kind": 6,
+        "importPath": "tests.test_pydantic",
+        "description": "tests.test_pydantic",
+        "peekOfCode": "class FakeUtilisateur:\n    def __init__(self):\n        self.id = 1\n        self.nom = \"Espérant\"\n        self.email = \"esperant@test.com\"\n        self.role = \"admin\"\n        self.actif = True\n        self.photo_profil = None\nclass UtilisateurRead(BaseModel):\n    id: int",
+        "detail": "tests.test_pydantic",
+        "documentation": {}
+    },
+    {
+        "label": "UtilisateurRead",
+        "kind": 6,
+        "importPath": "tests.test_pydantic",
+        "description": "tests.test_pydantic",
+        "peekOfCode": "class UtilisateurRead(BaseModel):\n    id: int\n    nom: str\n    email: EmailStr\n    role: str\n    actif: bool\n    photo_profil: Optional[str] = None\n    model_config = {\n        \"from_attributes\": True\n    }",
+        "detail": "tests.test_pydantic",
+        "documentation": {}
+    },
+    {
+        "label": "u",
+        "kind": 5,
+        "importPath": "tests.test_pydantic",
+        "description": "tests.test_pydantic",
+        "peekOfCode": "u = FakeUtilisateur()\nprint(UtilisateurRead.model_validate(u).model_dump())",
+        "detail": "tests.test_pydantic",
         "documentation": {}
     }
 ]

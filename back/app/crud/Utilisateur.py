@@ -9,7 +9,7 @@ async def get_utilisateurs(db: AsyncSession):
 
 # GET utilisateur by id
 async def get_utilisateur(db: AsyncSession, utilisateur_id: int):
-    result = await db.execute(select(Utilisateur).where(Utilisateur.id_utilisateur == utilisateur_id))
+    result = await db.execute(select(Utilisateur).where(Utilisateur.id == utilisateur_id))
     return result.scalars().first()
 
 # CREATE utilisateur
