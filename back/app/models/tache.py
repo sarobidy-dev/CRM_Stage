@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, Date, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database import Base  # ton declarative base
+from database import Base  # ton declarative base
 
 class Tache(Base):
     __tablename__ = "tache"

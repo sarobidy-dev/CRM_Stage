@@ -3,15 +3,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 import os, uuid, aiofiles 
 
-from app.schemas.Utilisateur import UtilisateurRead, UtilisateurCreate, UtilisateurUpdate
-from app.crud.Utilisateur import (
+from schemas.Utilisateur import UtilisateurRead, UtilisateurCreate, UtilisateurUpdate
+from crud.Utilisateur import (
     get_utilisateurs,
     get_utilisateur,
     create_utilisateur,
     update_utilisateur,
     delete_utilisateur,
 )
-from app.database import get_async_session
+from database import get_async_session
 
 router = APIRouter()
 
@@ -29,10 +29,9 @@ async def read_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_a
 @router.post("/utilisateurs", response_model=UtilisateurRead, status_code=status.HTTP_201_CREATED)
 async def create_new_utilisateur(
     nom: str = Form(...),
-    prenom: str = Form(...),
+    mot2pass: str = Form(...),
     email: str = Form(...),
     role: str = Form(...),
-    numero_tel: str = Form(...),
     photo_profil: UploadFile = File(None),
     db: AsyncSession = Depends(get_async_session)
 ):
@@ -50,10 +49,9 @@ async def create_new_utilisateur(
 
     utilisateur_dict = {
         "nom": nom,
-        "prenom": prenom,
+        "mot2pass": mot2pass,
         "email": email,
         "role": role,
-        "numero_tel": numero_tel,
         "photo_profil": chemin_photo
     }
 

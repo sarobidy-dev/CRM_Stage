@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, Date, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database import Base
+from database import Base
 
 class Opportunite(Base):
     __tablename__ = "opportunites"

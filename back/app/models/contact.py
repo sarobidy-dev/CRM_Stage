@@ -1,6 +1,5 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
-from sqlalchemy.orm import relationship
-from app.database import Base
+from sqlalchemy import Column, Integer, String, Text
+from database import Base
 
 class Contact(Base):
     __tablename__ = "contact"
@@ -16,11 +15,6 @@ class Contact(Base):
     source = Column(String(50), nullable=True)
     secteur = Column(String(50), nullable=True)
     type = Column(String(20), nullable=True)
-    id_utilisateur = Column(Integer, ForeignKey("utilisateur.id_utilisateur"), nullable=False)
-
     photo_de_profil = Column(String(255), nullable=True) 
 
-    utilisateur = relationship("Utilisateur", back_populates="contacts")
-    
-    interactions = relationship("Interaction", back_populates="contact")
     

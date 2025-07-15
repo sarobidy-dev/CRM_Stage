@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models.tache import Tache
-from app.schemas.tache import TacheCreate, TacheUpdate
+from models.tache import Tache
+from schemas.tache import TacheCreate, TacheUpdate
 
 def get_tache(db: Session, id_tache: int):
     return db.query(Tache).filter(Tache.id_tache == id_tache).first()

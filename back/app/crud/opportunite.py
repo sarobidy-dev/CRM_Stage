@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from app.models.opportunite import Opportunite
-from app.schemas.opportunite import OpportuniteCreate
+from models.opportunite import Opportunite
+from schemas.opportunite import OpportuniteCreate
 from sqlalchemy import select, func
 
 async def count_opportunite(session: AsyncSession) -> int:
