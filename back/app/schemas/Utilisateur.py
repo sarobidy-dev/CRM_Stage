@@ -2,12 +2,16 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 class UtilisateurBase(BaseModel):
+<<<<<<< HEAD
     
+=======
+    id:Optional[int] = None
+>>>>>>> cf516b1f42bdea130e858eca7ea9fdec5d927197
     nom: str
     email: EmailStr
     mot2pass: str
     role: str
-    actif : bool
+    actif : Optional[bool] = None
     photo_profil: Optional[str] = None  # Nouveau champ
 
 class UtilisateurCreate(UtilisateurBase):
@@ -15,10 +19,15 @@ class UtilisateurCreate(UtilisateurBase):
     email: EmailStr
     mot2pass: str
     role: str
-    actif : bool
+    actif : Optional[bool] = None
     photo_profil: Optional[str] = None
 
+    model_config = {
+        "from_attributes": True  # ✅ correcte avec Pydantic v2
+    }
+
 class UtilisateurRead(UtilisateurBase):
+    id: int
     nom: str
     email: EmailStr
     mot2pass: str
@@ -36,5 +45,6 @@ class UtilisateurUpdate(BaseModel):
     role: Optional[str] = None
     photo_profil: Optional[str] = None  
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
