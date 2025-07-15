@@ -2,7 +2,7 @@ import axios from "axios";
 import ApiService from "./api.service";
 import { Utilisateur } from "@/types/Utilisateur.type";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-export const getUtilisateur = async (): Promise<Utilisateur[]> => {
+export const fetchUtilisateurs = async (): Promise<Utilisateur[]> => {
     return await ApiService.get(`${apiUrl}/utilisateurs`);
 };
 

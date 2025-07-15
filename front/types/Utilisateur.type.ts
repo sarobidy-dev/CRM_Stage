@@ -4,12 +4,12 @@
 //     prenom: string
 //     email: string
 // }
-export interface Utilisateur {
-  nom: string
-  prenom: string
-  email: string
-  role: string
-  numero_tel: string
-  photo_profil: string
-  id_utilisateur: number
+export interface Utilisateur{
+  id_utilisateur: any;
+  nom: string,
+  email: string,
+  mot2pass: string,
+  role: string,
+  actif?: boolean,
+  photo_profil?: string
 }
