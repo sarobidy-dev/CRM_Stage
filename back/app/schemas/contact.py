@@ -1,31 +1,36 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 
-class ContactBase(BaseModel):
-    nom: Optional[str] = None
+
+class ContactCreate(BaseModel):
+    nom: str
     prenom: Optional[str] = None
-    entreprise: Optional[str] = None
     telephone: Optional[str] = None
-    email: Optional[str] = None
+    email: Optional[EmailStr] = None
     adresse: Optional[str] = None
     fonction: Optional[str] = None
-    source: Optional[str] = None
-    secteur: Optional[str] = None
-    type: Optional[str] = None
-    photo_de_profil: Optional[str] = None
+    entreprise_id: int
 
-class ContactCreate(ContactBase):
+
+class ContactUpdate(BaseModel):
+    nom: Optional[str] = None
+    prenom: Optional[str] = None
+    telephone: Optional[str] = None
+    email: Optional[EmailStr] = None
+    adresse: Optional[str] = None
+    fonction: Optional[str] = None
+    entreprise_id: Optional[int] = None
+
+
+class ContactRead(BaseModel):
+    id: int
     nom: str
-    prenom: str
-    id_utilisateur: int
-
-class ContactUpdate(ContactBase):
-    pass
-
-class ContactRead(ContactBase):
-    id: int = Field(..., alias="id_contact")  # <-- alias ici
-    id_utilisateur: int
+    prenom: Optional[str]
+    telephone: Optional[str]
+    email: Optional[str]
+    adresse: Optional[str]
+    fonction: Optional[str]
+    entreprise_id: int
 
     class Config:
         orm_mode = True
-        allow_population_by_field_name = True  # permet d'utiliser aussi "id" comme champ lors de la création

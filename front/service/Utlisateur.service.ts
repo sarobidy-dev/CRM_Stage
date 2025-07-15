@@ -1,12 +1,11 @@
 import axios from "axios";
 import ApiService from "./api.service";
 import { Utilisateur } from "@/types/Utilisateur.type";
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
-export const getUtilisateur = async (): Promise<Utilisateur[]> => {
-    return await ApiService.get(`${apiUrl}/utilisateurs`); 
-};
-
 const API = process.env.NEXT_PUBLIC_API_URL;
+
+export const fetchUtilisateurs = async (): Promise<Utilisateur[]> => {
+    return await ApiService.get(`${API }/utilisateurs`);
+};
 
 export const createUtilisateur = async (formData: FormData) => {
   const res = await axios.post(`${API}/utilisateurs/`, formData, {

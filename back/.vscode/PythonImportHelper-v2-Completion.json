@@ -2429,6 +2429,18 @@
         "documentation": {}
     },
     {
+<<<<<<< HEAD
+        "label": "router",
+        "kind": 5,
+        "importPath": "app.routers.Utilisateur",
+        "description": "app.routers.Utilisateur",
+        "peekOfCode": "router = APIRouter()\n@router.get(\"/utilisateurs\", response_model=List[UtilisateurRead])\nasync def read_utilisateurs(db: AsyncSession = Depends(get_async_session)):\n    return await get_utilisateurs(db)\n@router.get(\"/utilisateurs/{utilisateur_id}\", response_model=UtilisateurRead)\nasync def read_utilisateur(\n    utilisateur_id: int, db: AsyncSession = Depends(get_async_session)\n):\n    utilisateur = await get_utilisateur(db, utilisateur_id)\n    if utilisateur is None:",
+        "detail": "app.routers.Utilisateur",
+        "documentation": {}
+    },
+    {
+=======
+>>>>>>> cf516b1f42bdea130e858eca7ea9fdec5d927197
         "label": "UtilisateurBase",
         "kind": 6,
         "importPath": "app.schemas.Utilisateur",

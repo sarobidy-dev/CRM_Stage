@@ -28,7 +28,7 @@ class UtilisateurRead(UtilisateurBase):
     email: EmailStr
     mot2pass: str
     role: str
-    actif: Optional[bool] = None 
+    actif: Optional[bool] = None    
     photo_profil: Optional[str] = None
 
 class UtilisateurDelete(BaseModel):

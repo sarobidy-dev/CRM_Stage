@@ -122,6 +122,102 @@
         "documentation": {}
     },
     {
+        "label": "Boolean",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Column",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Integer",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "String",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Boolean",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Column",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Integer",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "String",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Boolean",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Column",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Integer",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "String",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
         "label": "Text",
         "importPath": "sqlalchemy",
         "description": "sqlalchemy",
@@ -155,6 +251,78 @@
     },
     {
         "label": "Text",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "ForeignKey",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Column",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Integer",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "String",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Boolean",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Column",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Integer",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "String",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Boolean",
         "importPath": "sqlalchemy",
         "description": "sqlalchemy",
         "isExtraImport": true,
@@ -290,6 +458,70 @@
         "documentation": {}
     },
     {
+        "label": "Boolean",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Column",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Integer",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "String",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Boolean",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Column",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Integer",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "String",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
         "label": "Text",
         "importPath": "sqlalchemy",
         "description": "sqlalchemy",
@@ -411,6 +643,14 @@
     },
     {
         "label": "ForeignKey",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "select",
         "importPath": "sqlalchemy",
         "description": "sqlalchemy",
         "isExtraImport": true,
@@ -427,6 +667,30 @@
     },
     {
         "label": "AsyncEngine",
+        "importPath": "sqlalchemy.ext.asyncio",
+        "description": "sqlalchemy.ext.asyncio",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.ext.asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "AsyncSession",
+        "importPath": "sqlalchemy.ext.asyncio",
+        "description": "sqlalchemy.ext.asyncio",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.ext.asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "AsyncSession",
+        "importPath": "sqlalchemy.ext.asyncio",
+        "description": "sqlalchemy.ext.asyncio",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.ext.asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "AsyncSession",
         "importPath": "sqlalchemy.ext.asyncio",
         "description": "sqlalchemy.ext.asyncio",
         "isExtraImport": true,
@@ -546,95 +810,79 @@
         "documentation": {}
     },
     {
+        "label": "jsonResponse",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "jsonResponse",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "APIRouter",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Depends",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "status",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "UploadFile",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "File",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Form",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
         "label": "FastAPI",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "APIRouter",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "Depends",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "HTTPException",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "APIRouter",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "Depends",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "HTTPException",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "status",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "APIRouter",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "Depends",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "HTTPException",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "status",
         "importPath": "fastapi",
         "description": "fastapi",
         "isExtraImport": true,
@@ -699,6 +947,62 @@
     },
     {
         "label": "UploadFile",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "APIRouter",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Depends",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "APIRouter",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Depends",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "status",
         "importPath": "fastapi",
         "description": "fastapi",
         "isExtraImport": true,
@@ -794,6 +1098,14 @@
         "documentation": {}
     },
     {
+        "label": "status",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
         "label": "APIRouter",
         "importPath": "fastapi",
         "description": "fastapi",
@@ -811,30 +1123,6 @@
     },
     {
         "label": "HTTPException",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "UploadFile",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "File",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "UploadFile",
         "importPath": "fastapi",
         "description": "fastapi",
         "isExtraImport": true,
@@ -898,6 +1186,54 @@
         "documentation": {}
     },
     {
+        "label": "APIRouter",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Depends",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "UploadFile",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "File",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "UploadFile",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
         "label": "FastAPI",
         "importPath": "fastapi",
         "description": "fastapi",
@@ -906,11 +1242,195 @@
         "documentation": {}
     },
     {
-        "label": "RtcTokenBuilder",
-        "importPath": "agora_token_builder",
-        "description": "agora_token_builder",
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
         "isExtraImport": true,
-        "detail": "agora_token_builder",
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
         "documentation": {}
     },
     {
@@ -923,171 +1443,99 @@
         "documentation": {}
     },
     {
-        "label": "EmailService",
-        "importPath": "crud.email_service",
-        "description": "crud.email_service",
+        "label": "JSONResponse",
+        "importPath": "fastapi.responses",
+        "description": "fastapi.responses",
         "isExtraImport": true,
-        "detail": "crud.email_service",
+        "detail": "fastapi.responses",
         "documentation": {}
     },
     {
-        "label": "EmailRequest",
-        "importPath": "schemas.email",
-        "description": "schemas.email",
+        "label": "JSONResponse",
+        "importPath": "fastapi.responses",
+        "description": "fastapi.responses",
         "isExtraImport": true,
-        "detail": "schemas.email",
+        "detail": "fastapi.responses",
         "documentation": {}
     },
     {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "AdresseRead",
+        "importPath": "schemas.adresse",
+        "description": "schemas.adresse",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "schemas.adresse",
         "documentation": {}
     },
     {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "AdresseCreate",
+        "importPath": "schemas.adresse",
+        "description": "schemas.adresse",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "schemas.adresse",
         "documentation": {}
     },
     {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "AdresseUpdate",
+        "importPath": "schemas.adresse",
+        "description": "schemas.adresse",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "schemas.adresse",
         "documentation": {}
     },
     {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "get_adresses",
+        "importPath": "services.adresse",
+        "description": "services.adresse",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "services.adresse",
         "documentation": {}
     },
     {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "get_one_adresse",
+        "importPath": "services.adresse",
+        "description": "services.adresse",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "services.adresse",
         "documentation": {}
     },
     {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "create_adresse",
+        "importPath": "services.adresse",
+        "description": "services.adresse",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "services.adresse",
         "documentation": {}
     },
     {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "update_adresse",
+        "importPath": "services.adresse",
+        "description": "services.adresse",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "services.adresse",
         "documentation": {}
     },
     {
-        "label": "Dict",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "delete_adresse",
+        "importPath": "services.adresse",
+        "description": "services.adresse",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "services.adresse",
         "documentation": {}
     },
     {
-        "label": "Any",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "get_async_session",
+        "importPath": "database",
+        "description": "database",
         "isExtraImport": true,
-        "detail": "typing",
+        "detail": "database",
         "documentation": {}
     },
     {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "get_async_session",
+        "importPath": "database",
+        "description": "database",
         "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Dict",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Any",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
+        "detail": "database",
         "documentation": {}
     },
     {
@@ -1187,7 +1635,55 @@
         "documentation": {}
     },
     {
-        "label": "get_async_session",
+        "label": "Base",
+        "importPath": "database",
+        "description": "database",
+        "isExtraImport": true,
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "Base",
+        "importPath": "database",
+        "description": "database",
+        "isExtraImport": true,
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "Base",
+        "importPath": "database",
+        "description": "database",
+        "isExtraImport": true,
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "Base",
+        "importPath": "database",
+        "description": "database",
+        "isExtraImport": true,
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "Base",
+        "importPath": "database",
+        "description": "database",
+        "isExtraImport": true,
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "Base",
+        "importPath": "database",
+        "description": "database",
+        "isExtraImport": true,
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "Base",
         "importPath": "database",
         "description": "database",
         "isExtraImport": true,
@@ -1219,155 +1715,11 @@
         "documentation": {}
     },
     {
-        "label": "Entreprise",
-        "importPath": "models.entreprise",
-        "description": "models.entreprise",
+        "label": "RtcTokenBuilder",
+        "importPath": "agora_token_builder",
+        "description": "agora_token_builder",
         "isExtraImport": true,
-        "detail": "models.entreprise",
-        "documentation": {}
-    },
-    {
-        "label": "EntrepriseCreate",
-        "importPath": "schemas.entreprise",
-        "description": "schemas.entreprise",
-        "isExtraImport": true,
-        "detail": "schemas.entreprise",
-        "documentation": {}
-    },
-    {
-        "label": "EntrepriseRead",
-        "importPath": "schemas.entreprise",
-        "description": "schemas.entreprise",
-        "isExtraImport": true,
-        "detail": "schemas.entreprise",
-        "documentation": {}
-    },
-    {
-        "label": "EntrepriseUpdate",
-        "importPath": "schemas.entreprise",
-        "description": "schemas.entreprise",
-        "isExtraImport": true,
-        "detail": "schemas.entreprise",
-        "documentation": {}
-    },
-    {
-        "label": "select",
-        "importPath": "sqlalchemy.future",
-        "description": "sqlalchemy.future",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.future",
-        "documentation": {}
-    },
-    {
-        "label": "select",
-        "importPath": "sqlalchemy.future",
-        "description": "sqlalchemy.future",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.future",
-        "documentation": {}
-    },
-    {
-        "label": "select",
-        "importPath": "sqlalchemy.future",
-        "description": "sqlalchemy.future",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.future",
-        "documentation": {}
-    },
-    {
-        "label": "select",
-        "importPath": "sqlalchemy.future",
-        "description": "sqlalchemy.future",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.future",
-        "documentation": {}
-    },
-    {
-        "label": "select",
-        "importPath": "sqlalchemy.future",
-        "description": "sqlalchemy.future",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.future",
-        "documentation": {}
-    },
-    {
-        "label": "select",
-        "importPath": "sqlalchemy.future",
-        "description": "sqlalchemy.future",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.future",
-        "documentation": {}
-    },
-    {
-        "label": "Opportunite",
-        "importPath": "models.opportunite",
-        "description": "models.opportunite",
-        "isExtraImport": true,
-        "detail": "models.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "Opportunite",
-        "importPath": "models.opportunite",
-        "description": "models.opportunite",
-        "isExtraImport": true,
-        "detail": "models.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "OpportuniteCreate",
-        "importPath": "schemas.opportunite",
-        "description": "schemas.opportunite",
-        "isExtraImport": true,
-        "detail": "schemas.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "OpportuniteRead",
-        "importPath": "schemas.opportunite",
-        "description": "schemas.opportunite",
-        "isExtraImport": true,
-        "detail": "schemas.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "OpportuniteCreate",
-        "importPath": "schemas.opportunite",
-        "description": "schemas.opportunite",
-        "isExtraImport": true,
-        "detail": "schemas.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "create_opportunite",
-        "importPath": "crud.opportunite",
-        "description": "crud.opportunite",
-        "isExtraImport": true,
-        "detail": "crud.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "get_opportunites",
-        "importPath": "crud.opportunite",
-        "description": "crud.opportunite",
-        "isExtraImport": true,
-        "detail": "crud.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "get_opportunite",
-        "importPath": "crud.opportunite",
-        "description": "crud.opportunite",
-        "isExtraImport": true,
-        "detail": "crud.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "delete_opportunite",
-        "importPath": "crud.opportunite",
-        "description": "crud.opportunite",
-        "isExtraImport": true,
-        "detail": "crud.opportunite",
+        "detail": "agora_token_builder",
         "documentation": {}
     },
     {
@@ -1452,6 +1804,118 @@
         "documentation": {}
     },
     {
+        "label": "EmailService",
+        "importPath": "crud.email_service",
+        "description": "crud.email_service",
+        "isExtraImport": true,
+        "detail": "crud.email_service",
+        "documentation": {}
+    },
+    {
+        "label": "EmailRequest",
+        "importPath": "schemas.email",
+        "description": "schemas.email",
+        "isExtraImport": true,
+        "detail": "schemas.email",
+        "documentation": {}
+    },
+    {
+        "label": "Entreprise",
+        "importPath": "models.entreprise",
+        "description": "models.entreprise",
+        "isExtraImport": true,
+        "detail": "models.entreprise",
+        "documentation": {}
+    },
+    {
+        "label": "Entreprise",
+        "importPath": "models.entreprise",
+        "description": "models.entreprise",
+        "isExtraImport": true,
+        "detail": "models.entreprise",
+        "documentation": {}
+    },
+    {
+        "label": "EntrepriseCreate",
+        "importPath": "schemas.entreprise",
+        "description": "schemas.entreprise",
+        "isExtraImport": true,
+        "detail": "schemas.entreprise",
+        "documentation": {}
+    },
+    {
+        "label": "EntrepriseRead",
+        "importPath": "schemas.entreprise",
+        "description": "schemas.entreprise",
+        "isExtraImport": true,
+        "detail": "schemas.entreprise",
+        "documentation": {}
+    },
+    {
+        "label": "EntrepriseUpdate",
+        "importPath": "schemas.entreprise",
+        "description": "schemas.entreprise",
+        "isExtraImport": true,
+        "detail": "schemas.entreprise",
+        "documentation": {}
+    },
+    {
+        "label": "select",
+        "importPath": "sqlalchemy.future",
+        "description": "sqlalchemy.future",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.future",
+        "documentation": {}
+    },
+    {
+        "label": "select",
+        "importPath": "sqlalchemy.future",
+        "description": "sqlalchemy.future",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.future",
+        "documentation": {}
+    },
+    {
+        "label": "select",
+        "importPath": "sqlalchemy.future",
+        "description": "sqlalchemy.future",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.future",
+        "documentation": {}
+    },
+    {
+        "label": "select",
+        "importPath": "sqlalchemy.future",
+        "description": "sqlalchemy.future",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.future",
+        "documentation": {}
+    },
+    {
+        "label": "select",
+        "importPath": "sqlalchemy.future",
+        "description": "sqlalchemy.future",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.future",
+        "documentation": {}
+    },
+    {
+        "label": "select",
+        "importPath": "sqlalchemy.future",
+        "description": "sqlalchemy.future",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.future",
+        "documentation": {}
+    },
+    {
+        "label": "select",
+        "importPath": "sqlalchemy.future",
+        "description": "sqlalchemy.future",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.future",
+        "documentation": {}
+    },
+    {
         "label": "at the top",
         "importPath": "datetime import datetime  # Add this",
         "description": "datetime import datetime  # Add this",
@@ -1525,6 +1989,78 @@
         "documentation": {}
     },
     {
+        "label": "Opportunite",
+        "importPath": "models.opportunite",
+        "description": "models.opportunite",
+        "isExtraImport": true,
+        "detail": "models.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "Opportunite",
+        "importPath": "models.opportunite",
+        "description": "models.opportunite",
+        "isExtraImport": true,
+        "detail": "models.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "OpportuniteCreate",
+        "importPath": "schemas.opportunite",
+        "description": "schemas.opportunite",
+        "isExtraImport": true,
+        "detail": "schemas.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "OpportuniteRead",
+        "importPath": "schemas.opportunite",
+        "description": "schemas.opportunite",
+        "isExtraImport": true,
+        "detail": "schemas.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "OpportuniteCreate",
+        "importPath": "schemas.opportunite",
+        "description": "schemas.opportunite",
+        "isExtraImport": true,
+        "detail": "schemas.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "create_opportunite",
+        "importPath": "crud.opportunite",
+        "description": "crud.opportunite",
+        "isExtraImport": true,
+        "detail": "crud.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "get_opportunites",
+        "importPath": "crud.opportunite",
+        "description": "crud.opportunite",
+        "isExtraImport": true,
+        "detail": "crud.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "get_opportunite",
+        "importPath": "crud.opportunite",
+        "description": "crud.opportunite",
+        "isExtraImport": true,
+        "detail": "crud.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "delete_opportunite",
+        "importPath": "crud.opportunite",
+        "description": "crud.opportunite",
+        "isExtraImport": true,
+        "detail": "crud.opportunite",
+        "documentation": {}
+    },
+    {
         "label": "tache",
         "importPath": "schemas",
         "description": "schemas",
@@ -1557,6 +2093,78 @@
         "documentation": {}
     },
     {
+        "label": "UtilisateurRead",
+        "importPath": "schemas.Utilisateur",
+        "description": "schemas.Utilisateur",
+        "isExtraImport": true,
+        "detail": "schemas.Utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "UtilisateurCreate",
+        "importPath": "schemas.Utilisateur",
+        "description": "schemas.Utilisateur",
+        "isExtraImport": true,
+        "detail": "schemas.Utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "UtilisateurUpdate",
+        "importPath": "schemas.Utilisateur",
+        "description": "schemas.Utilisateur",
+        "isExtraImport": true,
+        "detail": "schemas.Utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "get_utilisateurs",
+        "importPath": "services.utilisateur",
+        "description": "services.utilisateur",
+        "isExtraImport": true,
+        "detail": "services.utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "get_utilisateur",
+        "importPath": "services.utilisateur",
+        "description": "services.utilisateur",
+        "isExtraImport": true,
+        "detail": "services.utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "create_utilisateur",
+        "importPath": "services.utilisateur",
+        "description": "services.utilisateur",
+        "isExtraImport": true,
+        "detail": "services.utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "update_utilisateur",
+        "importPath": "services.utilisateur",
+        "description": "services.utilisateur",
+        "isExtraImport": true,
+        "detail": "services.utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "delete_utilisateur",
+        "importPath": "services.utilisateur",
+        "description": "services.utilisateur",
+        "isExtraImport": true,
+        "detail": "services.utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "Session",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
         "label": "Session",
         "importPath": "sqlalchemy.orm",
         "description": "sqlalchemy.orm",
@@ -1573,7 +2181,63 @@
         "documentation": {}
     },
     {
-        "label": "Session",
+        "label": "relationship",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "relationship",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "relationship",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "relationship",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "relationship",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "relationship",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "relationship",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "relationship",
         "importPath": "sqlalchemy.orm",
         "description": "sqlalchemy.orm",
         "isExtraImport": true,
@@ -1669,6 +2333,22 @@
         "documentation": {}
     },
     {
+        "label": "EmailStr",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
+        "documentation": {}
+    },
+    {
+        "label": "BaseModel",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
+        "documentation": {}
+    },
+    {
         "label": "Field",
         "importPath": "pydantic",
         "description": "pydantic",
@@ -1733,6 +2413,22 @@
         "documentation": {}
     },
     {
+        "label": "BaseModel",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
+        "documentation": {}
+    },
+    {
+        "label": "EmailStr",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
+        "documentation": {}
+    },
+    {
         "label": "VideoCallService",
         "importPath": "crud.video_service",
         "description": "crud.video_service",
@@ -1746,14 +2442,6 @@
         "description": "models.contact",
         "isExtraImport": true,
         "detail": "models.contact",
-        "documentation": {}
-    },
-    {
-        "label": "Utilisateur",
-        "importPath": "models.utilisateur",
-        "description": "models.utilisateur",
-        "isExtraImport": true,
-        "detail": "models.utilisateur",
         "documentation": {}
     },
     {
@@ -1921,67 +2609,19 @@
         "documentation": {}
     },
     {
-        "label": "UtilisateurRead",
-        "importPath": "schemas.Utilisateur",
-        "description": "schemas.Utilisateur",
+        "label": "Adresse",
+        "importPath": "models.adresse",
+        "description": "models.adresse",
         "isExtraImport": true,
-        "detail": "schemas.Utilisateur",
+        "detail": "models.adresse",
         "documentation": {}
     },
     {
-        "label": "UtilisateurCreate",
-        "importPath": "schemas.Utilisateur",
-        "description": "schemas.Utilisateur",
+        "label": "Utilisateur",
+        "importPath": "models.utilisateur",
+        "description": "models.utilisateur",
         "isExtraImport": true,
-        "detail": "schemas.Utilisateur",
-        "documentation": {}
-    },
-    {
-        "label": "UtilisateurUpdate",
-        "importPath": "schemas.Utilisateur",
-        "description": "schemas.Utilisateur",
-        "isExtraImport": true,
-        "detail": "schemas.Utilisateur",
-        "documentation": {}
-    },
-    {
-        "label": "get_utilisateurs",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
-        "isExtraImport": true,
-        "detail": "crud.Utilisateur",
-        "documentation": {}
-    },
-    {
-        "label": "get_utilisateur",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
-        "isExtraImport": true,
-        "detail": "crud.Utilisateur",
-        "documentation": {}
-    },
-    {
-        "label": "create_utilisateur",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
-        "isExtraImport": true,
-        "detail": "crud.Utilisateur",
-        "documentation": {}
-    },
-    {
-        "label": "update_utilisateur",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
-        "isExtraImport": true,
-        "detail": "crud.Utilisateur",
-        "documentation": {}
-    },
-    {
-        "label": "delete_utilisateur",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
-        "isExtraImport": true,
-        "detail": "crud.Utilisateur",
+        "detail": "models.utilisateur",
         "documentation": {}
     },
     {
@@ -2001,11 +2641,19 @@
         "documentation": {}
     },
     {
-        "label": "Utilisateur",
-        "importPath": "routers",
-        "description": "routers",
+        "label": "utilisateur",
+        "importPath": "api",
+        "description": "api",
         "isExtraImport": true,
-        "detail": "routers",
+        "detail": "api",
+        "documentation": {}
+    },
+    {
+        "label": "adresse",
+        "importPath": "api",
+        "description": "api",
+        "isExtraImport": true,
+        "detail": "api",
         "documentation": {}
     },
     {
@@ -2045,6 +2693,24 @@
         "documentation": {}
     },
     {
+        "label": "router",
+        "kind": 5,
+        "importPath": "back.app.api.adresse",
+        "description": "back.app.api.adresse",
+        "peekOfCode": "router = APIRouter()\nUPLOAD_DIR = \"media/photos\"\nos.makedirs(UPLOAD_DIR, exist_ok=True)\n# ---------------------------------------------------------\n# GET - tous les Adresses\n# ---------------------------------------------------------\n@router.get(\"/adresses\", response_model=List[AdresseRead])\nasync def readAdresses(db: AsyncSession = Depends(get_async_session)):\n    return await get_adresses(db)\n# ---------------------------------------------------------",
+        "detail": "back.app.api.adresse",
+        "documentation": {}
+    },
+    {
+        "label": "UPLOAD_DIR",
+        "kind": 5,
+        "importPath": "back.app.api.adresse",
+        "description": "back.app.api.adresse",
+        "peekOfCode": "UPLOAD_DIR = \"media/photos\"\nos.makedirs(UPLOAD_DIR, exist_ok=True)\n# ---------------------------------------------------------\n# GET - tous les Adresses\n# ---------------------------------------------------------\n@router.get(\"/adresses\", response_model=List[AdresseRead])\nasync def readAdresses(db: AsyncSession = Depends(get_async_session)):\n    return await get_adresses(db)\n# ---------------------------------------------------------\n# GET - un Adresse",
+        "detail": "back.app.api.adresse",
+        "documentation": {}
+    },
+    {
         "label": "get_agora_token",
         "kind": 2,
         "importPath": "back.app.api.agora_token",
@@ -2060,6 +2726,24 @@
         "description": "back.app.api.agora_token",
         "peekOfCode": "app = FastAPI()\n@app.get(\"/agora-token\")\ndef get_agora_token(channel_name: str, uid: int = 0):\n    app_id = os.getenv(\"AGORA_APP_ID\")\n    app_cert = os.getenv(\"AGORA_CERTIFICATE\")\n    expire_time = 3600\n    current_time = int(time.time())\n    expire_at = current_time + expire_time\n    token = RtcTokenBuilder.buildTokenWithUid(\n        app_id, app_cert, channel_name, uid, 1, expire_at",
         "detail": "back.app.api.agora_token",
+        "documentation": {}
+    },
+    {
+        "label": "save_profile_picture",
+        "kind": 2,
+        "importPath": "back.app.api.contact",
+        "description": "back.app.api.contact",
+        "peekOfCode": "def save_profile_picture(file: UploadFile):\n    ext = os.path.splitext(file.filename)[1]\n    filename = f\"{uuid.uuid4()}{ext}\"\n    filepath = f\"media/photos/{filename}\"\n    with open(filepath, \"wb\") as buffer:\n        buffer.write(file.file.read())\n    return filepath\n@router.post(\"\", response_model=ContactRead, status_code=status.HTTP_201_CREATED)\nasync def create_contact_route(\n    nom: str = Form(...),",
+        "detail": "back.app.api.contact",
+        "documentation": {}
+    },
+    {
+        "label": "router",
+        "kind": 5,
+        "importPath": "back.app.api.contact",
+        "description": "back.app.api.contact",
+        "peekOfCode": "router = APIRouter(\n    prefix=\"/contacts\",\n    tags=[\"contacts\"]\n)\nimport uuid\nimport os\nfrom fastapi import UploadFile\ndef save_profile_picture(file: UploadFile):\n    ext = os.path.splitext(file.filename)[1]\n    filename = f\"{uuid.uuid4()}{ext}\"",
+        "detail": "back.app.api.contact",
         "documentation": {}
     },
     {
@@ -2092,6 +2776,15 @@
     {
         "label": "router",
         "kind": 5,
+        "importPath": "back.app.api.interaction",
+        "description": "back.app.api.interaction",
+        "peekOfCode": "router = APIRouter(prefix=\"/interactions\", tags=[\"interactions\"])\n@router.post(\"\", response_model=InteractionRead, status_code=status.HTTP_201_CREATED)\nasync def create_interaction(\n    type: str = Form(...),\n    date_interaction: str = Form(...),\n    contenu: str = Form(...),\n    id_contact: int = Form(...),\n    fichier_joint: UploadFile = File(None),\n    session: AsyncSession = Depends(get_async_session)\n):",
+        "detail": "back.app.api.interaction",
+        "documentation": {}
+    },
+    {
+        "label": "router",
+        "kind": 5,
         "importPath": "back.app.api.opportunite",
         "description": "back.app.api.opportunite",
         "peekOfCode": "router = APIRouter(prefix=\"/opportunites\", tags=[\"opportunites\"])\n@router.get(\"/count\", summary=\"Nombre total d'opportunités\")\nasync def count_opportunites(session: AsyncSession = Depends(get_async_session)):\n    result = await session.execute(select(func.count()).select_from(Opportunite))\n    return {\"total_opportunites\": result.scalar_one()}\n@router.post(\"\", response_model=OpportuniteRead, status_code=status.HTTP_201_CREATED)\nasync def create(data: OpportuniteCreate, session: AsyncSession = Depends(get_async_session)):\n    return await create_opportunite(session, data)\n@router.get(\"\", response_model=List[OpportuniteRead])\nasync def read_all(session: AsyncSession = Depends(get_async_session)):",
@@ -2099,138 +2792,75 @@
         "documentation": {}
     },
     {
-        "label": "DB_USER",
-        "kind": 5,
-        "importPath": "back.app.core.config",
-        "description": "back.app.core.config",
-        "peekOfCode": "DB_USER = os.getenv(\"DB_USER\", \"postgres\")\nDB_PASS = os.getenv(\"DB_PASS\", \"root\")\nDB_NAME = os.getenv(\"DB_NAME\", \"db_crm\")\nDB_HOST = os.getenv(\"DB_HOST\", \"localhost\")\nDB_PORT = os.getenv(\"DB_PORT\", \"5432\")\nDATABASE_URL = f\"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}\"",
-        "detail": "back.app.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "DB_PASS",
-        "kind": 5,
-        "importPath": "back.app.core.config",
-        "description": "back.app.core.config",
-        "peekOfCode": "DB_PASS = os.getenv(\"DB_PASS\", \"root\")\nDB_NAME = os.getenv(\"DB_NAME\", \"db_crm\")\nDB_HOST = os.getenv(\"DB_HOST\", \"localhost\")\nDB_PORT = os.getenv(\"DB_PORT\", \"5432\")\nDATABASE_URL = f\"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}\"",
-        "detail": "back.app.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "DB_NAME",
-        "kind": 5,
-        "importPath": "back.app.core.config",
-        "description": "back.app.core.config",
-        "peekOfCode": "DB_NAME = os.getenv(\"DB_NAME\", \"db_crm\")\nDB_HOST = os.getenv(\"DB_HOST\", \"localhost\")\nDB_PORT = os.getenv(\"DB_PORT\", \"5432\")\nDATABASE_URL = f\"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}\"",
-        "detail": "back.app.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "DB_HOST",
-        "kind": 5,
-        "importPath": "back.app.core.config",
-        "description": "back.app.core.config",
-        "peekOfCode": "DB_HOST = os.getenv(\"DB_HOST\", \"localhost\")\nDB_PORT = os.getenv(\"DB_PORT\", \"5432\")\nDATABASE_URL = f\"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}\"",
-        "detail": "back.app.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "DB_PORT",
-        "kind": 5,
-        "importPath": "back.app.core.config",
-        "description": "back.app.core.config",
-        "peekOfCode": "DB_PORT = os.getenv(\"DB_PORT\", \"5432\")\nDATABASE_URL = f\"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}\"",
-        "detail": "back.app.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "DATABASE_URL",
-        "kind": 5,
-        "importPath": "back.app.core.config",
-        "description": "back.app.core.config",
-        "peekOfCode": "DATABASE_URL = f\"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}\"",
-        "detail": "back.app.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "save_profile_picture",
-        "kind": 2,
-        "importPath": "back.app.core.contact",
-        "description": "back.app.core.contact",
-        "peekOfCode": "def save_profile_picture(file: UploadFile):\n    ext = os.path.splitext(file.filename)[1]\n    filename = f\"{uuid.uuid4()}{ext}\"\n    filepath = f\"media/photos/{filename}\"\n    with open(filepath, \"wb\") as buffer:\n        buffer.write(file.file.read())\n    return filepath\n@router.post(\"\", response_model=ContactRead, status_code=status.HTTP_201_CREATED)\nasync def create_contact_route(\n    nom: str = Form(...),",
-        "detail": "back.app.core.contact",
-        "documentation": {}
-    },
-    {
         "label": "router",
         "kind": 5,
-        "importPath": "back.app.core.contact",
-        "description": "back.app.core.contact",
-        "peekOfCode": "router = APIRouter(\n    prefix=\"/contacts\",\n    tags=[\"contacts\"]\n)\nimport uuid\nimport os\nfrom fastapi import UploadFile\ndef save_profile_picture(file: UploadFile):\n    ext = os.path.splitext(file.filename)[1]\n    filename = f\"{uuid.uuid4()}{ext}\"",
-        "detail": "back.app.core.contact",
-        "documentation": {}
-    },
-    {
-        "label": "router",
-        "kind": 5,
-        "importPath": "back.app.core.interaction",
-        "description": "back.app.core.interaction",
-        "peekOfCode": "router = APIRouter(prefix=\"/interactions\", tags=[\"interactions\"])\n@router.post(\"\", response_model=InteractionRead, status_code=status.HTTP_201_CREATED)\nasync def create_interaction(\n    type: str = Form(...),\n    date_interaction: str = Form(...),\n    contenu: str = Form(...),\n    id_contact: int = Form(...),\n    fichier_joint: UploadFile = File(None),\n    session: AsyncSession = Depends(get_async_session)\n):",
-        "detail": "back.app.core.interaction",
-        "documentation": {}
-    },
-    {
-        "label": "router",
-        "kind": 5,
-        "importPath": "back.app.core.tache",
-        "description": "back.app.core.tache",
+        "importPath": "back.app.api.tache",
+        "description": "back.app.api.tache",
         "peekOfCode": "router = APIRouter(prefix=\"/taches\", tags=[\"Taches\"])\n@router.post(\"\", response_model=tache_schema.Tache)\nasync def create_tache(tache: tache_schema.TacheCreate, db: AsyncSession = Depends(get_async_session)):\n    return await crud_tache.create_tache(db=db, tache=tache)  # <- correction ici\n@router.get(\"\", response_model=List[tache_schema.Tache])\nasync def read_taches(skip: int = 0, limit: int = 100, db: AsyncSession = Depends(get_async_session)):\n    result = await db.execute(select(Tache).offset(skip).limit(limit))\n    return result.scalars().all()\n@router.get(\"/{id_tache}\", response_model=tache_schema.Tache)\nasync def read_tache(id_tache: int, db: AsyncSession = Depends(get_async_session)):",
-        "detail": "back.app.core.tache",
+        "detail": "back.app.api.tache",
+        "documentation": {}
+    },
+    {
+        "label": "router",
+        "kind": 5,
+        "importPath": "back.app.api.utilisateur",
+        "description": "back.app.api.utilisateur",
+        "peekOfCode": "router = APIRouter()\nUPLOAD_DIR = \"media/photos\"\nos.makedirs(UPLOAD_DIR, exist_ok=True)\n# ---------------------------------------------------------\n# Fonction utilitaire pour sauvegarder une photo\n# ---------------------------------------------------------\nasync def _save_photo(file: UploadFile) -> str:\n    ext = os.path.splitext(file.filename)[1]\n    filename = f\"{uuid.uuid4()}{ext}\"\n    path = os.path.join(UPLOAD_DIR, filename)",
+        "detail": "back.app.api.utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "UPLOAD_DIR",
+        "kind": 5,
+        "importPath": "back.app.api.utilisateur",
+        "description": "back.app.api.utilisateur",
+        "peekOfCode": "UPLOAD_DIR = \"media/photos\"\nos.makedirs(UPLOAD_DIR, exist_ok=True)\n# ---------------------------------------------------------\n# Fonction utilitaire pour sauvegarder une photo\n# ---------------------------------------------------------\nasync def _save_photo(file: UploadFile) -> str:\n    ext = os.path.splitext(file.filename)[1]\n    filename = f\"{uuid.uuid4()}{ext}\"\n    path = os.path.join(UPLOAD_DIR, filename)\n    async with aiofiles.open(path, \"wb\") as out:",
+        "detail": "back.app.api.utilisateur",
         "documentation": {}
     },
     {
         "label": "StartCallRequest",
         "kind": 6,
-        "importPath": "back.app.core.video_calls",
-        "description": "back.app.core.video_calls",
+        "importPath": "back.app.api.video_calls",
+        "description": "back.app.api.video_calls",
         "peekOfCode": "class StartCallRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int\nclass EndCallRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int\n    duration: int\nclass StartRecordingRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int",
-        "detail": "back.app.core.video_calls",
+        "detail": "back.app.api.video_calls",
         "documentation": {}
     },
     {
         "label": "EndCallRequest",
         "kind": 6,
-        "importPath": "back.app.core.video_calls",
-        "description": "back.app.core.video_calls",
+        "importPath": "back.app.api.video_calls",
+        "description": "back.app.api.video_calls",
         "peekOfCode": "class EndCallRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int\n    duration: int\nclass StartRecordingRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int\nclass StopRecordingRequest(BaseModel):\n    recording_id: str\n@router.post(\"/start\")",
-        "detail": "back.app.core.video_calls",
+        "detail": "back.app.api.video_calls",
         "documentation": {}
     },
     {
         "label": "StartRecordingRequest",
         "kind": 6,
-        "importPath": "back.app.core.video_calls",
-        "description": "back.app.core.video_calls",
+        "importPath": "back.app.api.video_calls",
+        "description": "back.app.api.video_calls",
         "peekOfCode": "class StartRecordingRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int\nclass StopRecordingRequest(BaseModel):\n    recording_id: str\n@router.post(\"/start\")\nasync def start_call(\n    request: StartCallRequest,\n    db: Session = Depends(get_db)\n) -> Dict[str, Any]:",
-        "detail": "back.app.core.video_calls",
+        "detail": "back.app.api.video_calls",
         "documentation": {}
     },
     {
         "label": "StopRecordingRequest",
         "kind": 6,
-        "importPath": "back.app.core.video_calls",
-        "description": "back.app.core.video_calls",
+        "importPath": "back.app.api.video_calls",
+        "description": "back.app.api.video_calls",
         "peekOfCode": "class StopRecordingRequest(BaseModel):\n    recording_id: str\n@router.post(\"/start\")\nasync def start_call(\n    request: StartCallRequest,\n    db: Session = Depends(get_db)\n) -> Dict[str, Any]:\n    \"\"\"\n    Endpoint: POST /api/video-calls/start\n    Démarrer un nouvel appel vidéo entre un contact et un utilisateur",
-        "detail": "back.app.core.video_calls",
+        "detail": "back.app.api.video_calls",
         "documentation": {}
     },
     {
         "label": "router",
         "kind": 5,
-        "importPath": "back.app.core.video_calls",
-        "description": "back.app.core.video_calls",
+        "importPath": "back.app.api.video_calls",
+        "description": "back.app.api.video_calls",
         "peekOfCode": "router = APIRouter(prefix=\"/api/video-calls\", tags=[\"video-calls\"])\nclass StartCallRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int\nclass EndCallRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int\n    duration: int\nclass StartRecordingRequest(BaseModel):\n    contact_id: int",
-        "detail": "back.app.core.video_calls",
+        "detail": "back.app.api.video_calls",
         "documentation": {}
     },
     {
@@ -2288,11 +2918,38 @@
         "documentation": {}
     },
     {
+        "label": "Adresse",
+        "kind": 6,
+        "importPath": "back.app.models.adresse",
+        "description": "back.app.models.adresse",
+        "peekOfCode": "class Adresse(Base):\n    __tablename__ = \"adresse\" \n    id = Column(Integer, primary_key=True, index=True)\n    ligneAdresse1 = Column(String(40), nullable=False)\n    ligneAdresse2= Column(String(40),nullable=True)\n    ville = Column(String(80),nullable=False)\n    cp = Column(String(5), nullable=False)\n    pays= Column(String(60) ,nullable=False)\n    # Relation\n    entreprises = relationship(\"Entreprise\", back_populates=\"adresse\")",
+        "detail": "back.app.models.adresse",
+        "documentation": {}
+    },
+    {
+        "label": "CampagneEntreprise",
+        "kind": 6,
+        "importPath": "back.app.models.campageEntreprises",
+        "description": "back.app.models.campageEntreprises",
+        "peekOfCode": "class CampagneEntreprise(Base):\n    __tablename__ = \"campagne_entreprise\" \n    # Relation\n    entreprise_id\n    campagne_id",
+        "detail": "back.app.models.campageEntreprises",
+        "documentation": {}
+    },
+    {
+        "label": "Campagne",
+        "kind": 6,
+        "importPath": "back.app.models.campagne",
+        "description": "back.app.models.campagne",
+        "peekOfCode": "class Campagne(Base):\n    __tablename__ = \"campage\" \n    id = Column(Integer, primary_key=True, index=True)\n    libelle = Column(String(40), nullable=False)\n    description= Column(String(40),nullable=True)\n    # Relation\n    projetProspection_id",
+        "detail": "back.app.models.campagne",
+        "documentation": {}
+    },
+    {
         "label": "Contact",
         "kind": 6,
         "importPath": "back.app.models.contact",
         "description": "back.app.models.contact",
-        "peekOfCode": "class Contact(Base):\n    __tablename__ = \"contact\"\n    id_contact = Column(Integer, primary_key=True, index=True)\n    nom = Column(String(50), nullable=False)\n    prenom = Column(String(50), nullable=False)\n    entreprise = Column(String(100), nullable=True)\n    telephone = Column(String(20), nullable=True)\n    email = Column(String(100), nullable=True)\n    adresse = Column(Text, nullable=True)\n    fonction = Column(String(50), nullable=True)",
+        "peekOfCode": "class Contact(Base):\n    __tablename__ = \"contact\"\n    id_contact = Column(Integer, primary_key=True, index=True)\n    nom = Column(String(50), nullable=False)\n    prenom = Column(String(50), nullable=False)\n    telephone = Column(String(20), nullable=True)\n    email = Column(String(100), nullable=True)\n    adresse = Column(Text, nullable=True)\n    fonction = Column(String(50), nullable=True)\n    entreprise_id",
         "detail": "back.app.models.contact",
         "documentation": {}
     },
@@ -2301,8 +2958,26 @@
         "kind": 6,
         "importPath": "back.app.models.entreprise",
         "description": "back.app.models.entreprise",
-        "peekOfCode": "class Entreprise(Base):\n    __tablename__ = \"entreprise\"\n    id_entreprise = Column(Integer, primary_key=True, index=True)\n    nom = Column(String(100), nullable=False)\n    adresse = Column(Text)\n    secteur = Column(String(50))\n    telephone = Column(String(20), unique=True)\n    email = Column(String(100), unique=True)\n    opportunites = relationship(\"Opportunite\", back_populates=\"entreprise\")",
+        "peekOfCode": "class Entreprise(Base):\n    __tablename__ = \"entreprise\"\n    id= Column(Integer, primary_key=True, index=True)\n    raisonSocial = Column(String(20), nullable=False)\n    telephoneStandard = Column(String(20), unique=True)\n    emailStandart = Column(String(20), unique=True)\n    # Clés étrangères\n    adresse_id = Column(Integer, ForeignKey(\"adresse.id\"))\n    utilisateur_id = Column(Integer, ForeignKey(\"utilisateur.id\"))\n    # Relations",
         "detail": "back.app.models.entreprise",
+        "documentation": {}
+    },
+    {
+        "label": "HAContact",
+        "kind": 6,
+        "importPath": "back.app.models.haContact",
+        "description": "back.app.models.haContact",
+        "peekOfCode": "class HAContact(Base):\n    __tablename__ = \"ha_cantact\" \n    ha_id\n    contact_id\n    # Relation",
+        "detail": "back.app.models.haContact",
+        "documentation": {}
+    },
+    {
+        "label": "ProjetProspection",
+        "kind": 6,
+        "importPath": "back.app.models.historiqueAction",
+        "description": "back.app.models.historiqueAction",
+        "peekOfCode": "class ProjetProspection(Base):\n    __tablename__ = \"projet_prospection\" \n    id = Column(Integer, primary_key=True, index=True)\n    date = Column(String(40), nullable=False)\n    commentaire= Column(String(40),nullable=True)\n    action=\n    pourcentageVente=\n    entreprise_id\n    campagne_id\n    utilisateur_id",
+        "detail": "back.app.models.historiqueAction",
         "documentation": {}
     },
     {
@@ -2324,6 +2999,24 @@
         "documentation": {}
     },
     {
+        "label": "ProjetProspection",
+        "kind": 6,
+        "importPath": "back.app.models.projetProspection",
+        "description": "back.app.models.projetProspection",
+        "peekOfCode": "class ProjetProspection(Base):\n    __tablename__ = \"projet_prospection\" \n    id = Column(Integer, primary_key=True, index=True)\n    projet = Column(String(40), nullable=False)\n    description= Column(String(40),nullable=True)\n    # Relation",
+        "detail": "back.app.models.projetProspection",
+        "documentation": {}
+    },
+    {
+        "label": "ProjetUtilisateur",
+        "kind": 6,
+        "importPath": "back.app.models.projetUtilisateur",
+        "description": "back.app.models.projetUtilisateur",
+        "peekOfCode": "class ProjetUtilisateur(Base):\n    __tablename__ = \"projet_utilisateur\" \n    id = Column(Integer, primary_key=True, index=True)\n    pourcentageVente = Column(Double, nullable=False)\n    projetProjection_id= \n    utilisateur_id\n    # Relation",
+        "detail": "back.app.models.projetUtilisateur",
+        "documentation": {}
+    },
+    {
         "label": "Tache",
         "kind": 6,
         "importPath": "back.app.models.tache",
@@ -2337,7 +3030,7 @@
         "kind": 6,
         "importPath": "back.app.models.utilisateur",
         "description": "back.app.models.utilisateur",
-        "peekOfCode": "class Utilisateur(Base):\n    __tablename__ = \"utilisateur\" \n    id = Column(Integer, primary_key=True, index=True)\n    nom = Column(String(120), nullable=False)\n    email = Column(String(120), unique=True, index=True, nullable=False)\n    mot2pass = Column(String(120), unique=True, index=True, nullable=False)\n    role = Column(String(40), nullable=False)\n    actif= Column(Boolean, default=True)\n    photo_profil = Column(String(255), nullable=True)",
+        "peekOfCode": "class Utilisateur(Base):\n    __tablename__ = \"utilisateur\" \n    id = Column(Integer, primary_key=True, index=True)\n    nom = Column(String(120), nullable=False)\n    email = Column(String(120), unique=True, index=True, nullable=False)\n    mot2pass = Column(String(120),nullable=False)\n    role = Column(String(40), nullable=False)\n    actif= Column(Boolean, default=True)\n    photo_profil = Column(String(255), nullable=True)\n    # Relations",
         "detail": "back.app.models.utilisateur",
         "documentation": {}
     },
@@ -2369,20 +3062,11 @@
         "documentation": {}
     },
     {
-        "label": "router",
-        "kind": 5,
-        "importPath": "back.app.routers.Utilisateur",
-        "description": "back.app.routers.Utilisateur",
-        "peekOfCode": "router = APIRouter()\n@router.get(\"/utilisateurs\", response_model=List[UtilisateurRead])\nasync def read_utilisateurs(db: AsyncSession = Depends(get_async_session)):\n    return await get_utilisateurs(db)\n@router.get(\"/utilisateurs/{utilisateur_id}\", response_model=UtilisateurRead)\nasync def read_utilisateur(\n    utilisateur_id: int, db: AsyncSession = Depends(get_async_session)\n):\n    utilisateur = await get_utilisateur(db, utilisateur_id)\n    if utilisateur is None:",
-        "detail": "back.app.routers.Utilisateur",
-        "documentation": {}
-    },
-    {
         "label": "UtilisateurBase",
         "kind": 6,
         "importPath": "back.app.schemas.Utilisateur",
         "description": "back.app.schemas.Utilisateur",
-        "peekOfCode": "class UtilisateurBase(BaseModel):\n    nom: str\n    email: EmailStr\n    mot2pass: str\n    role: str\n    actif : bool\n    photo_profil: Optional[str] = None  # Nouveau champ\nclass UtilisateurCreate(UtilisateurBase):\n    nom: str\n    email: EmailStr",
+        "peekOfCode": "class UtilisateurBase(BaseModel):\n    id:Optional[int] = None\n    nom: str\n    email: EmailStr\n    mot2pass: str\n    role: str\n    actif : Optional[bool] = None\n    photo_profil: Optional[str] = None  # Nouveau champ\nclass UtilisateurCreate(UtilisateurBase):\n    nom: str",
         "detail": "back.app.schemas.Utilisateur",
         "documentation": {}
     },
@@ -2391,7 +3075,7 @@
         "kind": 6,
         "importPath": "back.app.schemas.Utilisateur",
         "description": "back.app.schemas.Utilisateur",
-        "peekOfCode": "class UtilisateurCreate(UtilisateurBase):\n    nom: str\n    email: EmailStr\n    mot2pass: str\n    role: str\n    actif : bool\n    photo_profil: Optional[str] = None\nclass UtilisateurRead(UtilisateurBase):\n    nom: str\n    email: EmailStr",
+        "peekOfCode": "class UtilisateurCreate(UtilisateurBase):\n    nom: str\n    email: EmailStr\n    mot2pass: str\n    role: str\n    actif : Optional[bool] = None\n    photo_profil: Optional[str] = None\n    model_config = {\n        \"from_attributes\": True  # ✅ correcte avec Pydantic v2\n    }",
         "detail": "back.app.schemas.Utilisateur",
         "documentation": {}
     },
@@ -2400,7 +3084,7 @@
         "kind": 6,
         "importPath": "back.app.schemas.Utilisateur",
         "description": "back.app.schemas.Utilisateur",
-        "peekOfCode": "class UtilisateurRead(UtilisateurBase):\n    nom: str\n    email: EmailStr\n    mot2pass: str\n    role: str\n    actif: Optional[bool] = None \n    photo_profil: Optional[str] = None\nclass UtilisateurDelete(BaseModel):\n    confirmation: bool\nclass UtilisateurUpdate(BaseModel):",
+        "peekOfCode": "class UtilisateurRead(UtilisateurBase):\n    id: int\n    nom: str\n    email: EmailStr\n    mot2pass: str\n    role: str\n    actif: Optional[bool] = None    \n    photo_profil: Optional[str] = None\nclass UtilisateurDelete(BaseModel):\n    confirmation: bool",
         "detail": "back.app.schemas.Utilisateur",
         "documentation": {}
     },
@@ -2409,7 +3093,7 @@
         "kind": 6,
         "importPath": "back.app.schemas.Utilisateur",
         "description": "back.app.schemas.Utilisateur",
-        "peekOfCode": "class UtilisateurDelete(BaseModel):\n    confirmation: bool\nclass UtilisateurUpdate(BaseModel):\n    nom: Optional[str] = None\n    mot2pass: Optional[str] = None\n    email: Optional[EmailStr] = None\n    role: Optional[str] = None\n    photo_profil: Optional[str] = None  \n    class Config:\n        orm_mode = True",
+        "peekOfCode": "class UtilisateurDelete(BaseModel):\n    confirmation: bool\nclass UtilisateurUpdate(BaseModel):\n    nom: Optional[str] = None\n    mot2pass: Optional[str] = None\n    email: Optional[EmailStr] = None\n    role: Optional[str] = None\n    photo_profil: Optional[str] = None  \n    model_config = {\n        \"from_attributes\": True",
         "detail": "back.app.schemas.Utilisateur",
         "documentation": {}
     },
@@ -2418,8 +3102,53 @@
         "kind": 6,
         "importPath": "back.app.schemas.Utilisateur",
         "description": "back.app.schemas.Utilisateur",
-        "peekOfCode": "class UtilisateurUpdate(BaseModel):\n    nom: Optional[str] = None\n    mot2pass: Optional[str] = None\n    email: Optional[EmailStr] = None\n    role: Optional[str] = None\n    photo_profil: Optional[str] = None  \n    class Config:\n        orm_mode = True",
+        "peekOfCode": "class UtilisateurUpdate(BaseModel):\n    nom: Optional[str] = None\n    mot2pass: Optional[str] = None\n    email: Optional[EmailStr] = None\n    role: Optional[str] = None\n    photo_profil: Optional[str] = None  \n    model_config = {\n        \"from_attributes\": True\n    }",
         "detail": "back.app.schemas.Utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "AdresseBase",
+        "kind": 6,
+        "importPath": "back.app.schemas.adresse",
+        "description": "back.app.schemas.adresse",
+        "peekOfCode": "class AdresseBase(BaseModel):\n    ligneAdresse1: str\n    ligneAdresse2: Optional[str] = None \n    ville : str\n    cp :str\n    pays:str\nclass AdresseCreate(AdresseBase):\n    ligneAdresse1: str\n    ligneAdresse2: Optional[str] = None \n    ville : str",
+        "detail": "back.app.schemas.adresse",
+        "documentation": {}
+    },
+    {
+        "label": "AdresseCreate",
+        "kind": 6,
+        "importPath": "back.app.schemas.adresse",
+        "description": "back.app.schemas.adresse",
+        "peekOfCode": "class AdresseCreate(AdresseBase):\n    ligneAdresse1: str\n    ligneAdresse2: Optional[str] = None \n    ville : str\n    cp :str\n    pays:str\n    model_config = {\n        \"from_attributes\": True  # ✅ correcte avec Pydantic v2\n    }\nclass AdresseRead(AdresseBase):",
+        "detail": "back.app.schemas.adresse",
+        "documentation": {}
+    },
+    {
+        "label": "AdresseRead",
+        "kind": 6,
+        "importPath": "back.app.schemas.adresse",
+        "description": "back.app.schemas.adresse",
+        "peekOfCode": "class AdresseRead(AdresseBase):\n    id: int\n    ligneAdresse1: str\n    ligneAdresse2: Optional[str] = None \n    ville : str\n    cp :str\n    pays:str\nclass AdresseDelete(BaseModel):\n    confirmation: bool\nclass AdresseUpdate(BaseModel):",
+        "detail": "back.app.schemas.adresse",
+        "documentation": {}
+    },
+    {
+        "label": "AdresseDelete",
+        "kind": 6,
+        "importPath": "back.app.schemas.adresse",
+        "description": "back.app.schemas.adresse",
+        "peekOfCode": "class AdresseDelete(BaseModel):\n    confirmation: bool\nclass AdresseUpdate(BaseModel):\n    ligneAdresse1: Optional[str] = None\n    ligneAdresse2: Optional[str] = None\n    cp: Optional[str] = None\n    ville: Optional[str] = None  \n    pays: Optional[str] = None  \n    model_config = {\n        \"from_attributes\": True",
+        "detail": "back.app.schemas.adresse",
+        "documentation": {}
+    },
+    {
+        "label": "AdresseUpdate",
+        "kind": 6,
+        "importPath": "back.app.schemas.adresse",
+        "description": "back.app.schemas.adresse",
+        "peekOfCode": "class AdresseUpdate(BaseModel):\n    ligneAdresse1: Optional[str] = None\n    ligneAdresse2: Optional[str] = None\n    cp: Optional[str] = None\n    ville: Optional[str] = None  \n    pays: Optional[str] = None  \n    model_config = {\n        \"from_attributes\": True\n    }",
+        "detail": "back.app.schemas.adresse",
         "documentation": {}
     },
     {
@@ -2468,29 +3197,11 @@
         "documentation": {}
     },
     {
-        "label": "EntrepriseBase",
-        "kind": 6,
-        "importPath": "back.app.schemas.entreprise",
-        "description": "back.app.schemas.entreprise",
-        "peekOfCode": "class EntrepriseBase(BaseModel):\n    nom: str\n    adresse: Optional[str] = None\n    secteur: Optional[str] = None\n    telephone: Optional[str] = None\n    email: Optional[EmailStr] = None\nclass EntrepriseCreate(EntrepriseBase):\n    pass\nclass EntrepriseRead(EntrepriseBase):\n    id_entreprise: int",
-        "detail": "back.app.schemas.entreprise",
-        "documentation": {}
-    },
-    {
         "label": "EntrepriseCreate",
         "kind": 6,
         "importPath": "back.app.schemas.entreprise",
         "description": "back.app.schemas.entreprise",
-        "peekOfCode": "class EntrepriseCreate(EntrepriseBase):\n    pass\nclass EntrepriseRead(EntrepriseBase):\n    id_entreprise: int\n    class Config:\n        orm_mode = True\nclass EntrepriseUpdate(EntrepriseBase):\n    pass",
-        "detail": "back.app.schemas.entreprise",
-        "documentation": {}
-    },
-    {
-        "label": "EntrepriseRead",
-        "kind": 6,
-        "importPath": "back.app.schemas.entreprise",
-        "description": "back.app.schemas.entreprise",
-        "peekOfCode": "class EntrepriseRead(EntrepriseBase):\n    id_entreprise: int\n    class Config:\n        orm_mode = True\nclass EntrepriseUpdate(EntrepriseBase):\n    pass",
+        "peekOfCode": "class EntrepriseCreate(BaseModel):\n    raisonSocial: str\n    telephoneStandard: str\n    emailStandart: EmailStr\n    adresse_id: int\n    utilisateur_id: int\n# 🔸 Schéma de mise à jour (PATCH ou PUT)\nclass EntrepriseUpdate(BaseModel):\n    raisonSocial: Optional[str] = None\n    telephoneStandard: Optional[str] = None",
         "detail": "back.app.schemas.entreprise",
         "documentation": {}
     },
@@ -2499,7 +3210,16 @@
         "kind": 6,
         "importPath": "back.app.schemas.entreprise",
         "description": "back.app.schemas.entreprise",
-        "peekOfCode": "class EntrepriseUpdate(EntrepriseBase):\n    pass",
+        "peekOfCode": "class EntrepriseUpdate(BaseModel):\n    raisonSocial: Optional[str] = None\n    telephoneStandard: Optional[str] = None\n    emailStandart: Optional[EmailStr] = None\n    adresse_id: Optional[int] = None\n    utilisateur_id: Optional[int] = None\n# 🔸 Schéma de lecture (GET ou retour après création)\nclass EntrepriseRead(BaseModel):\n    id: int\n    raisonSocial: str",
+        "detail": "back.app.schemas.entreprise",
+        "documentation": {}
+    },
+    {
+        "label": "EntrepriseRead",
+        "kind": 6,
+        "importPath": "back.app.schemas.entreprise",
+        "description": "back.app.schemas.entreprise",
+        "peekOfCode": "class EntrepriseRead(BaseModel):\n    id: int\n    raisonSocial: str\n    telephoneStandard: str\n    emailStandart: EmailStr\n    adresse_id: int\n    utilisateur_id: int\n    class Config:\n        orm_mode = True",
         "detail": "back.app.schemas.entreprise",
         "documentation": {}
     },
@@ -2603,6 +3323,15 @@
         "documentation": {}
     },
     {
+        "label": "response",
+        "kind": 2,
+        "importPath": "back.app.utils.jsonResponse",
+        "description": "back.app.utils.jsonResponse",
+        "peekOfCode": "def response(success: bool, message: str, data: dict | None = None):\n    return {\n        \"success\": success,\n        \"message\": message,\n        \"data\": data,\n    }",
+        "detail": "back.app.utils.jsonResponse",
+        "documentation": {}
+    },
+    {
         "label": "DATABASE_URL",
         "kind": 5,
         "importPath": "back.app.database",
@@ -2661,8 +3390,35 @@
         "kind": 5,
         "importPath": "back.app.main",
         "description": "back.app.main",
-        "peekOfCode": "origins = [\"http://localhost:3000\"]\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=origins,\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n# Inclusion des routes\napp.include_router(Utilisateur.router)",
+        "peekOfCode": "origins = [\"http://localhost:3000\"]\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=origins,\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n# Inclusion des routes\napp.include_router(utilisateur.router)",
         "detail": "back.app.main",
+        "documentation": {}
+    },
+    {
+        "label": "FakeUtilisateur",
+        "kind": 6,
+        "importPath": "back.tests.test_pydantic",
+        "description": "back.tests.test_pydantic",
+        "peekOfCode": "class FakeUtilisateur:\n    def __init__(self):\n        self.id = 1\n        self.nom = \"Espérant\"\n        self.email = \"esperant@test.com\"\n        self.role = \"admin\"\n        self.actif = True\n        self.photo_profil = None\nclass UtilisateurRead(BaseModel):\n    id: int",
+        "detail": "back.tests.test_pydantic",
+        "documentation": {}
+    },
+    {
+        "label": "UtilisateurRead",
+        "kind": 6,
+        "importPath": "back.tests.test_pydantic",
+        "description": "back.tests.test_pydantic",
+        "peekOfCode": "class UtilisateurRead(BaseModel):\n    id: int\n    nom: str\n    email: EmailStr\n    role: str\n    actif: bool\n    photo_profil: Optional[str] = None\n    model_config = {\n        \"from_attributes\": True\n    }",
+        "detail": "back.tests.test_pydantic",
+        "documentation": {}
+    },
+    {
+        "label": "u",
+        "kind": 5,
+        "importPath": "back.tests.test_pydantic",
+        "description": "back.tests.test_pydantic",
+        "peekOfCode": "u = FakeUtilisateur()\nprint(UtilisateurRead.model_validate(u).model_dump())",
+        "detail": "back.tests.test_pydantic",
         "documentation": {}
     }
 ]
