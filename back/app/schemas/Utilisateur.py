@@ -2,11 +2,9 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 class UtilisateurBase(BaseModel):
-<<<<<<< HEAD
-    
-=======
+
     id:Optional[int] = None
->>>>>>> cf516b1f42bdea130e858eca7ea9fdec5d927197
+
     nom: str
     email: EmailStr
     mot2pass: str

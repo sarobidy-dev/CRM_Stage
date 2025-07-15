@@ -8,17 +8,7 @@ import {
   deleteUtilisateur,
 } from "@/service/Utlisateur.service"
 import type { Utilisateur } from "@/types/Utilisateur.type"
-import {
-  Edit,
-  Plus,
-  Trash2,
-  User,
-  Briefcase,
-  X,
-  Save,
-  AlertTriangle,
-  Search,
-} from "lucide-react"
+import { Edit, Plus, Trash2, User, Briefcase, X, Save, AlertTriangle, Search } from "lucide-react"
 import { useEffect, useState, useMemo, type ChangeEvent } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -26,16 +16,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
+/**
+ * Page de gestion des utilisateurs.
+ * - Recherche full‑text (nom, email, rôle)
+ * - CRUD complet via API
+ * - Validation e‑mail « @gmail.com » uniquement (ex : `nomPersonne@gmail.com`)
+ * - Responsive mobile → desktop
+ */
 const UtilisateurPage = () => {
   /* --------------------------------------------------- */
   /* ÉTATS                                               */
   /* --------------------------------------------------- */
   const [data, setData] = useState<Utilisateur[]>([])
   const [isLoading, setIsLoading] = useState(true)
-
   // recherche
   const [search, setSearch] = useState("")
-
   // formulaire / modale
   const [showForm, setShowForm] = useState(false)
   const [editUser, setEditUser] = useState<Utilisateur | null>(null)
@@ -43,10 +38,8 @@ const UtilisateurPage = () => {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-
   // suppression
   const [deleteError, setDeleteError] = useState<string | null>(null)
-
   // données du formulaire
   const [formData, setFormData] = useState({
     nom: "",
@@ -57,9 +50,6 @@ const UtilisateurPage = () => {
     photo_profil: "",
   })
 
-  /* --------------------------------------------------- */
-  /* FETCH INIT                                          */
-  /* --------------------------------------------------- */
   useEffect(() => {
     refreshData()
   }, [])
@@ -70,7 +60,7 @@ const UtilisateurPage = () => {
       const response = await fetchUtilisateurs()
       setData(response || [])
     } catch (err) {
-      console.error("Erreur de récupération :", err)
+      console.error("Erreur de récupération :", err)
       setData([])
     } finally {
       setIsLoading(false)
@@ -80,7 +70,7 @@ const UtilisateurPage = () => {
   /* --------------------------------------------------- */
   /* OUTILS                                              */
   /* --------------------------------------------------- */
-  const getImageUrl = (imagePath: string | null | undefined) => {
+  const getImageUrl = (imagePath?: string | null) => {
     if (!imagePath) return "/placeholder.svg?height=100&width=100"
     if (imagePath.startsWith("http")) return imagePath
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
@@ -101,16 +91,13 @@ const UtilisateurPage = () => {
   }
 
   /* --------------------------------------------------- */
-  /* RECHERCHE : filtrage MEMOISÉ                        */
+  /* RECHERCHE : filtrage MEMOISÉ                        */
   /* --------------------------------------------------- */
   const displayedUsers = useMemo(() => {
     if (!search.trim()) return data
     const q = search.toLowerCase()
     return data.filter(
-      (u) =>
-        u.nom.toLowerCase().includes(q) ||
-        u.email.toLowerCase().includes(q) ||
-        u.role.toLowerCase().includes(q),
+      (u) => u.nom.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.role.toLowerCase().includes(q),
     )
   }, [search, data])
 
@@ -121,7 +108,6 @@ const UtilisateurPage = () => {
     setErrorMessage(null)
     setDeleteError(null)
     setPhotoPreview(null)
-
     if (user) {
       setEditUser(user)
       setFormData({
@@ -166,21 +152,26 @@ const UtilisateurPage = () => {
     }
   }
 
+  // Validation « @gmail.com » – commence par une lettre
+  const EMAIL_PATTERN = /^[A-Za-z][A-Za-z0-9._%+-]*@gmail\.com$/
+
   const handleSubmit = async () => {
     if (!formData.nom || !formData.email) {
       setErrorMessage("Veuillez remplir tous les champs obligatoires.")
+      return
+    }
+    // Vérif e‑mail @gmail.com
+    if (!EMAIL_PATTERN.test(formData.email)) {
+      setErrorMessage("E‑mail invalide. Il doit se terminer par @gmail.com, ex : nomPersonne@gmail.com")
       return
     }
     if (!editUser && !formData.mot2pass) {
       setErrorMessage("Le mot de passe est obligatoire pour un nouvel utilisateur.")
       return
     }
-
     if (
       !window.confirm(
-        editUser
-          ? "Confirmer la modification de l'utilisateur ?"
-          : "Confirmer l'ajout de l'utilisateur ?",
+        editUser ? "Confirmer la modification de l'utilisateur ?" : "Confirmer l'ajout de l'utilisateur ?",
       )
     )
       return
@@ -196,84 +187,93 @@ const UtilisateurPage = () => {
 
     try {
       if (editUser) {
-        await updateUtilisateur(editUser.id_utilisateur.toString(), payload)
+        await updateUtilisateur(editUser.id_utilisateur, payload)
+        alert(`L'utilisateur ${formData.nom} a été modifié avec succès.`)
       } else {
         await createUtilisateur(payload)
+        alert(`L'utilisateur ${formData.nom} a été créé avec succès.`)
       }
       setShowForm(false)
       refreshData()
     } catch (err: any) {
-      const msg =
-        err?.response?.data?.detail || err?.response?.data?.message || err?.message || ""
+      const msg = err?.response?.data?.detail || err?.response?.data?.message || err?.message || ""
       setErrorMessage(
-        typeof msg === "string" && msg.toLowerCase().includes("email")
-          ? "L'adresse e-mail est déjà utilisée."
-          : "Une erreur est survenue. Veuillez réessayer.",
+        /not found|404/i.test(msg)
+          ? "L'utilisateur n'existe plus ou a déjà été supprimé."
+          : `Une erreur est survenue : ${msg}`,
       )
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  /* --------------------------------------------------- */
-  /* SUPPRESSION                                         */
-  /* --------------------------------------------------- */
-  const handleDelete = async (id: number) => {
+
+  const handleDelete = async (id: number | string): Promise<void> => {
+    // Conversion de l'ID en number si c'est une string
+    const userId = typeof id === "string" ? Number.parseInt(id, 10) : id
+
+    // Vérification de l'ID
+    if (typeof userId !== "number" || !Number.isFinite(userId) || userId <= 0 || isNaN(userId)) {
+      setDeleteError("ID utilisateur invalide")
+      return
+    }
+
+    // Reset des erreurs précédentes
     setDeleteError(null)
-    const user = data.find((u) => u.id_utilisateur === id)
+
+    // Trouver l'utilisateur dans les données
+    const user = data.find((u) => u.id_utilisateur === userId)
     const name = user ? ` ${user.nom}` : ""
 
+    // Confirmation de suppression
     if (
       !window.confirm(
-        `Voulez-vous vraiment supprimer${name} ?\n\nAttention : Si cet utilisateur a des contacts associés, la suppression échouera.`,
+        `Voulez‑vous vraiment supprimer${name} ?\n\nAttention : si cet utilisateur a des contacts associés, la suppression échouera.`,
       )
     )
       return
 
     try {
-      await deleteUtilisateur(id.toString())
-      refreshData()
+      // Appel de l'API de suppression avec l'ID converti
+      await deleteUtilisateur(userId)
+
+      // Actualiser les données
+      await refreshData()
+
+      // Message de succès
       alert(`L'utilisateur${name} a été supprimé avec succès.`)
     } catch (err: any) {
-      const msg =
-        err?.response?.data?.detail || err?.response?.data?.message || err?.message || ""
-      setDeleteError(
-        /foreign key|constraint|référence|contact/i.test(msg)
-          ? `Impossible de supprimer${name} car il/elle a des contacts associés.`
-          : /not found|404/i.test(msg)
-            ? `L'utilisateur${name} n'existe plus ou a déjà été supprimé.`
-            : `Une erreur est survenue lors de la suppression de${name}.`,
-      )
+      console.error("Erreur lors de la suppression:", err)
+
+      // Extraction du message d'erreur
+      const msg = err?.response?.data?.detail || err?.response?.data?.message || err?.message || err?.toString() || ""
+
+      // Gestion des différents types d'erreurs
+      if (/foreign key|constraint|référence|contact/i.test(msg)) {
+        setDeleteError(`Impossible de supprimer${name} car il/elle a des contacts associés.`)
+      } else if (/not\s?found|404/i.test(msg)) {
+        setDeleteError(`L'utilisateur${name} n'existe plus ou a déjà été supprimé.`)
+      } else if (/id introuvable|user not found|utilisateur introuvable/i.test(msg)) {
+        setDeleteError(`L'utilisateur${name} est introuvable dans la base de données.`)
+      } else {
+        setDeleteError(`Une erreur inattendue est survenue lors de la suppression${name}: ${msg}`)
+      }
     }
   }
 
-  /* --------------------------------------------------- */
-  /* RENDER                                              */
-  /* --------------------------------------------------- */
+
   return (
     <div className="flex min-h-screen bg-gray-50 relative">
       <Navbar />
-
       {/* —— CONTENU PRINCIPAL —— */}
-      <div
-        className={
-          showForm
-            ? "flex-1 p-6 filter blur-sm pointer-events-none select-none"
-            : "flex-1 p-6"
-        }
-      >
+      <div className={showForm ? "flex-1 p-6 filter blur-sm pointer-events-none select-none" : "flex-1 p-6"}>
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
-              <h1 className="text-3xl font-extrabold text-gray-900 tracking-wide">
-                Gestion des Utilisateurs
-              </h1>
-              <p className="text-gray-600 mt-1">
-                Gérez les utilisateurs de votre système
-              </p>
+              <h1 className="text-3xl font-extrabold text-gray-900 tracking-wide">Gestion des Utilisateurs</h1>
+              <p className="text-gray-600 mt-1">Gérez les utilisateurs de votre système</p>
             </div>
-
             {/* Bouton + Search */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full sm:w-auto">
               {/* Champ de recherche */}
@@ -287,7 +287,6 @@ const UtilisateurPage = () => {
                   className="w-full sm:w-64 pl-9 pr-3 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 />
               </div>
-
               <Button
                 onClick={() => openForm()}
                 className="bg-blue-600 hover:bg-blue-700 transition-colors flex items-center"
@@ -302,9 +301,7 @@ const UtilisateurPage = () => {
           {deleteError && (
             <Alert className="mb-6 border-red-300 bg-red-100 flex items-center space-x-3 rounded-lg shadow-sm">
               <AlertTriangle className="h-5 w-5 text-red-700" />
-              <AlertDescription className="text-red-900 flex-1">
-                {deleteError}
-              </AlertDescription>
+              <AlertDescription className="text-red-900 flex-1">{deleteError}</AlertDescription>
               <Button
                 onClick={() => setDeleteError(null)}
                 variant="ghost"
@@ -322,9 +319,7 @@ const UtilisateurPage = () => {
               <CardContent className="p-6 flex items-center space-x-4">
                 <User className="h-10 w-10 text-blue-600" />
                 <div>
-                  <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                    Total Utilisateurs
-                  </p>
+                  <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Total Utilisateurs</p>
                   <p className="text-3xl font-bold text-gray-900">{displayedUsers.length}</p>
                 </div>
               </CardContent>
@@ -333,9 +328,7 @@ const UtilisateurPage = () => {
               <CardContent className="p-6 flex items-center space-x-4">
                 <Briefcase className="h-10 w-10 text-red-600" />
                 <div>
-                  <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                    Admins
-                  </p>
+                  <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Admins</p>
                   <p className="text-3xl font-bold text-gray-900">
                     {displayedUsers.filter((u) => u.role.toLowerCase() === "admin").length}
                   </p>
@@ -346,9 +339,7 @@ const UtilisateurPage = () => {
               <CardContent className="p-6 flex items-center space-x-4">
                 <Briefcase className="h-10 w-10 text-blue-600" />
                 <div>
-                  <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                    Commerciaux
-                  </p>
+                  <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Commerciaux</p>
                   <p className="text-3xl font-bold text-gray-900">
                     {displayedUsers.filter((u) => u.role.toLowerCase() === "commercial").length}
                   </p>
@@ -360,15 +351,13 @@ const UtilisateurPage = () => {
           {/* Liste utilisateurs */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {isLoading ? (
-              <p className="text-gray-500 text-center col-span-full">
-                Chargement des utilisateurs…
-              </p>
+              <p className="text-gray-500 text-center col-span-full">Chargement des utilisateurs…</p>
             ) : displayedUsers.length === 0 ? (
               <p className="text-gray-500 text-center col-span-full">
                 Aucun utilisateur ne correspond à votre recherche.
               </p>
             ) : (
-              displayedUsers.map((user,idx) => (
+              displayedUsers.map((user, idx) => (
                 <Card
                   key={`${user.id_utilisateur}-${idx}`}
                   className="flex flex-col shadow-sm hover:shadow-md transition-shadow rounded-lg"
@@ -376,24 +365,20 @@ const UtilisateurPage = () => {
                   <CardContent className="flex items-center space-x-4">
                     <Avatar>
                       <AvatarImage
-                        src={getImageUrl(user.photo_profil)}
+                        src={getImageUrl(user.photo_profil) || "/placeholder.svg"}
                         alt={`${user.nom} photo`}
                       />
                       <AvatarFallback>{user.nom[0]}</AvatarFallback>
                     </Avatar>
-
                     <div className="flex-1 min-w-0">
                       <h3 className="text-lg font-semibold truncate">{user.nom}</h3>
                       <p className="text-sm text-gray-600 truncate">{user.email}</p>
                       <Badge
-                        className={`mt-2 px-3 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(
-                          user.role,
-                        )}`}
+                        className={`mt-2 px-3 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(user.role)}`}
                       >
                         {user.role}
                       </Badge>
                     </div>
-
                     <div className="flex space-x-2">
                       <Button
                         variant="outline"
@@ -407,7 +392,7 @@ const UtilisateurPage = () => {
                         variant="destructive"
                         size="sm"
                         aria-label={`Supprimer ${user.nom}`}
-                        onClick={() => handleDelete(user.id_utilisateur)}
+                        onClick={() => handleDelete(Number(user.id_utilisateur))}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -428,14 +413,11 @@ const UtilisateurPage = () => {
             <h2 className="text-xl font-bold mb-4">
               {editUser ? "Modifier un utilisateur" : "Ajouter un nouvel utilisateur"}
             </h2>
-
             {/* Erreur formulaire */}
             {errorMessage && (
               <Alert className="mb-4 border-red-300 bg-red-100 flex items-center space-x-3 rounded-lg shadow-sm">
                 <AlertTriangle className="h-5 w-5 text-red-700" />
-                <AlertDescription className="text-red-900 flex-1">
-                  {errorMessage}
-                </AlertDescription>
+                <AlertDescription className="text-red-900 flex-1">{errorMessage}</AlertDescription>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -446,7 +428,6 @@ const UtilisateurPage = () => {
                 </Button>
               </Alert>
             )}
-
             {/* Formulaire */}
             <form
               onSubmit={(e) => {
@@ -470,7 +451,6 @@ const UtilisateurPage = () => {
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50 transition"
                 />
               </div>
-
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                   E‑mail <span className="text-red-500">*</span>
@@ -485,7 +465,6 @@ const UtilisateurPage = () => {
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50 transition"
                 />
               </div>
-
               <div>
                 <label htmlFor="mot2pass" className="block text-sm font-medium text-gray-700">
                   Mot de passe{" "}
@@ -502,7 +481,6 @@ const UtilisateurPage = () => {
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50 transition"
                 />
               </div>
-
               <div>
                 <label htmlFor="role" className="block text-sm font-medium text-gray-700">
                   Rôle
@@ -516,12 +494,11 @@ const UtilisateurPage = () => {
                   required
                 >
                   <option value="">-- Sélectionner un rôle --</option>
-                  <option value="admin">Admin</option>
-                  <option value="commercial">Commercial</option>
-                  <option value="manager">Manager</option>
+                  <option value="Administrateur">Administrateur</option>
+                  <option value="Commercial">Commercial</option>
+                  <option value="Superviseur">Superviseur</option>
                 </select>
               </div>
-
               <div className="flex items-center space-x-3">
                 <input
                   id="actif"
@@ -535,7 +512,6 @@ const UtilisateurPage = () => {
                   Actif
                 </label>
               </div>
-
               <div>
                 <label htmlFor="photo_profil" className="block text-sm font-medium text-gray-700">
                   Photo de profil
@@ -550,27 +526,17 @@ const UtilisateurPage = () => {
                 />
                 {photoPreview && (
                   <img
-                    src={photoPreview}
+                    src={photoPreview || "/placeholder.svg"}
                     alt="Aperçu"
                     className="mt-2 h-20 w-20 rounded-full object-cover border border-gray-300"
                   />
                 )}
               </div>
-
               <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
-                <Button
-                  variant="ghost"
-                  type="button"
-                  onClick={() => setShowForm(false)}
-                  disabled={isSubmitting}
-                >
+                <Button variant="ghost" type="button" onClick={() => setShowForm(false)} disabled={isSubmitting}>
                   Annuler
                 </Button>
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex items-center space-x-2"
-                >
+                <Button type="submit" disabled={isSubmitting} className="flex items-center space-x-2">
                   <Save className="w-4 h-4" />
                   <span>{isSubmitting ? "Enregistrement…" : "Enregistrer"}</span>
                 </Button>

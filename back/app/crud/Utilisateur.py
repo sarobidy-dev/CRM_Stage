@@ -18,7 +18,7 @@ async def get_utilisateurs(db: AsyncSession):
 # GET ONE
 # -------------------------------------------------
 async def get_utilisateur(db: AsyncSession, utilisateur_id: int):
-<<<<<<< HEAD
+
     """
     Retourne un utilisateur par son id, ou None s’il n’existe pas.
     """
@@ -26,10 +26,9 @@ async def get_utilisateur(db: AsyncSession, utilisateur_id: int):
         select(Utilisateur).where(Utilisateur.id == utilisateur_id)   # <- ici
     )
     return result.scalar_one_or_none()   # plus explicite
-=======
+
     result = await db.execute(select(Utilisateur).where(Utilisateur.id == utilisateur_id))
     return result.scalars().first()
->>>>>>> cf516b1f42bdea130e858eca7ea9fdec5d927197
 
 
 # -------------------------------------------------
