@@ -4,18 +4,11 @@ from fastapi.staticfiles import StaticFiles
 import os
 
 # Database & Models
-from app.database import engine, Base, test_connection
+from database import engine, Base, test_connection
 
 # Routers
-from app.routers import (
-    tache,
-    contact,
-    opportunite,
-    Utilisateur,
-    entreprise,
-    interaction,
-    email_controller,
-    video_calls  # 👉 si tu l’as
+from routers import (
+    Utilisateur
 )
 
 # Création du dossier media si nécessaire
@@ -36,13 +29,13 @@ app.add_middleware(
 
 # Inclusion des routes
 app.include_router(Utilisateur.router)
-app.include_router(contact.router)
-app.include_router(entreprise.router)
-app.include_router(interaction.router)
-app.include_router(opportunite.router)
-app.include_router(tache.router)
-app.include_router(email_controller.router)
-app.include_router(video_calls.router)
+# app.include_router(contact.router)
+# app.include_router(entreprise.router)
+# app.include_router(interaction.router)
+# app.include_router(opportunite.router)
+# app.include_router(tache.router)
+# app.include_router(email_controller.router)
+# app.include_router(video_calls.router)
 
 app.mount("/media", StaticFiles(directory="media"), name="media")
 

@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from app.models.contact import Contact
+from models.contact import Contact
 from sqlalchemy import select, func
 
 async def count_contacts(session: AsyncSession) -> int:

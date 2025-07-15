@@ -8,7 +8,7 @@ from fastapi import UploadFile
 import ffmpeg
 import json
 
-from app.models.video_call import VideoCall, VideoRecording
+from models.video_call import VideoCall, VideoRecording
 
 
 class VideoCallService:

@@ -1,16 +1,14 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
-from app.database import Base
+from sqlalchemy import Column, Integer, String,Boolean
+from database import Base
 
 class Utilisateur(Base):
-    __tablename__ = "utilisateur"  # convention lowercase + snake_case
+    __tablename__ = "utilisateur" 
 
-    id_utilisateur = Column(Integer, primary_key=True, index=True)
-    nom = Column(String(50), nullable=False)
-    prenom = Column(String(50), nullable=False)
-    email = Column(String(100), unique=True, index=True, nullable=False)
-    role = Column(String(100), nullable=False)
-    numero_tel = Column(String(10), nullable=False)
+    id = Column(Integer, primary_key=True, index=True)
+    nom = Column(String(120), nullable=False)
+    email = Column(String(120), unique=True, index=True, nullable=False)
+    mot2pass = Column(String(120), unique=True, index=True, nullable=False)
+    role = Column(String(40), nullable=False)
+    actif= Column(Boolean, default=True)
     photo_profil = Column(String(255), nullable=True)
-    contacts = relationship("Contact", back_populates="utilisateur")
-    opportunites = relationship("Opportunite", back_populates="utilisateur")
+   

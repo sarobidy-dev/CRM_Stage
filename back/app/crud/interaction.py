@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from app.models.interaction import Interaction
-from app.schemas.interaction import InteractionCreate
+from models.interaction import Interaction
+from schemas.interaction import InteractionCreate
 
 async def create_interaction(session: AsyncSession, interaction_data: dict):
     interaction = Interaction(**interaction_data)

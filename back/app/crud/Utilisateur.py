@@ -1,10 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from app.models.utilisateur import Utilisateur
+from models.utilisateur import Utilisateur
 
 # GET all utilisateurs
 async def get_utilisateurs(db: AsyncSession):
-    result = await db.execute(select(Utilisateur))
+    result = await db.execute(select(Utilisateur)) 
     return result.scalars().all()
 
 # GET utilisateur by id
