@@ -2337,7 +2337,7 @@
         "kind": 6,
         "importPath": "app.models.utilisateur",
         "description": "app.models.utilisateur",
-        "peekOfCode": "class Utilisateur(Base):\n    __tablename__ = \"utilisateur\" \n    id = Column(Integer, primary_key=True, index=True)\n    nom = Column(String(120), nullable=False)\n    email = Column(String(120), unique=True, index=True, nullable=False)\n    mot2pass = Column(String(120), unique=True, index=True, nullable=False)\n    role = Column(String(40), nullable=False)\n    actif= Column(Boolean, default=True)\n    photo_profil = Column(String(255), nullable=True)",
+        "peekOfCode": "class Utilisateur(Base):\n    __tablename__ = \"utilisateur\" \n    id = Column(Integer, primary_key=True, index=True)\n    nom = Column(String(120), nullable=False)\n    email = Column(String(120), unique=True, index=True, nullable=False)\n    mot2pass = Column(String(120),nullable=False)\n    role = Column(String(40), nullable=False)\n    actif= Column(Boolean, default=True)\n    photo_profil = Column(String(255), nullable=True)",
         "detail": "app.models.utilisateur",
         "documentation": {}
     },
@@ -2373,7 +2373,7 @@
         "kind": 5,
         "importPath": "app.routers.Utilisateur",
         "description": "app.routers.Utilisateur",
-        "peekOfCode": "router = APIRouter()\n@router.get(\"/utilisateurs\", response_model=List[UtilisateurRead])\nasync def read_utilisateurs(db: AsyncSession = Depends(get_async_session)):\n    return await get_utilisateurs(db)\n@router.get(\"/utilisateurs/{utilisateur_id}\", response_model=UtilisateurRead)\nasync def read_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_async_session)):\n    utilisateur = await get_utilisateur(db, utilisateur_id)\n    if utilisateur is None:\n        raise HTTPException(status_code=404, detail=\"Utilisateur non trouvé\")\n    return utilisateur",
+        "peekOfCode": "router = APIRouter()\n@router.get(\"/utilisateurs\", response_model=List[UtilisateurRead])\nasync def read_utilisateurs(db: AsyncSession = Depends(get_async_session)):\n    return await get_utilisateurs(db)\n@router.get(\"/utilisateurs/{utilisateur_id}\", response_model=UtilisateurRead)\nasync def read_utilisateur(\n    utilisateur_id: int, db: AsyncSession = Depends(get_async_session)\n):\n    utilisateur = await get_utilisateur(db, utilisateur_id)\n    if utilisateur is None:",
         "detail": "app.routers.Utilisateur",
         "documentation": {}
     },
