@@ -33,7 +33,6 @@ const UtilisateurPage = () => {
   useEffect(() => {
     refreshData()
   }, [])
-
   const refreshData = async () => {
     setIsLoading(true)
     try {

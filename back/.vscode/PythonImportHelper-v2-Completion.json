@@ -2361,7 +2361,7 @@
         "kind": 6,
         "importPath": "app.models.entreprise",
         "description": "app.models.entreprise",
-        "peekOfCode": "class Entreprise(Base):\n    __tablename__ = \"entreprise\"\n    id_entreprise = Column(Integer, primary_key=True, index=True)\n    nom = Column(String(100), nullable=False)\n    adresse = Column(Text)\n    secteur = Column(String(50))\n    telephone = Column(String(20), unique=True)\n    email = Column(String(100), unique=True)\n    opportunites = relationship(\"Opportunite\", back_populates=\"entreprise\")",
+        "peekOfCode": "class Entreprise(Base):\n    __tablename__ = \"entreprise\"\n    id= Column(Integer, primary_key=True, index=True)\n    raisonSocial = Column(String(20), nullable=False)\n    telephoneStandard = Column(String(20), unique=True)\n    emailStandart = Column(String(20), unique=True)",
         "detail": "app.models.entreprise",
         "documentation": {}
     },

@@ -3,12 +3,12 @@ from sqlalchemy.future import select
 from models.adresse import Adresse
 
 # GET all Adresses
-async def get_Adresses(db: AsyncSession):
+async def getAllAdresses(db: AsyncSession):
     result = await db.execute(select(Adresse)) 
     return result.scalars().all()
 
 # GET Adresse by id
-async def get_Adresse(db: AsyncSession, Adresse_id: int):
+async def getAdresseById(db: AsyncSession, Adresse_id: int):
     result = await db.execute(select(Adresse).where(Adresse.id == Adresse_id))
     return result.scalars().first()
 
