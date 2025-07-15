@@ -1,6 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
+from utils import jsonResponse
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    status,
+    UploadFile,
+    File,
+    Form,
+)
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List
+from typing import List, Optional
 import os, uuid, aiofiles
 from fastapi.responses import JSONResponse
 from schemas.Utilisateur import UtilisateurRead, UtilisateurCreate, UtilisateurUpdate
@@ -12,20 +21,39 @@ from services.utilisateur import (
     delete_utilisateur,
 )
 from database import get_async_session
- 
+
 router = APIRouter()
+UPLOAD_DIR = "media/photos"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# ---------------------------------------------------------
+# Fonction utilitaire pour sauvegarder une photo
+# ---------------------------------------------------------
+async def _save_photo(file: UploadFile) -> str:
+    ext = os.path.splitext(file.filename)[1]
+    filename = f"{uuid.uuid4()}{ext}"
+    path = os.path.join(UPLOAD_DIR, filename)
+    async with aiofiles.open(path, "wb") as out:
+        await out.write(await file.read())
+    return path
 
 
+# ---------------------------------------------------------
+# GET - tous les utilisateurs
+# ---------------------------------------------------------
 @router.get("/utilisateurs", response_model=List[UtilisateurRead])
 async def read_utilisateurs(db: AsyncSession = Depends(get_async_session)):
     return await get_utilisateurs(db)
 
 
+# ---------------------------------------------------------
+# GET - un utilisateur
+# ---------------------------------------------------------
 @router.get("/utilisateurs/{utilisateur_id}")
 async def read_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_async_session)):
     utilisateur = await get_utilisateur(db, utilisateur_id)
     if utilisateur is None:
-         return JSONResponse(
+        return JSONResponse(
             status_code=404,
             content={
                 "success": False,
@@ -33,11 +61,8 @@ async def read_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_a
                 "data": None
             }
         )
-    # recuperation des collumns
     data_dict = {c.key: getattr(utilisateur, c.key) for c in utilisateur.__table__.columns}
-
     utilisateur_data = UtilisateurRead.model_validate(data_dict).model_dump()
-
     return JSONResponse(
         status_code=200,
         content={
@@ -47,92 +72,123 @@ async def read_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_a
         },
     )
 
-@router.post(
-    "/utilisateurs", response_model=UtilisateurRead, status_code=status.HTTP_201_CREATED
-)
+
+# ---------------------------------------------------------
+# POST - créer un utilisateur
+# ---------------------------------------------------------
+@router.post("/utilisateurs", response_model=UtilisateurRead, status_code=status.HTTP_201_CREATED)
 async def create_new_utilisateur(
     nom: str = Form(...),
     mot2pass: str = Form(...),
     email: str = Form(...),
     role: str = Form(...),
+    actif: bool = Form(...),
     photo_profil: UploadFile = File(None),
     db: AsyncSession = Depends(get_async_session),
 ):
-    chemin_photo = None
-    if photo_profil:
-        extension = os.path.splitext(photo_profil.filename)[1]
-        nom_fichier = f"{uuid.uuid4()}{extension}"
-        dossier = "media/photos"
-        os.makedirs(dossier, exist_ok=True)
-        chemin_photo = os.path.join(dossier, nom_fichier)
-
-        async with aiofiles.open(chemin_photo, "wb") as out_file:
-            content = await photo_profil.read()
-            await out_file.write(content)
+    photo_path = await _save_photo(photo_profil) if photo_profil else None
 
     utilisateur_dict = {
         "nom": nom,
-        "mot2pass": mot2pass,
         "email": email,
+        "mot2pass": mot2pass,
         "role": role,
-        "photo_profil": chemin_photo,
+        "actif": actif,
+        "photo_profil": photo_path,
     }
-
-    utilisateur = await create_utilisateur(db, utilisateur_dict)
-    return utilisateur
+    return await create_utilisateur(db, utilisateur_dict)
 
 
-@router.put("/utilisateurs/{utilisateur_id}", response_model=UtilisateurRead)
-async def update_existing_utilisateur(
-    utilisateur_id: int,
+@router.post("/utilisat", response_model=dict, status_code=status.HTTP_201_CREATED)
+async def create_new_utilisateur(
     nom: str = Form(...),
     mot2pass: str = Form(...),
     email: str = Form(...),
     role: str = Form(...),
+    actif: bool = Form(...),
     photo_profil: UploadFile = File(None),
     db: AsyncSession = Depends(get_async_session),
 ):
-    # Traitement de la photo de profil
-    chemin_photo = None
-    if photo_profil:
-        contents = await photo_profil.read()
+    try:
+        # Traitement image
+        photo_path = await _save_photo(photo_profil) if photo_profil else None
 
-        # S'assurer que le dossier existe
-        os.makedirs("images", exist_ok=True)
+        # Créer un dictionnaire des données utilisateur
+        utilisateur_dict = {
+            "nom": nom,
+            "email": email,
+            "mot2pass": mot2pass,
+            "role": role,
+            "actif": actif,
+            "photo_profil": photo_path,
+        }
 
-        # Nom unique pour éviter les conflits
-        extension = os.path.splitext(photo_profil.filename)[1]
-        nom_unique = f"{uuid.uuid4().hex}{extension}"
-        chemin_photo = os.path.join("images", nom_unique)
+        # ✅ Validation Pydantic (avant l'appel à la DB)
+        utilisateur_create = UtilisateurCreate(**utilisateur_dict)
 
-        # Écriture du fichier
-        with open(chemin_photo, "wb") as f:
-            f.write(contents)
+        # ✅ Création utilisateur en base
+        nouvel_utilisateur = await create_utilisateur(db, utilisateur_create.dict())
 
-    # Création du dictionnaire d'update
+        return response(True, "Utilisateur créé avec succès", UtilisateurRead.model_validate(nouvel_utilisateur).dict())
+
+    except ValidationError as ve:
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content=response(False, "Erreur de validation de l'email", ve.errors()),
+        )
+
+    except IntegrityError:
+        return JSONResponse(
+            status_code=status.HTTP_409_CONFLICT,
+            content=response(False, "Un utilisateur avec cet email existe déjà."),
+        )
+
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content=response(False, "Erreur serveur : " + str(e)),
+        )
+# ---------------------------------------------------------
+# PUT - mise à jour utilisateur
+# ---------------------------------------------------------
+@router.put("/utilisateurs/{utilisateur_id}", response_model=UtilisateurRead)
+async def update_utilisateur_endpoint(
+    utilisateur_id: int,
+    nom: Optional[str] = Form(None),
+    mot2pass: Optional[str] = Form(None),
+    email: Optional[str] = Form(None),
+    role: Optional[str] = Form(None),
+    actif: Optional[bool] = Form(None),
+    photo_profil: Optional[UploadFile] = File(None),
+    db: AsyncSession = Depends(get_async_session),
+):
+    chemin_photo = await _save_photo(photo_profil) if photo_profil else None
+
     update_dict = {
         "nom": nom,
-        "mot2pass": mot2pass,
         "email": email,
+        "mot2pass": mot2pass,
         "role": role,
+        "actif": actif,
         "photo_profil": chemin_photo,
     }
-
-    # Nettoyage des champs None (ex: si photo_profil pas envoyé)
     update_dict = {k: v for k, v in update_dict.items() if v is not None}
 
     utilisateur = await update_utilisateur(db, utilisateur_id, update_dict)
-    if utilisateur is None:
+    if not utilisateur:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
 
     return utilisateur
 
 
+# ---------------------------------------------------------
+# DELETE - supprimer un utilisateur
+# ---------------------------------------------------------
 @router.delete("/utilisateurs/{utilisateur_id}", response_model=UtilisateurRead)
 async def delete_existing_utilisateur(
     utilisateur_id: int, db: AsyncSession = Depends(get_async_session)
 ):
     utilisateur = await delete_utilisateur(db, utilisateur_id)
-    if utilisateur is None:
+    if not utilisateur:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
     return utilisateur

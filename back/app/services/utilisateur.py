@@ -1,41 +1,69 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-from models.utilisateur import Utilisateur
+from sqlalchemy import select
+from models.utilisateur import Utilisateur  # adapte le chemin si besoin
 
-# GET all utilisateurs
+
+# -------------------------------------------------
+# GET ALL
+# -------------------------------------------------
 async def get_utilisateurs(db: AsyncSession):
-    result = await db.execute(select(Utilisateur)) 
+    """
+    Retourne la liste complète des utilisateurs.
+    """
+    result = await db.execute(select(Utilisateur))
     return result.scalars().all()
 
-# GET utilisateur by id
+
+# -------------------------------------------------
+# GET ONE
+# -------------------------------------------------
 async def get_utilisateur(db: AsyncSession, utilisateur_id: int):
-    result = await db.execute(select(Utilisateur).where(Utilisateur.id == utilisateur_id))
-    return result.scalars().first()
+    """
+    Retourne un utilisateur par son id, ou None s’il n’existe pas.
+    """
+    result = await db.execute(
+        select(Utilisateur).where(Utilisateur.id == utilisateur_id)   # <- ici
+    )
+    return result.scalar_one_or_none()   # plus explicite
 
-# CREATE utilisateur
+
+
+
+# -------------------------------------------------
+# CREATE
+# -------------------------------------------------
 async def create_utilisateur(db: AsyncSession, utilisateur_data: dict):
-    new_utilisateur = Utilisateur(**utilisateur_data)
-    db.add(new_utilisateur)
+    nouvel_utilisateur = Utilisateur(**utilisateur_data)
+    db.add(nouvel_utilisateur)
     await db.commit()
-    await db.refresh(new_utilisateur)
-    return new_utilisateur
+    await db.refresh(nouvel_utilisateur)
+    return nouvel_utilisateur
 
-# UPDATE utilisateur
+
+# -------------------------------------------------
+# UPDATE
+# -------------------------------------------------
 async def update_utilisateur(db: AsyncSession, utilisateur_id: int, update_data: dict):
     utilisateur = await get_utilisateur(db, utilisateur_id)
     if not utilisateur:
         return None
+
     for key, value in update_data.items():
         setattr(utilisateur, key, value)
+
     await db.commit()
     await db.refresh(utilisateur)
     return utilisateur
 
-# DELETE utilisateur
+
+# -------------------------------------------------
+# DELETE
+# -------------------------------------------------
 async def delete_utilisateur(db: AsyncSession, utilisateur_id: int):
     utilisateur = await get_utilisateur(db, utilisateur_id)
     if not utilisateur:
         return None
+
     await db.delete(utilisateur)
     await db.commit()
     return utilisateur

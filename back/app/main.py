@@ -8,7 +8,16 @@ from database import engine, Base, test_connection
 
 # Routes
 from api import (
-    utilisateur
+    adresse,
+    campagne,
+    campagneEntreprise,
+    contact,
+    entreprise,
+    haContact,
+    historiqueAction,
+    projetProspection,
+    projetUtilisateur,
+    utilisateur   
 )
 
 # Création du dossier media si nécessaire
@@ -28,14 +37,18 @@ app.add_middleware(
 )
  
 # Inclusion des routes
+
+app.include_router(adresse.router)
+app.include_router(campagne.router)
+app.include_router(campagneEntreprise.router)
+app.include_router(contact.router)
+app.include_router(entreprise.router)
+app.include_router(haContact.router)
+app.include_router(historiqueAction.router)
+app.include_router(projetProspection.router)
+app.include_router(projetUtilisateur.router)
 app.include_router(utilisateur.router)
-# app.include_router(contact.router)
-# app.include_router(entreprise.router)
-# app.include_router(interaction.router)
-# app.include_router(opportunite.router)
-# app.include_router(tache.router)
-# app.include_router(email_controller.router)
-# app.include_router(video_calls.router)
+
 
 app.mount("/media", StaticFiles(directory="media"), name="media")
 

@@ -2,40 +2,48 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from models.adresse import Adresse
 
-# GET all Adresses
-async def getAllAdresses(db: AsyncSession):
-    result = await db.execute(select(Adresse)) 
+
+async def create_adresse(db: AsyncSession, data: dict):
+    obj = Adresse(**data)
+    db.add(obj)
+    try:
+        await db.commit()
+        await db.refresh(obj)
+        return obj
+    except Exception as e:
+        await db.rollback()
+        raise e
+
+
+async def get_all_adresses(db: AsyncSession):
+    result = await db.execute(select(Adresse))
     return result.scalars().all()
 
-# GET Adresse by id
-async def getAdresseById(db: AsyncSession, Adresse_id: int):
-    result = await db.execute(select(Adresse).where(Adresse.id == Adresse_id))
+
+async def get_adresse_by_id(db: AsyncSession, id: int):
+    result = await db.execute(select(Adresse).where(Adresse.id == id))
     return result.scalars().first()
 
-# CREATE Adresse
-async def create_Adresse(db: AsyncSession, Adresse_data: dict):
-    new_Adresse = Adresse(**Adresse_data)
-    db.add(new_Adresse)
-    await db.commit()
-    await db.refresh(new_Adresse)
-    return new_Adresse
 
-# UPDATE Adresse
-async def update_Adresse(db: AsyncSession, Adresse_id: int, update_data: dict):
-    Adresse = await get_Adresse(db, Adresse_id)
-    if not Adresse:
-        return None
-    for key, value in update_data.items():
-        setattr(Adresse, key, value)
-    await db.commit()
-    await db.refresh(Adresse)
-    return Adresse
+async def update_adresse(db: AsyncSession, id: int, data: dict):
+    result = await db.execute(select(Adresse).where(Adresse.id == id))
+    obj = result.scalars().first()
+    if obj:
+        for key, value in data.items():
+            setattr(obj, key, value)
+        try:
+            await db.commit()
+            await db.refresh(obj)
+        except Exception as e:
+            await db.rollback()
+            raise e
+    return obj
 
-# DELETE Adresse
-async def delete_Adresse(db: AsyncSession, Adresse_id: int):
-    Adresse = await get_Adresse(db, Adresse_id)
-    if not Adresse:
-        return None
-    await db.delete(Adresse)
-    await db.commit()
-    return Adresse
+
+async def delete_adresse(db: AsyncSession, id: int):
+    result = await db.execute(select(Adresse).where(Adresse.id == id))
+    obj = result.scalars().first()
+    if obj:
+        await db.delete(obj)
+        await db.commit()
+    return obj
