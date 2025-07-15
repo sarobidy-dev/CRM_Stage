@@ -4,7 +4,7 @@ from typing import List
 import os, uuid, aiofiles
 from fastapi.responses import JSONResponse
 from schemas.Utilisateur import UtilisateurRead, UtilisateurCreate, UtilisateurUpdate
-from crud.Utilisateur import (
+from services.utilisateur import (
     get_utilisateurs,
     get_utilisateur,
     create_utilisateur,
@@ -12,7 +12,7 @@ from crud.Utilisateur import (
     delete_utilisateur,
 )
 from database import get_async_session
-
+ 
 router = APIRouter()
 
 

@@ -122,6 +122,38 @@
         "documentation": {}
     },
     {
+        "label": "Boolean",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Column",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Integer",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "String",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
         "label": "Text",
         "importPath": "sqlalchemy",
         "description": "sqlalchemy",
@@ -522,6 +554,14 @@
         "documentation": {}
     },
     {
+        "label": "AsyncSession",
+        "importPath": "sqlalchemy.ext.asyncio",
+        "description": "sqlalchemy.ext.asyncio",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.ext.asyncio",
+        "documentation": {}
+    },
+    {
         "label": "create_async_engine",
         "importPath": "sqlalchemy.ext.asyncio",
         "description": "sqlalchemy.ext.asyncio",
@@ -543,62 +583,6 @@
         "description": "alembic",
         "isExtraImport": true,
         "detail": "alembic",
-        "documentation": {}
-    },
-    {
-        "label": "APIRouter",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "Depends",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "HTTPException",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "status",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "UploadFile",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "File",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "Form",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
         "documentation": {}
     },
     {
@@ -634,94 +618,6 @@
         "documentation": {}
     },
     {
-        "label": "APIRouter",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "Depends",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "HTTPException",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "status",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "APIRouter",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "Depends",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "HTTPException",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "status",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "APIRouter",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "Depends",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
-        "label": "HTTPException",
-        "importPath": "fastapi",
-        "description": "fastapi",
-        "isExtraImport": true,
-        "detail": "fastapi",
-        "documentation": {}
-    },
-    {
         "label": "status",
         "importPath": "fastapi",
         "description": "fastapi",
@@ -755,6 +651,62 @@
     },
     {
         "label": "UploadFile",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "APIRouter",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Depends",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "APIRouter",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Depends",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "status",
         "importPath": "fastapi",
         "description": "fastapi",
         "isExtraImport": true,
@@ -850,6 +802,94 @@
         "documentation": {}
     },
     {
+        "label": "status",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "APIRouter",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Depends",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "APIRouter",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Depends",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "status",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "UploadFile",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "File",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Form",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
         "label": "APIRouter",
         "importPath": "fastapi",
         "description": "fastapi",
@@ -906,163 +946,11 @@
         "documentation": {}
     },
     {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
+        "label": "RtcTokenBuilder",
+        "importPath": "agora_token_builder",
+        "description": "agora_token_builder",
         "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Dict",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Any",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Dict",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Any",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
+        "detail": "agora_token_builder",
         "documentation": {}
     },
     {
@@ -1075,75 +963,163 @@
         "documentation": {}
     },
     {
-        "label": "JSONResponse",
-        "importPath": "fastapi.responses",
-        "description": "fastapi.responses",
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
         "isExtraImport": true,
-        "detail": "fastapi.responses",
+        "detail": "typing",
         "documentation": {}
     },
     {
-        "label": "UtilisateurRead",
-        "importPath": "schemas.Utilisateur",
-        "description": "schemas.Utilisateur",
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
         "isExtraImport": true,
-        "detail": "schemas.Utilisateur",
+        "detail": "typing",
         "documentation": {}
     },
     {
-        "label": "UtilisateurCreate",
-        "importPath": "schemas.Utilisateur",
-        "description": "schemas.Utilisateur",
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
         "isExtraImport": true,
-        "detail": "schemas.Utilisateur",
+        "detail": "typing",
         "documentation": {}
     },
     {
-        "label": "UtilisateurUpdate",
-        "importPath": "schemas.Utilisateur",
-        "description": "schemas.Utilisateur",
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
         "isExtraImport": true,
-        "detail": "schemas.Utilisateur",
+        "detail": "typing",
         "documentation": {}
     },
     {
-        "label": "get_utilisateurs",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
         "isExtraImport": true,
-        "detail": "crud.Utilisateur",
+        "detail": "typing",
         "documentation": {}
     },
     {
-        "label": "get_utilisateur",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
         "isExtraImport": true,
-        "detail": "crud.Utilisateur",
+        "detail": "typing",
         "documentation": {}
     },
     {
-        "label": "create_utilisateur",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
         "isExtraImport": true,
-        "detail": "crud.Utilisateur",
+        "detail": "typing",
         "documentation": {}
     },
     {
-        "label": "update_utilisateur",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
         "isExtraImport": true,
-        "detail": "crud.Utilisateur",
+        "detail": "typing",
         "documentation": {}
     },
     {
-        "label": "delete_utilisateur",
-        "importPath": "crud.Utilisateur",
-        "description": "crud.Utilisateur",
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
         "isExtraImport": true,
-        "detail": "crud.Utilisateur",
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
         "documentation": {}
     },
     {
@@ -1251,6 +1227,14 @@
         "documentation": {}
     },
     {
+        "label": "Base",
+        "importPath": "database",
+        "description": "database",
+        "isExtraImport": true,
+        "detail": "database",
+        "documentation": {}
+    },
+    {
         "label": "engine",
         "importPath": "database",
         "description": "database",
@@ -1275,11 +1259,84 @@
         "documentation": {}
     },
     {
-        "label": "RtcTokenBuilder",
-        "importPath": "agora_token_builder",
-        "description": "agora_token_builder",
+        "label": "ContactCreate",
+        "importPath": "schemas.contact",
+        "description": "schemas.contact",
         "isExtraImport": true,
-        "detail": "agora_token_builder",
+        "detail": "schemas.contact",
+        "documentation": {}
+    },
+    {
+        "label": "ContactRead",
+        "importPath": "schemas.contact",
+        "description": "schemas.contact",
+        "isExtraImport": true,
+        "detail": "schemas.contact",
+        "documentation": {}
+    },
+    {
+        "label": "ContactUpdate",
+        "importPath": "schemas.contact",
+        "description": "schemas.contact",
+        "isExtraImport": true,
+        "detail": "schemas.contact",
+        "documentation": {}
+    },
+    {
+        "label": "count_contacts",
+        "importPath": "crud.Contact",
+        "description": "crud.Contact",
+        "isExtraImport": true,
+        "detail": "crud.Contact",
+        "documentation": {}
+    },
+    {
+        "label": "get_contacts",
+        "importPath": "crud.Contact",
+        "description": "crud.Contact",
+        "isExtraImport": true,
+        "detail": "crud.Contact",
+        "documentation": {}
+    },
+    {
+        "label": "get_contact",
+        "importPath": "crud.Contact",
+        "description": "crud.Contact",
+        "isExtraImport": true,
+        "detail": "crud.Contact",
+        "documentation": {}
+    },
+    {
+        "label": "create_contact",
+        "importPath": "crud.Contact",
+        "description": "crud.Contact",
+        "isExtraImport": true,
+        "detail": "crud.Contact",
+        "documentation": {}
+    },
+    {
+        "label": "update_contact",
+        "importPath": "crud.Contact",
+        "description": "crud.Contact",
+        "isExtraImport": true,
+        "detail": "crud.Contact",
+        "documentation": {}
+    },
+    {
+        "label": "delete_contact",
+        "importPath": "crud.Contact",
+        "description": "crud.Contact",
+        "isExtraImport": true,
+        "detail": "crud.Contact",
+        "documentation": {}
+    },
+    {
+        "label": "uuid",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "uuid",
+        "description": "uuid",
+        "detail": "uuid",
         "documentation": {}
     },
     {
@@ -1379,156 +1436,11 @@
         "documentation": {}
     },
     {
-        "label": "Opportunite",
-        "importPath": "models.opportunite",
-        "description": "models.opportunite",
+        "label": "select",
+        "importPath": "sqlalchemy.future",
+        "description": "sqlalchemy.future",
         "isExtraImport": true,
-        "detail": "models.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "Opportunite",
-        "importPath": "models.opportunite",
-        "description": "models.opportunite",
-        "isExtraImport": true,
-        "detail": "models.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "OpportuniteCreate",
-        "importPath": "schemas.opportunite",
-        "description": "schemas.opportunite",
-        "isExtraImport": true,
-        "detail": "schemas.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "OpportuniteRead",
-        "importPath": "schemas.opportunite",
-        "description": "schemas.opportunite",
-        "isExtraImport": true,
-        "detail": "schemas.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "OpportuniteCreate",
-        "importPath": "schemas.opportunite",
-        "description": "schemas.opportunite",
-        "isExtraImport": true,
-        "detail": "schemas.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "create_opportunite",
-        "importPath": "crud.opportunite",
-        "description": "crud.opportunite",
-        "isExtraImport": true,
-        "detail": "crud.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "get_opportunites",
-        "importPath": "crud.opportunite",
-        "description": "crud.opportunite",
-        "isExtraImport": true,
-        "detail": "crud.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "get_opportunite",
-        "importPath": "crud.opportunite",
-        "description": "crud.opportunite",
-        "isExtraImport": true,
-        "detail": "crud.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "delete_opportunite",
-        "importPath": "crud.opportunite",
-        "description": "crud.opportunite",
-        "isExtraImport": true,
-        "detail": "crud.opportunite",
-        "documentation": {}
-    },
-    {
-        "label": "ContactCreate",
-        "importPath": "schemas.contact",
-        "description": "schemas.contact",
-        "isExtraImport": true,
-        "detail": "schemas.contact",
-        "documentation": {}
-    },
-    {
-        "label": "ContactRead",
-        "importPath": "schemas.contact",
-        "description": "schemas.contact",
-        "isExtraImport": true,
-        "detail": "schemas.contact",
-        "documentation": {}
-    },
-    {
-        "label": "ContactUpdate",
-        "importPath": "schemas.contact",
-        "description": "schemas.contact",
-        "isExtraImport": true,
-        "detail": "schemas.contact",
-        "documentation": {}
-    },
-    {
-        "label": "count_contacts",
-        "importPath": "crud.Contact",
-        "description": "crud.Contact",
-        "isExtraImport": true,
-        "detail": "crud.Contact",
-        "documentation": {}
-    },
-    {
-        "label": "get_contacts",
-        "importPath": "crud.Contact",
-        "description": "crud.Contact",
-        "isExtraImport": true,
-        "detail": "crud.Contact",
-        "documentation": {}
-    },
-    {
-        "label": "get_contact",
-        "importPath": "crud.Contact",
-        "description": "crud.Contact",
-        "isExtraImport": true,
-        "detail": "crud.Contact",
-        "documentation": {}
-    },
-    {
-        "label": "create_contact",
-        "importPath": "crud.Contact",
-        "description": "crud.Contact",
-        "isExtraImport": true,
-        "detail": "crud.Contact",
-        "documentation": {}
-    },
-    {
-        "label": "update_contact",
-        "importPath": "crud.Contact",
-        "description": "crud.Contact",
-        "isExtraImport": true,
-        "detail": "crud.Contact",
-        "documentation": {}
-    },
-    {
-        "label": "delete_contact",
-        "importPath": "crud.Contact",
-        "description": "crud.Contact",
-        "isExtraImport": true,
-        "detail": "crud.Contact",
-        "documentation": {}
-    },
-    {
-        "label": "uuid",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "uuid",
-        "description": "uuid",
-        "detail": "uuid",
+        "detail": "sqlalchemy.future",
         "documentation": {}
     },
     {
@@ -1605,6 +1517,78 @@
         "documentation": {}
     },
     {
+        "label": "Opportunite",
+        "importPath": "models.opportunite",
+        "description": "models.opportunite",
+        "isExtraImport": true,
+        "detail": "models.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "Opportunite",
+        "importPath": "models.opportunite",
+        "description": "models.opportunite",
+        "isExtraImport": true,
+        "detail": "models.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "OpportuniteCreate",
+        "importPath": "schemas.opportunite",
+        "description": "schemas.opportunite",
+        "isExtraImport": true,
+        "detail": "schemas.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "OpportuniteRead",
+        "importPath": "schemas.opportunite",
+        "description": "schemas.opportunite",
+        "isExtraImport": true,
+        "detail": "schemas.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "OpportuniteCreate",
+        "importPath": "schemas.opportunite",
+        "description": "schemas.opportunite",
+        "isExtraImport": true,
+        "detail": "schemas.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "create_opportunite",
+        "importPath": "crud.opportunite",
+        "description": "crud.opportunite",
+        "isExtraImport": true,
+        "detail": "crud.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "get_opportunites",
+        "importPath": "crud.opportunite",
+        "description": "crud.opportunite",
+        "isExtraImport": true,
+        "detail": "crud.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "get_opportunite",
+        "importPath": "crud.opportunite",
+        "description": "crud.opportunite",
+        "isExtraImport": true,
+        "detail": "crud.opportunite",
+        "documentation": {}
+    },
+    {
+        "label": "delete_opportunite",
+        "importPath": "crud.opportunite",
+        "description": "crud.opportunite",
+        "isExtraImport": true,
+        "detail": "crud.opportunite",
+        "documentation": {}
+    },
+    {
         "label": "tache",
         "importPath": "schemas",
         "description": "schemas",
@@ -1634,6 +1618,78 @@
         "description": "models.tache",
         "isExtraImport": true,
         "detail": "models.tache",
+        "documentation": {}
+    },
+    {
+        "label": "JSONResponse",
+        "importPath": "fastapi.responses",
+        "description": "fastapi.responses",
+        "isExtraImport": true,
+        "detail": "fastapi.responses",
+        "documentation": {}
+    },
+    {
+        "label": "UtilisateurRead",
+        "importPath": "schemas.Utilisateur",
+        "description": "schemas.Utilisateur",
+        "isExtraImport": true,
+        "detail": "schemas.Utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "UtilisateurCreate",
+        "importPath": "schemas.Utilisateur",
+        "description": "schemas.Utilisateur",
+        "isExtraImport": true,
+        "detail": "schemas.Utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "UtilisateurUpdate",
+        "importPath": "schemas.Utilisateur",
+        "description": "schemas.Utilisateur",
+        "isExtraImport": true,
+        "detail": "schemas.Utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "get_utilisateurs",
+        "importPath": "services.utilisateur",
+        "description": "services.utilisateur",
+        "isExtraImport": true,
+        "detail": "services.utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "get_utilisateur",
+        "importPath": "services.utilisateur",
+        "description": "services.utilisateur",
+        "isExtraImport": true,
+        "detail": "services.utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "create_utilisateur",
+        "importPath": "services.utilisateur",
+        "description": "services.utilisateur",
+        "isExtraImport": true,
+        "detail": "services.utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "update_utilisateur",
+        "importPath": "services.utilisateur",
+        "description": "services.utilisateur",
+        "isExtraImport": true,
+        "detail": "services.utilisateur",
+        "documentation": {}
+    },
+    {
+        "label": "delete_utilisateur",
+        "importPath": "services.utilisateur",
+        "description": "services.utilisateur",
+        "isExtraImport": true,
+        "detail": "services.utilisateur",
         "documentation": {}
     },
     {
@@ -1845,14 +1901,6 @@
         "documentation": {}
     },
     {
-        "label": "Utilisateur",
-        "importPath": "models.utilisateur",
-        "description": "models.utilisateur",
-        "isExtraImport": true,
-        "detail": "models.utilisateur",
-        "documentation": {}
-    },
-    {
         "label": "smtplib",
         "kind": 6,
         "isExtraImport": true,
@@ -2017,6 +2065,22 @@
         "documentation": {}
     },
     {
+        "label": "Adresse",
+        "importPath": "models.adresse",
+        "description": "models.adresse",
+        "isExtraImport": true,
+        "detail": "models.adresse",
+        "documentation": {}
+    },
+    {
+        "label": "Utilisateur",
+        "importPath": "models.utilisateur",
+        "description": "models.utilisateur",
+        "isExtraImport": true,
+        "detail": "models.utilisateur",
+        "documentation": {}
+    },
+    {
         "label": "CORSMiddleware",
         "importPath": "fastapi.middleware.cors",
         "description": "fastapi.middleware.cors",
@@ -2033,7 +2097,7 @@
         "documentation": {}
     },
     {
-        "label": "Utilisateur",
+        "label": "utilisateur",
         "importPath": "api",
         "description": "api",
         "isExtraImport": true,
@@ -2077,15 +2141,6 @@
         "documentation": {}
     },
     {
-        "label": "router",
-        "kind": 5,
-        "importPath": "app.api.Utilisateur",
-        "description": "app.api.Utilisateur",
-        "peekOfCode": "router = APIRouter()\n@router.get(\"/utilisateurs\", response_model=List[UtilisateurRead])\nasync def read_utilisateurs(db: AsyncSession = Depends(get_async_session)):\n    return await get_utilisateurs(db)\n@router.get(\"/utilisateurs/{utilisateur_id}\")\nasync def read_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_async_session)):\n    utilisateur = await get_utilisateur(db, utilisateur_id)\n    if utilisateur is None:\n         return JSONResponse(\n            status_code=404,",
-        "detail": "app.api.Utilisateur",
-        "documentation": {}
-    },
-    {
         "label": "get_agora_token",
         "kind": 2,
         "importPath": "app.api.agora_token",
@@ -2101,6 +2156,24 @@
         "description": "app.api.agora_token",
         "peekOfCode": "app = FastAPI()\n@app.get(\"/agora-token\")\ndef get_agora_token(channel_name: str, uid: int = 0):\n    app_id = os.getenv(\"AGORA_APP_ID\")\n    app_cert = os.getenv(\"AGORA_CERTIFICATE\")\n    expire_time = 3600\n    current_time = int(time.time())\n    expire_at = current_time + expire_time\n    token = RtcTokenBuilder.buildTokenWithUid(\n        app_id, app_cert, channel_name, uid, 1, expire_at",
         "detail": "app.api.agora_token",
+        "documentation": {}
+    },
+    {
+        "label": "save_profile_picture",
+        "kind": 2,
+        "importPath": "app.api.contact",
+        "description": "app.api.contact",
+        "peekOfCode": "def save_profile_picture(file: UploadFile):\n    ext = os.path.splitext(file.filename)[1]\n    filename = f\"{uuid.uuid4()}{ext}\"\n    filepath = f\"media/photos/{filename}\"\n    with open(filepath, \"wb\") as buffer:\n        buffer.write(file.file.read())\n    return filepath\n@router.post(\"\", response_model=ContactRead, status_code=status.HTTP_201_CREATED)\nasync def create_contact_route(\n    nom: str = Form(...),",
+        "detail": "app.api.contact",
+        "documentation": {}
+    },
+    {
+        "label": "router",
+        "kind": 5,
+        "importPath": "app.api.contact",
+        "description": "app.api.contact",
+        "peekOfCode": "router = APIRouter(\n    prefix=\"/contacts\",\n    tags=[\"contacts\"]\n)\nimport uuid\nimport os\nfrom fastapi import UploadFile\ndef save_profile_picture(file: UploadFile):\n    ext = os.path.splitext(file.filename)[1]\n    filename = f\"{uuid.uuid4()}{ext}\"",
+        "detail": "app.api.contact",
         "documentation": {}
     },
     {
@@ -2133,6 +2206,15 @@
     {
         "label": "router",
         "kind": 5,
+        "importPath": "app.api.interaction",
+        "description": "app.api.interaction",
+        "peekOfCode": "router = APIRouter(prefix=\"/interactions\", tags=[\"interactions\"])\n@router.post(\"\", response_model=InteractionRead, status_code=status.HTTP_201_CREATED)\nasync def create_interaction(\n    type: str = Form(...),\n    date_interaction: str = Form(...),\n    contenu: str = Form(...),\n    id_contact: int = Form(...),\n    fichier_joint: UploadFile = File(None),\n    session: AsyncSession = Depends(get_async_session)\n):",
+        "detail": "app.api.interaction",
+        "documentation": {}
+    },
+    {
+        "label": "router",
+        "kind": 5,
         "importPath": "app.api.opportunite",
         "description": "app.api.opportunite",
         "peekOfCode": "router = APIRouter(prefix=\"/opportunites\", tags=[\"opportunites\"])\n@router.get(\"/count\", summary=\"Nombre total d'opportunités\")\nasync def count_opportunites(session: AsyncSession = Depends(get_async_session)):\n    result = await session.execute(select(func.count()).select_from(Opportunite))\n    return {\"total_opportunites\": result.scalar_one()}\n@router.post(\"\", response_model=OpportuniteRead, status_code=status.HTTP_201_CREATED)\nasync def create(data: OpportuniteCreate, session: AsyncSession = Depends(get_async_session)):\n    return await create_opportunite(session, data)\n@router.get(\"\", response_model=List[OpportuniteRead])\nasync def read_all(session: AsyncSession = Depends(get_async_session)):",
@@ -2140,138 +2222,66 @@
         "documentation": {}
     },
     {
-        "label": "DB_USER",
-        "kind": 5,
-        "importPath": "app.core.config",
-        "description": "app.core.config",
-        "peekOfCode": "DB_USER = os.getenv(\"DB_USER\", \"postgres\")\nDB_PASS = os.getenv(\"DB_PASS\", \"root\")\nDB_NAME = os.getenv(\"DB_NAME\", \"db_crm\")\nDB_HOST = os.getenv(\"DB_HOST\", \"localhost\")\nDB_PORT = os.getenv(\"DB_PORT\", \"5432\")\nDATABASE_URL = f\"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}\"",
-        "detail": "app.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "DB_PASS",
-        "kind": 5,
-        "importPath": "app.core.config",
-        "description": "app.core.config",
-        "peekOfCode": "DB_PASS = os.getenv(\"DB_PASS\", \"root\")\nDB_NAME = os.getenv(\"DB_NAME\", \"db_crm\")\nDB_HOST = os.getenv(\"DB_HOST\", \"localhost\")\nDB_PORT = os.getenv(\"DB_PORT\", \"5432\")\nDATABASE_URL = f\"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}\"",
-        "detail": "app.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "DB_NAME",
-        "kind": 5,
-        "importPath": "app.core.config",
-        "description": "app.core.config",
-        "peekOfCode": "DB_NAME = os.getenv(\"DB_NAME\", \"db_crm\")\nDB_HOST = os.getenv(\"DB_HOST\", \"localhost\")\nDB_PORT = os.getenv(\"DB_PORT\", \"5432\")\nDATABASE_URL = f\"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}\"",
-        "detail": "app.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "DB_HOST",
-        "kind": 5,
-        "importPath": "app.core.config",
-        "description": "app.core.config",
-        "peekOfCode": "DB_HOST = os.getenv(\"DB_HOST\", \"localhost\")\nDB_PORT = os.getenv(\"DB_PORT\", \"5432\")\nDATABASE_URL = f\"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}\"",
-        "detail": "app.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "DB_PORT",
-        "kind": 5,
-        "importPath": "app.core.config",
-        "description": "app.core.config",
-        "peekOfCode": "DB_PORT = os.getenv(\"DB_PORT\", \"5432\")\nDATABASE_URL = f\"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}\"",
-        "detail": "app.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "DATABASE_URL",
-        "kind": 5,
-        "importPath": "app.core.config",
-        "description": "app.core.config",
-        "peekOfCode": "DATABASE_URL = f\"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}\"",
-        "detail": "app.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "save_profile_picture",
-        "kind": 2,
-        "importPath": "app.core.contact",
-        "description": "app.core.contact",
-        "peekOfCode": "def save_profile_picture(file: UploadFile):\n    ext = os.path.splitext(file.filename)[1]\n    filename = f\"{uuid.uuid4()}{ext}\"\n    filepath = f\"media/photos/{filename}\"\n    with open(filepath, \"wb\") as buffer:\n        buffer.write(file.file.read())\n    return filepath\n@router.post(\"\", response_model=ContactRead, status_code=status.HTTP_201_CREATED)\nasync def create_contact_route(\n    nom: str = Form(...),",
-        "detail": "app.core.contact",
-        "documentation": {}
-    },
-    {
         "label": "router",
         "kind": 5,
-        "importPath": "app.core.contact",
-        "description": "app.core.contact",
-        "peekOfCode": "router = APIRouter(\n    prefix=\"/contacts\",\n    tags=[\"contacts\"]\n)\nimport uuid\nimport os\nfrom fastapi import UploadFile\ndef save_profile_picture(file: UploadFile):\n    ext = os.path.splitext(file.filename)[1]\n    filename = f\"{uuid.uuid4()}{ext}\"",
-        "detail": "app.core.contact",
-        "documentation": {}
-    },
-    {
-        "label": "router",
-        "kind": 5,
-        "importPath": "app.core.interaction",
-        "description": "app.core.interaction",
-        "peekOfCode": "router = APIRouter(prefix=\"/interactions\", tags=[\"interactions\"])\n@router.post(\"\", response_model=InteractionRead, status_code=status.HTTP_201_CREATED)\nasync def create_interaction(\n    type: str = Form(...),\n    date_interaction: str = Form(...),\n    contenu: str = Form(...),\n    id_contact: int = Form(...),\n    fichier_joint: UploadFile = File(None),\n    session: AsyncSession = Depends(get_async_session)\n):",
-        "detail": "app.core.interaction",
-        "documentation": {}
-    },
-    {
-        "label": "router",
-        "kind": 5,
-        "importPath": "app.core.tache",
-        "description": "app.core.tache",
+        "importPath": "app.api.tache",
+        "description": "app.api.tache",
         "peekOfCode": "router = APIRouter(prefix=\"/taches\", tags=[\"Taches\"])\n@router.post(\"\", response_model=tache_schema.Tache)\nasync def create_tache(tache: tache_schema.TacheCreate, db: AsyncSession = Depends(get_async_session)):\n    return await crud_tache.create_tache(db=db, tache=tache)  # <- correction ici\n@router.get(\"\", response_model=List[tache_schema.Tache])\nasync def read_taches(skip: int = 0, limit: int = 100, db: AsyncSession = Depends(get_async_session)):\n    result = await db.execute(select(Tache).offset(skip).limit(limit))\n    return result.scalars().all()\n@router.get(\"/{id_tache}\", response_model=tache_schema.Tache)\nasync def read_tache(id_tache: int, db: AsyncSession = Depends(get_async_session)):",
-        "detail": "app.core.tache",
+        "detail": "app.api.tache",
+        "documentation": {}
+    },
+    {
+        "label": "router",
+        "kind": 5,
+        "importPath": "app.api.utilisateur",
+        "description": "app.api.utilisateur",
+        "peekOfCode": "router = APIRouter()\n@router.get(\"/utilisateurs\", response_model=List[UtilisateurRead])\nasync def read_utilisateurs(db: AsyncSession = Depends(get_async_session)):\n    return await get_utilisateurs(db)\n@router.get(\"/utilisateurs/{utilisateur_id}\")\nasync def read_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_async_session)):\n    utilisateur = await get_utilisateur(db, utilisateur_id)\n    if utilisateur is None:\n         return JSONResponse(\n            status_code=404,",
+        "detail": "app.api.utilisateur",
         "documentation": {}
     },
     {
         "label": "StartCallRequest",
         "kind": 6,
-        "importPath": "app.core.video_calls",
-        "description": "app.core.video_calls",
+        "importPath": "app.api.video_calls",
+        "description": "app.api.video_calls",
         "peekOfCode": "class StartCallRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int\nclass EndCallRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int\n    duration: int\nclass StartRecordingRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int",
-        "detail": "app.core.video_calls",
+        "detail": "app.api.video_calls",
         "documentation": {}
     },
     {
         "label": "EndCallRequest",
         "kind": 6,
-        "importPath": "app.core.video_calls",
-        "description": "app.core.video_calls",
+        "importPath": "app.api.video_calls",
+        "description": "app.api.video_calls",
         "peekOfCode": "class EndCallRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int\n    duration: int\nclass StartRecordingRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int\nclass StopRecordingRequest(BaseModel):\n    recording_id: str\n@router.post(\"/start\")",
-        "detail": "app.core.video_calls",
+        "detail": "app.api.video_calls",
         "documentation": {}
     },
     {
         "label": "StartRecordingRequest",
         "kind": 6,
-        "importPath": "app.core.video_calls",
-        "description": "app.core.video_calls",
+        "importPath": "app.api.video_calls",
+        "description": "app.api.video_calls",
         "peekOfCode": "class StartRecordingRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int\nclass StopRecordingRequest(BaseModel):\n    recording_id: str\n@router.post(\"/start\")\nasync def start_call(\n    request: StartCallRequest,\n    db: Session = Depends(get_db)\n) -> Dict[str, Any]:",
-        "detail": "app.core.video_calls",
+        "detail": "app.api.video_calls",
         "documentation": {}
     },
     {
         "label": "StopRecordingRequest",
         "kind": 6,
-        "importPath": "app.core.video_calls",
-        "description": "app.core.video_calls",
+        "importPath": "app.api.video_calls",
+        "description": "app.api.video_calls",
         "peekOfCode": "class StopRecordingRequest(BaseModel):\n    recording_id: str\n@router.post(\"/start\")\nasync def start_call(\n    request: StartCallRequest,\n    db: Session = Depends(get_db)\n) -> Dict[str, Any]:\n    \"\"\"\n    Endpoint: POST /api/video-calls/start\n    Démarrer un nouvel appel vidéo entre un contact et un utilisateur",
-        "detail": "app.core.video_calls",
+        "detail": "app.api.video_calls",
         "documentation": {}
     },
     {
         "label": "router",
         "kind": 5,
-        "importPath": "app.core.video_calls",
-        "description": "app.core.video_calls",
+        "importPath": "app.api.video_calls",
+        "description": "app.api.video_calls",
         "peekOfCode": "router = APIRouter(prefix=\"/api/video-calls\", tags=[\"video-calls\"])\nclass StartCallRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int\nclass EndCallRequest(BaseModel):\n    contact_id: int\n    utilisateur_id: int\n    duration: int\nclass StartRecordingRequest(BaseModel):\n    contact_id: int",
-        "detail": "app.core.video_calls",
+        "detail": "app.api.video_calls",
         "documentation": {}
     },
     {
@@ -2326,6 +2336,15 @@
         "description": "app.crud.video_service",
         "peekOfCode": "class VideoCallService:\n    def __init__(self, db: Session):\n        self.db = db\n        self.recordings_dir = \"media/recordings\"\n        os.makedirs(self.recordings_dir, exist_ok=True)\n    async def start_call(self, contact_id: int, utilisateur_id: int) -> Dict[str, Any]:\n        \"\"\"Démarrer un nouvel appel vidéo\"\"\"\n        call = VideoCall(\n            contact_id=contact_id,\n            utilisateur_id=utilisateur_id,",
         "detail": "app.crud.video_service",
+        "documentation": {}
+    },
+    {
+        "label": "Adresse",
+        "kind": 6,
+        "importPath": "app.models.adresse",
+        "description": "app.models.adresse",
+        "peekOfCode": "class Adresse(Base):\n    __tablename__ = \"adresse\" \n    id = Column(Integer, primary_key=True, index=True)\n    ligneAdresse1 = Column(String(40), nullable=False)\n    ligneAdresse2= Column(String(40))\n    ville = Column(String(80),nullable=False)\n    cp = Column(String(5), nullable=False)\n    pays= Column(String(60) default=True)",
+        "detail": "app.models.adresse",
         "documentation": {}
     },
     {
@@ -2693,7 +2712,7 @@
         "kind": 5,
         "importPath": "app.main",
         "description": "app.main",
-        "peekOfCode": "origins = [\"http://localhost:3000\"]\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=origins,\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n# Inclusion des routes\napp.include_router(Utilisateur.router)",
+        "peekOfCode": "origins = [\"http://localhost:3000\"]\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=origins,\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n# Inclusion des routes\napp.include_router(utilisateur.router)",
         "detail": "app.main",
         "documentation": {}
     },

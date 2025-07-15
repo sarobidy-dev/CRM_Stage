@@ -8,7 +8,7 @@ from database import engine, Base, test_connection
 
 # Routes
 from api import (
-    Utilisateur
+    utilisateur
 )
 
 # Création du dossier media si nécessaire
@@ -26,9 +26,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+ 
 # Inclusion des routes
-app.include_router(Utilisateur.router)
+app.include_router(utilisateur.router)
 # app.include_router(contact.router)
 # app.include_router(entreprise.router)
 # app.include_router(interaction.router)
