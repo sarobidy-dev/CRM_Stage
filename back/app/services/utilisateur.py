@@ -26,7 +26,8 @@ async def get_utilisateur(db: AsyncSession, utilisateur_id: int):
     )
     return result.scalar_one_or_none()   # plus explicite
 
-
+    result = await db.execute(select(Utilisateur).where(Utilisateur.id == utilisateur_id))
+    return result.scalars().first()
 
 
 # -------------------------------------------------
