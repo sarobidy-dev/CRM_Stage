@@ -13,3 +13,23 @@ export interface Utilisateur{
   actif?: boolean,
   photo_profil?: string
 }
+
+
+
+export interface CreateUtilisateurRequest {
+  nom: string
+  email: string
+  mot2pass: string
+  role: string
+  actif: boolean
+  photo_profil?: File
+}
+
+export interface UpdateUtilisateurRequest {
+  nom?: string
+  email?: string
+  mot2pass?: string
+  role?: string
+  actif?: boolean
+  photo_profil?: File
+}
