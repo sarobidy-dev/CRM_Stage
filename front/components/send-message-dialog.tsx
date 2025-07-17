@@ -1,5 +1,4 @@
 "use client"
-
 import { useState } from "react"
 import { Send, Mail, MessageSquare, Users, AlertCircle, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -15,11 +14,32 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { sendEmailDirect } from "@/service/email.sercive"
-import type { Contact, SendResult } from "@/types/email.type"
+
+interface Contact {
+  id: number
+  nom: string
+  prenom: string
+  telephone: string
+  email: string
+  adresse: string
+  fonction: string
+  entreprise_id: number
+}
+
+interface SendResult {
+  success: boolean
+  message: string
+  results?: Array<{
+    success: boolean
+    contactName?: string
+    recipient?: string
+    error?: string
+  }>
+}
 
 interface SendMessageDialogProps {
   open: boolean
@@ -34,25 +54,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
   const [sending, setSending] = useState(false)
   const [sendResult, setSendResult] = useState<SendResult | null>(null)
   const [error, setError] = useState<string>("")
-
-  // Fonction pour construire l'URL de la photo
-  const getPhotoUrl = (contact: Contact) => {
-    if (!contact.photo_de_profil) {
-      return "/placeholder.svg?height=40&width=40"
-    }
-    
-    if (contact.photo_de_profil.startsWith("http")) {
-      return contact.photo_de_profil
-    }
-
-    if (contact.photo_de_profil.startsWith("data:image")) {
-      return contact.photo_de_profil
-    }
-
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
-    const cleanPath = contact.photo_de_profil.startsWith("/") ? contact.photo_de_profil : `/${contact.photo_de_profil}`
-    return `${baseUrl}${cleanPath}`
-  }
 
   const handleSend = async () => {
     if (!message.trim() || (messageType === "email" && !subject.trim())) {
@@ -121,7 +122,7 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
 
   const getMessagePlaceholder = () => {
     if (messageType === "email") {
-      return "Rédigez votre email ici...\n\nBonjour [Prénom],\n\nJ'espère que vous allez bien...\n\nCordialement,\n[Votre nom]\n\nVariables disponibles:\n[Prénom] [Nom] [Entreprise] [Fonction]"
+      return "Rédigez votre email ici...\n\nBonjour [Prénom],\n\nJ'espère que vous allez bien...\n\nCordialement,\n[Votre nom]\n\nVariables disponibles:\n[Prénom] [Nom] [Fonction]"
     } else {
       return "Rédigez votre SMS ici... (160 caractères max)"
     }
@@ -224,12 +225,8 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
             </div>
             <div className="max-h-32 overflow-y-auto border rounded-lg p-3 space-y-2">
               {selectedContacts.map((contact) => (
-                <div key={contact.id_contact} className="flex items-center gap-3">
+                <div key={contact.id} className="flex items-center gap-3">
                   <Avatar className="h-6 w-6">
-                    <AvatarImage
-                      src={getPhotoUrl(contact) || "/placeholder.svg"}
-                      alt={`${contact.prenom} ${contact.nom}`}
-                    />
                     <AvatarFallback className="text-xs bg-blue-100 text-blue-600">
                       {getInitials(contact.prenom, contact.nom)}
                     </AvatarFallback>
@@ -278,7 +275,7 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
             />
             {messageType === "email" && (
               <p className="text-xs text-gray-500">
-                Vous pouvez utiliser [Prénom], [Nom], [Entreprise] et [Fonction] pour personnaliser votre message
+                Vous pouvez utiliser [Prénom], [Nom] et [Fonction] pour personnaliser votre message
               </p>
             )}
           </div>
@@ -300,7 +297,8 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
                 <div className="bg-white p-2 rounded border text-xs whitespace-pre-wrap">
                   {message
                     .replace(/\[Prénom\]/g, selectedContacts[0]?.prenom || "[Prénom]")
-                    .replace(/\[Nom\]/g, selectedContacts[0]?.nom || "[Nom]")}
+                    .replace(/\[Nom\]/g, selectedContacts[0]?.nom || "[Nom]")
+                    .replace(/\[Fonction\]/g, selectedContacts[0]?.fonction || "[Fonction]")}
                 </div>
               </div>
             </div>

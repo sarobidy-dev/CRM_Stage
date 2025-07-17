@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import { Filter, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -13,18 +12,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Separator } from "@/components/ui/separator"
 
 interface Contact {
-  secteur: string
-  type: string
-  source: string
+  id: number
+  nom: string
+  prenom: string
+  telephone: string
+  email: string
+  adresse: string
+  fonction: string
+  entreprise_id: number
 }
 
 interface FilterOptions {
-  secteur: string[]
-  type: string[]
-  source: string[]
+  fonction: string[]
 }
 
 interface FilterDialogProps {
@@ -42,20 +43,18 @@ export function FilterDialog({ open, onOpenChange, contacts, activeFilters, onFi
     setTempFilters(activeFilters)
   }, [activeFilters, open])
 
-  // Get unique values for each filter category
-  const getUniqueValues = (field: keyof Contact) => {
-    const values = contacts.map((contact) => contact[field]).filter(Boolean)
-    return [...new Set(values)].sort()
+  // Get unique values for fonction
+  const getUniqueFonctions = () => {
+    const fonctions = contacts.map((contact) => contact.fonction).filter(Boolean)
+    return [...new Set(fonctions)].sort()
   }
 
-  const secteurs = getUniqueValues("secteur")
-  const types = getUniqueValues("type")
-  const sources = getUniqueValues("source")
+  const fonctions = getUniqueFonctions()
 
-  const handleFilterChange = (category: keyof FilterOptions, value: string, checked: boolean) => {
+  const handleFilterChange = (value: string, checked: boolean) => {
     setTempFilters((prev) => ({
       ...prev,
-      [category]: checked ? [...prev[category], value] : prev[category].filter((item) => item !== value),
+      fonction: checked ? [...prev.fonction, value] : prev.fonction.filter((item) => item !== value),
     }))
   }
 
@@ -65,28 +64,20 @@ export function FilterDialog({ open, onOpenChange, contacts, activeFilters, onFi
   }
 
   const handleClearAll = () => {
-    const emptyFilters = { secteur: [], type: [], source: [] }
+    const emptyFilters = { fonction: [] }
     setTempFilters(emptyFilters)
     onFiltersChange(emptyFilters)
   }
 
   const getTotalActiveFilters = () => {
-    return tempFilters.secteur.length + tempFilters.type.length + tempFilters.source.length
+    return tempFilters.fonction.length
   }
 
   const getFilteredCount = () => {
     let filtered = contacts
-
-    if (tempFilters.secteur.length > 0) {
-      filtered = filtered.filter((contact) => tempFilters.secteur.includes(contact.secteur))
+    if (tempFilters.fonction.length > 0) {
+      filtered = filtered.filter((contact) => tempFilters.fonction.includes(contact.fonction))
     }
-    if (tempFilters.type.length > 0) {
-      filtered = filtered.filter((contact) => tempFilters.type.includes(contact.type))
-    }
-    if (tempFilters.source.length > 0) {
-      filtered = filtered.filter((contact) => tempFilters.source.includes(contact.source))
-    }
-
     return filtered.length
   }
 
@@ -100,7 +91,7 @@ export function FilterDialog({ open, onOpenChange, contacts, activeFilters, onFi
             </div>
             <div>
               <DialogTitle className="text-lg">Filtrer les contacts</DialogTitle>
-              <DialogDescription>Affinez votre recherche en sélectionnant les critères souhaités</DialogDescription>
+              <DialogDescription>Affinez votre recherche en sélectionnant les fonctions souhaitées</DialogDescription>
             </div>
           </div>
         </DialogHeader>
@@ -114,64 +105,26 @@ export function FilterDialog({ open, onOpenChange, contacts, activeFilters, onFi
             </div>
           </div>
 
-          {/* Secteur */}
+          {/* Fonction */}
           <div className="space-y-3">
-            <Label className="text-base font-medium">Secteur d'activité</Label>
-            <div className="space-y-2 max-h-32 overflow-y-auto">
-              {secteurs.map((secteur) => (
-                <div key={secteur} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`secteur-${secteur}`}
-                    checked={tempFilters.secteur.includes(secteur)}
-                    onCheckedChange={(checked) => handleFilterChange("secteur", secteur, checked as boolean)}
-                  />
-                  <Label htmlFor={`secteur-${secteur}`} className="text-sm font-normal cursor-pointer">
-                    {secteur}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Type */}
-          <div className="space-y-3">
-            <Label className="text-base font-medium">Type de contact</Label>
-            <div className="space-y-2">
-              {types.map((type) => (
-                <div key={type} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`type-${type}`}
-                    checked={tempFilters.type.includes(type)}
-                    onCheckedChange={(checked) => handleFilterChange("type", type, checked as boolean)}
-                  />
-                  <Label htmlFor={`type-${type}`} className="text-sm font-normal cursor-pointer">
-                    {type}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Source */}
-          <div className="space-y-3">
-            <Label className="text-base font-medium">Source</Label>
-            <div className="space-y-2 max-h-32 overflow-y-auto">
-              {sources.map((source) => (
-                <div key={source} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`source-${source}`}
-                    checked={tempFilters.source.includes(source)}
-                    onCheckedChange={(checked) => handleFilterChange("source", source, checked as boolean)}
-                  />
-                  <Label htmlFor={`source-${source}`} className="text-sm font-normal cursor-pointer">
-                    {source}
-                  </Label>
-                </div>
-              ))}
+            <Label className="text-base font-medium">Fonction</Label>
+            <div className="space-y-2 max-h-48 overflow-y-auto">
+              {fonctions.length > 0 ? (
+                fonctions.map((fonction) => (
+                  <div key={fonction} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`fonction-${fonction}`}
+                      checked={tempFilters.fonction.includes(fonction)}
+                      onCheckedChange={(checked) => handleFilterChange(fonction, checked as boolean)}
+                    />
+                    <Label htmlFor={`fonction-${fonction}`} className="text-sm font-normal cursor-pointer">
+                      {fonction}
+                    </Label>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">Aucune fonction disponible</p>
+              )}
             </div>
           </div>
         </div>

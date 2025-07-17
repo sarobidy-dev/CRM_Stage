@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from crud.email_service import EmailService
+from services.email_service import EmailService
 from schemas.email import EmailRequest
 
 router = APIRouter()

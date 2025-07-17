@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr,ConfigDict
 from typing import Optional
 
 
@@ -25,6 +25,5 @@ class EntrepriseRead(BaseModel):
     emailStandart: str
     adresse_id: int
     utilisateur_id: int
-
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True) 

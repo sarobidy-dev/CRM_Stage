@@ -26,9 +26,7 @@ router = APIRouter()
 UPLOAD_DIR = "media/photos"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# ---------------------------------------------------------
-# Fonction utilitaire pour sauvegarder une photo
-# ---------------------------------------------------------
+
 async def _save_photo(file: UploadFile) -> str:
     ext = os.path.splitext(file.filename)[1]
     filename = f"{uuid.uuid4()}{ext}"
@@ -38,9 +36,6 @@ async def _save_photo(file: UploadFile) -> str:
     return path
 
 
-# ---------------------------------------------------------
-# GET - tous les utilisateurs
-# ---------------------------------------------------------
 @router.get("/utilisateurs", response_model=List[UtilisateurRead])
 async def read_utilisateurs(db: AsyncSession = Depends(get_async_session)):
     return await get_utilisateurs(db)

@@ -1,11 +1,5 @@
 import type { Entreprise } from "@/types/Entreprise.type"
 
-// Récupérer toutes les entreprises
-// export const getAllEntreprises = async (): Promise<Entreprise[]> => {
-//   return await ApiService.get(`${apiUrl}/entreprises`)
-// }
-
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
 
 export interface CreateEntrepriseData {
@@ -16,6 +10,7 @@ export interface CreateEntrepriseData {
   email?: string
 }
 
+// Récupérer toutes les entreprises
 export const getAllEntreprises = async (): Promise<Entreprise[]> => {
   try {
     const response = await fetch(`${API_BASE_URL}/entreprises`, {
@@ -29,8 +24,8 @@ export const getAllEntreprises = async (): Promise<Entreprise[]> => {
       throw new Error(`Erreur HTTP: ${response.status}`)
     }
 
-    const data = await response.json()
-    return data
+    const json = await response.json()
+    return json.data // ✅ extraire seulement le tableau
   } catch (error) {
     console.error("Erreur lors de la récupération des entreprises:", error)
     throw error
@@ -73,7 +68,7 @@ export const createEntreprise = async (entrepriseData: CreateEntrepriseData): Pr
     }
 
     const data = await response.json()
-    return data
+    return data.data // ⚠️ uniformiser le retour comme pour update
   } catch (error) {
     console.error("Erreur lors de la création de l'entreprise:", error)
     throw error
@@ -98,7 +93,7 @@ export const updateEntreprise = async (
     }
 
     const data = await response.json()
-    return data
+    return data.data // ✅ uniformisé avec create
   } catch (error) {
     console.error("Erreur lors de la mise à jour de l'entreprise:", error)
     throw error
@@ -122,4 +117,3 @@ export const deleteEntreprise = async (id: number): Promise<void> => {
     throw error
   }
 }
-

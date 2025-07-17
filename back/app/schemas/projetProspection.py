@@ -17,5 +17,6 @@ class ProjetProspectionRead(BaseModel):
     projet: str
     description: Optional[str]
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True  # ✅ Nécessaire pour .from_orm() en Pydantic v2
+    }

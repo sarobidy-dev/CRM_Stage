@@ -1,4 +1,5 @@
-import type { Contact } from "@/types/Contact.type"
+
+import { Contact } from "@/types/Contact.type"
 import ApiService from "./api.service"
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
@@ -11,41 +12,36 @@ export const getCountContact = async (): Promise<Contact[]> => {
   return await ApiService.get(`${apiUrl}/contacts/count`)
 }
 
-export const createContact = async (contactFormData: FormData): Promise<Contact> => {
-  console.log("=== SERVICE CREATE CONTACT ===")
-  console.log("Envoi FormData au backend...")
-
-  // Log du contenu du FormData pour debug
-  for (const [key, value] of contactFormData.entries()) {
-    if (value instanceof File) {
-      console.log(`${key}: [FILE] ${value.name} (${value.size} bytes)`)
-    } else {
-      console.log(`${key}: ${value}`)
-    }
-  }
-
-  return await ApiService.post(`${apiUrl}/contacts`, contactFormData, {
-    isFormData: true,
-  })
+export const createContact = async (contact: {
+  nom: string;
+  prenom?: string;
+  telephone?: string;
+  email?: string;
+  adresse?: string;
+  fonction?: string;
+  entreprise_id: number;
+}): Promise<Contact> => {
+  return await ApiService.post(`${apiUrl}/contacts`, contact); // ← envoie JSON
+};
+export interface ContactPayload {
+  nom: string;
+  prenom?: string;
+  telephone?: string;
+  email?: string;
+  adresse?: string;
+  fonction?: string;
+  entreprise_id: number;
 }
+export const updateContact = async (
+  id: number,
+  contact: Partial<ContactPayload>   // ↔ tous les champs deviennent optionnels pour un PATCH
+): Promise<Contact> => {
+  console.log("=== SERVICE UPDATE CONTACT ===");
+  console.log(`Mise à jour du contact ID: ${id}`, contact);
 
-export const updateContact = async (id: number, contactFormData: FormData): Promise<Contact> => {
-  console.log("=== SERVICE UPDATE CONTACT ===")
-  console.log(`Mise à jour du contact ID: ${id}`)
-
-  // Log du contenu du FormData pour debug
-  for (const [key, value] of contactFormData.entries()) {
-    if (value instanceof File) {
-      console.log(`${key}: [FILE] ${value.name} (${value.size} bytes)`)
-    } else {
-      console.log(`${key}: ${value}`)
-    }
-  }
-
-  return await ApiService.put(`${apiUrl}/contacts/${id}`, contactFormData, {
-    isFormData: true,
-  })
-}
+  // Envoie l’objet tel quel : ApiService ajoutera l’en‑tête JSON
+  return await ApiService.put(`${apiUrl}/contacts/${id}`, contact);
+};
 export const deleteContact = async (id: number): Promise<void> => {
   return await ApiService.delete(`${apiUrl}/contacts/${id}`)
 }
@@ -109,5 +105,29 @@ export const sendEmail = async (params: SendEmailParams): Promise<SendEmailRespo
       success: false,
       message: error instanceof Error ? error.message : "Erreur lors de l'envoi d'email",
     }
+  }
+}
+export async function deleteContactById(id: number): Promise<void> {
+  const response = await fetch(`${apiUrl}/${id}`, {
+    method: "DELETE",
+  })
+
+  if (!response.ok) {
+    throw new Error(`Erreur suppression contact id=${id}: ${response.statusText}`)
+  }
+}
+
+export async function deleteMultipleContacts(ids: number[]): Promise<void> {
+  // Supposons que ton API supporte la suppression multiple via un endpoint POST/DELETE avec liste d’IDs
+  const response = await fetch(`${apiUrl}/bulk-delete`, {
+    method: "POST", // parfois DELETE n'accepte pas de body, POST est souvent utilisé ici
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ids }),
+  })
+
+  if (!response.ok) {
+    throw new Error(`Erreur suppression multiple contacts: ${response.statusText}`)
   }
 }

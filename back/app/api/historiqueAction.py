@@ -16,7 +16,7 @@ from schemas.historiqueAction import (
 from utils.jsonResponse import response
 
 router = APIRouter(
-    prefix="/historique-actions",
+    prefix="/historiqueActions",
     tags=["HistoriqueActions"]
 )
 

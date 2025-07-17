@@ -1,26 +1,27 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import type React from "react"
 
 import {
   Building2,
   Users,
-  TrendingUp,
-  Calendar,
   Plus,
   Search,
-  Filter,
   Edit,
   Trash2,
-  MoreHorizontal,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { toast } from "@/hooks/use-toast"
-import Link from "next/link"
 import Navbar from "@/components/navbarLink/nav"
 import {
   Dialog,
@@ -42,88 +43,130 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 import type { Entreprise } from "@/types/Entreprise.type"
-import { createEntreprise, deleteEntreprise, getAllEntreprises, updateEntreprise } from "@/service/Entreprise.service"
+import type { Adresse } from "@/types/Adresse.type"
+import type { Utilisateur } from "@/types/Utilisateur.type"
+import {
+  createEntreprise,
+  deleteEntreprise,
+  getAllEntreprises,
+  updateEntreprise,
+} from "@/service/Entreprise.service"
+import { getAllAdresses, postAdresse } from "@/service/Adresse.service"
+import { fetchUtilisateurs } from "@/service/Utlisateur.service"
 
 export default function EntreprisesPage() {
   const [entreprises, setEntreprises] = useState<Entreprise[]>([])
+  const [adresses, setAdresses] = useState<Adresse[]>([])
+  const [utilisateurs, setUtilisateurs] = useState<Utilisateur[]>([])
+
   const [filteredEntreprises, setFilteredEntreprises] = useState<Entreprise[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [secteurFilter, setSecteurFilter] = useState("all")
+  const [searchTerm, setSearchTerm] = useState<string>("")
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isAddAdresseOpen, setIsAddAdresseOpen] = useState(false)
   const [currentEntreprise, setCurrentEntreprise] = useState<Entreprise | null>(null)
   const [formData, setFormData] = useState({
-    nom: "",
-    secteur: "",
-    adresse: "",
-    telephone: "",
-    email: "",
+    raisonSocial: "",
+    adresse_id: null as number | null,
+    telephoneStandard: "",
+    emailStandart: "",
+    utilisateur_id: null as number | null,
+  })
+  const [adresseForm, setAdresseForm] = useState({
+    ligneAdresse1: "",
+    ligneAdresse2: "",
+    ville: "",
+    cp: "",
+    pays: "",
   })
 
   useEffect(() => {
-    loadEntreprises()
+    const fetchData = async () => {
+      setIsLoading(true)
+      try {
+        const [entrepriseRes, adresseRes, utilisateurRes] = await Promise.all([
+          getAllEntreprises(),
+          getAllAdresses(),
+          fetchUtilisateurs()
+        ])
+        setEntreprises(entrepriseRes)
+        setAdresses(adresseRes?.data ?? [])
+        setUtilisateurs(utilisateurRes ?? [])
+      } catch (error) {
+        toast({ title: "Erreur", description: "Erreur lors du chargement des données", variant: "destructive" })
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchData()
   }, [])
 
-  useEffect(() => {
-    filterEntreprises()
-  }, [entreprises, searchTerm, secteurFilter])
-
-  const loadEntreprises = async () => {
+  const reloadEntreprises = async () => {
     try {
-      setIsLoading(true)
-      const data = await getAllEntreprises()
-      setEntreprises(data)
-    } catch (error) {
-      console.error("Erreur lors du chargement des entreprises:", error)
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger les entreprises",
-        variant: "destructive",
+      const res = await getAllEntreprises()
+      setEntreprises(res)
+    } catch {
+      toast({ title: "Erreur", description: "Impossible de recharger les entreprises", variant: "destructive" })
+    }
+  }
+
+  const reloadAdresses = async () => {
+    try {
+      const res = await getAllAdresses()
+      setAdresses(res?.data ?? [])
+    } catch {
+      toast({ title: "Erreur", description: "Impossible de recharger les adresses", variant: "destructive" })
+    }
+  }
+
+  useEffect(() => {
+    let filtered = [...entreprises]
+    if (searchTerm.trim() !== "") {
+      const search = searchTerm.toLowerCase()
+      filtered = filtered.filter((e) => {
+        const adresseStr = formatAdresse(getAdresseById(e.adresse_id)).toLowerCase()
+        const utilisateur = getUtilisateurById(e.utilisateur_id)
+        const utilisateurStr = utilisateur ? `${utilisateur.nom}`.toLowerCase() : ""
+        return (
+          e.raisonSocial.toLowerCase().includes(search) ||
+          (e.telephoneStandard?.toLowerCase().includes(search) ?? false) ||
+          (e.emailStandart?.toLowerCase().includes(search) ?? false) ||
+          adresseStr.includes(search) ||
+          utilisateurStr.includes(search)
+        )
       })
-    } finally {
-      setIsLoading(false)
     }
-  }
-
-  const filterEntreprises = () => {
-    let filtered = entreprises
-
-    // Filtrer par terme de recherche
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (entreprise) =>
-          entreprise.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          entreprise.secteur?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          entreprise.adresse?.toLowerCase().includes(searchTerm.toLowerCase()),
-      )
-    }
-
-    // Filtrer par secteur
-    if (secteurFilter !== "all") {
-      filtered = filtered.filter((entreprise) => entreprise.secteur === secteurFilter)
-    }
-
     setFilteredEntreprises(filtered)
-  }
+  }, [entreprises, searchTerm, adresses, utilisateurs])
 
-  const getSecteurs = () => {
-    const secteurs = entreprises.map((e) => e.secteur).filter(Boolean)
-    return [...new Set(secteurs)]
-  }
+  const getAdresseById = (id: number | null | undefined) => adresses.find((a) => a.id === id)
+  const getUtilisateurById = (id: number | null | undefined) => utilisateurs.find((u) => u.id === id)
+  // Bonne pratique pour afficher l'adresse complète
+  const formatAdresse = (adresse?: Adresse) =>
+    adresse
+      ? [
+          adresse.ligneAdresse1,
+          adresse.ligneAdresse2,
+          adresse.ville,
+          adresse.cp,
+          adresse.pays,
+        ]
+          .filter(Boolean)
+          .join(", ")
+      : "-"
 
   const handleAddEntreprise = () => {
+    setCurrentEntreprise(null)
     setFormData({
-      nom: "",
-      secteur: "",
-      adresse: "",
-      telephone: "",
-      email: "",
+      raisonSocial: "",
+      adresse_id: null,
+      telephoneStandard: "",
+      emailStandart: "",
+      utilisateur_id: null,
     })
     setIsAddModalOpen(true)
   }
@@ -131,11 +174,11 @@ export default function EntreprisesPage() {
   const handleEditEntreprise = (entreprise: Entreprise) => {
     setCurrentEntreprise(entreprise)
     setFormData({
-      nom: entreprise.nom,
-      secteur: entreprise.secteur || "",
-      adresse: entreprise.adresse || "",
-      telephone: entreprise.telephone || "",
-      email: entreprise.email || "",
+      raisonSocial: entreprise.raisonSocial,
+      adresse_id: entreprise.adresse_id,
+      telephoneStandard: entreprise.telephoneStandard || "",
+      emailStandart: entreprise.emailStandart || "",
+      utilisateur_id: entreprise.utilisateur_id || null,
     })
     setIsEditModalOpen(true)
   }
@@ -143,69 +186,79 @@ export default function EntreprisesPage() {
   const handleSubmitAdd = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      // TODO: Appeler l'API pour ajouter l'entreprise
-      await createEntreprise(formData);
-      console.log("Ajout entreprise:", formData)
-      toast({
-        title: "Succès",
-        description: "Entreprise ajoutée avec succès",
-      })
+      await createEntreprise(formData)
+      toast({ title: "Succès", description: "Entreprise ajoutée avec succès" })
       setIsAddModalOpen(false)
-      loadEntreprises()
+      reloadEntreprises()
     } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible d'ajouter l'entreprise",
-        variant: "destructive",
-      })
+      toast({ title: "Erreur", description: "Impossible d'ajouter l'entreprise", variant: "destructive" })
     }
   }
 
   const handleSubmitEdit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!currentEntreprise) return
-
     try {
-      // TODO: Appeler l'API pour modifier l'entreprise
-      await updateEntreprise(currentEntreprise.id_entreprise, formData);
-      console.log("Modification entreprise:", currentEntreprise.id_entreprise, formData)
-      toast({
-        title: "Succès",
-        description: "Entreprise modifiée avec succès",
-      })
+      await updateEntreprise(currentEntreprise.id, formData)
+      toast({ title: "Succès", description: "Entreprise modifiée avec succès" })
       setIsEditModalOpen(false)
-      loadEntreprises()
-    } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de modifier l'entreprise",
-        variant: "destructive",
-      })
+      reloadEntreprises()
+    } catch (error: any) {
+      const errorMessage = error?.message || "Impossible de modifier l'entreprise"
+      toast({ title: "Erreur", description: errorMessage, variant: "destructive" })
     }
   }
 
-  const handleDeleteEntreprise = async (entrepriseId: number) => {
+  const handleDeleteEntreprise = async (id: number) => {
     try {
-      // TODO: Appeler l'API pour supprimer l'entreprise
-      await deleteEntreprise(entrepriseId);
-      console.log("Suppression entreprise:", entrepriseId)
-      toast({
-        title: "Succès",
-        description: "Entreprise supprimée avec succès",
-      })
-      loadEntreprises()
+      await deleteEntreprise(id)
+      toast({ title: "Succès", description: "Entreprise supprimée avec succès" })
+      reloadEntreprises()
     } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de supprimer l'entreprise",
-        variant: "destructive",
-      })
+      toast({ title: "Erreur", description: "Impossible de supprimer l'entreprise", variant: "destructive" })
     }
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleAdresseChange = (adresseId: number | null) => {
+    setFormData((prev) => ({ ...prev, adresse_id: adresseId }))
+  }
+
+  const handleUtilisateurChange = (utilisateurId: number | null) => {
+    setFormData((prev) => ({ ...prev, utilisateur_id: utilisateurId }))
+  }
+
+  // Ajout d'une adresse
+  const handleAdresseInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setAdresseForm((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmitAdresse = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      const res = await postAdresse(adresseForm)
+      toast({ title: "Succès", description: "Adresse ajoutée avec succès" })
+      setIsAddAdresseOpen(false)
+      setAdresseForm({
+        ligneAdresse1: "",
+        ligneAdresse2: "",
+        ville: "",
+        cp: "",
+        pays: "",
+      })
+      reloadAdresses()
+      // Sélectionne la nouvelle adresse dans le formulaire entreprise
+      if (res?.data?.id) {
+        setFormData((prev) => ({ ...prev, adresse_id: res.data.id }))
+      }
+    } catch (error) {
+      toast({ title: "Erreur", description: "Impossible d'ajouter l'adresse", variant: "destructive" })
+    }
   }
 
   if (isLoading) {
@@ -223,8 +276,7 @@ export default function EntreprisesPage() {
     <div className="flex min-h-screen bg-gray-100">
       <Navbar />
       <div className="flex-1 p-6 space-y-6">
-        {/* En-tête */}
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Entreprises</h1>
             <p className="text-gray-600">Gérez toutes vos entreprises clientes</p>
@@ -235,71 +287,29 @@ export default function EntreprisesPage() {
           </Button>
         </div>
 
-        {/* Filtres et recherche */}
         <Card>
           <CardContent className="p-6">
-            <div className="flex gap-4 items-center">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input
-                    placeholder="Rechercher une entreprise..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-              <Select value={secteurFilter} onValueChange={setSecteurFilter}>
-                <SelectTrigger className="w-48">
-                  <Filter className="mr-2 h-4 w-4" />
-                  <SelectValue placeholder="Filtrer par secteur" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tous les secteurs</SelectItem>
-                  {getSecteurs().map((secteur) => (
-                    <SelectItem key={secteur} value={secteur}>
-                      {secteur}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Rechercher une entreprise..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
             </div>
           </CardContent>
         </Card>
 
-        {/* Statistiques */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total entreprises</p>
-                  <p className="text-2xl font-bold">{entreprises.length}</p>
-                </div>
-                <Building2 className="h-8 w-8 text-blue-600" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Secteurs</p>
-                  <p className="text-2xl font-bold">{getSecteurs().length}</p>
-                </div>
-                <TrendingUp className="h-8 w-8 text-green-600" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Résultats</p>
+                  <p className="text-sm text-gray-600">Total entreprises</p>
                   <p className="text-2xl font-bold">{filteredEntreprises.length}</p>
                 </div>
-                <Users className="h-8 w-8 text-purple-600" />
+                <Building2 className="h-10 w-10 text-blue-500" />
               </div>
             </CardContent>
           </Card>
@@ -307,264 +317,305 @@ export default function EntreprisesPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Actives</p>
-                  <p className="text-2xl font-bold">{filteredEntreprises.length}</p>
+                  <p className="text-sm text-gray-600">Total utilisateurs</p>
+                  <p className="text-2xl font-bold">{utilisateurs.length}</p>
                 </div>
-                <Calendar className="h-8 w-8 text-orange-600" />
+                <Users className="h-10 w-10 text-green-500" />
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Liste des entreprises */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredEntreprises.map((entreprise) => (
-            <Card key={entreprise.id_entreprise} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <Link href={`/entreprise/${entreprise.id_entreprise}`} className="flex items-center space-x-3 flex-1">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
-                      <Building2 className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg">{entreprise.nom}</CardTitle>
-                      <CardDescription>{entreprise.secteur}</CardDescription>
-                    </div>
-                  </Link>
-                  <div className="flex items-center space-x-2">
-                    <Badge variant="secondary" className="bg-green-100 text-green-800">
-                      Actif
-                    </Badge>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => handleEditEntreprise(entreprise)}>
-                          <Edit className="mr-2 h-4 w-4" />
-                          Modifier
-                        </DropdownMenuItem>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                              <Trash2 className="mr-2 h-4 w-4" />
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white rounded-md shadow">
+            <thead className="bg-gray-50 border-b">
+              <tr>
+                <th className="text-left p-3">Raison sociale</th>
+                <th className="text-left p-3">Adresse</th>
+                <th className="text-left p-3">Téléphone</th>
+                <th className="text-left p-3">Email</th>
+                <th className="text-left p-3">Utilisateur</th>
+                <th className="text-right p-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredEntreprises.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="text-center p-4 text-gray-500">
+                    Aucune entreprise trouvée.
+                  </td>
+                </tr>
+              )}
+              {filteredEntreprises.map((entreprise) => {
+                const adresse = getAdresseById(entreprise.adresse_id)
+                const utilisateur = getUtilisateurById(entreprise.utilisateur_id)
+                return (
+                  <tr key={entreprise.id} className="border-b hover:bg-gray-50">
+                    <td className="p-3">{entreprise.raisonSocial}</td>
+                    <td className="p-3">{formatAdresse(adresse)}</td>
+                    <td className="p-3">{entreprise.telephoneStandard || "-"}</td>
+                    <td className="p-3">{entreprise.emailStandart || "-"}</td>
+                    <td className="p-3">{utilisateur ? `${utilisateur.nom}` : "-"}</td>
+                    <td className="p-3 text-right space-x-2">
+                      <Button size="sm" variant="outline" onClick={() => handleEditEntreprise(entreprise)}>
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="sm" variant="destructive">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Êtes-vous sûr de vouloir supprimer cette entreprise ?
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Annuler</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDeleteEntreprise(entreprise.id)}>
                               Supprimer
-                            </DropdownMenuItem>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Êtes-vous sûr de vouloir supprimer l'entreprise "{entreprise.nom}" ? Cette action est
-                                irréversible et supprimera également tous les contacts et opportunités associés.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Annuler</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => handleDeleteEntreprise(entreprise.id_entreprise)}
-                                className="bg-red-600 hover:bg-red-700"
-                              >
-                                Supprimer
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex items-center space-x-2">
-                    <Building2 className="h-4 w-4" />
-                    <span className="truncate">{entreprise.adresse}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="font-medium">ID:</span>
-                    <span>{entreprise.id_entreprise}</span>
-                  </div>
-                </div>
-                <div className="mt-4 pt-4 border-t">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Contacts</span>
-                    <span className="font-medium">-</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Opportunités</span>
-                    <span className="font-medium">-</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
 
-        {filteredEntreprises.length === 0 && !isLoading && (
-          <Card>
-            <CardContent className="p-12 text-center">
-              <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Aucune entreprise trouvée</h3>
-              <p className="text-gray-500 mb-4">
-                {searchTerm || secteurFilter !== "all"
-                  ? "Aucune entreprise ne correspond à vos critères de recherche."
-                  : "Commencez par ajouter votre première entreprise."}
-              </p>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Ajouter une entreprise
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-        {/* Modal Ajouter Entreprise */}
         <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>Ajouter une entreprise</DialogTitle>
-              <DialogDescription>Créez une nouvelle entreprise dans votre CRM</DialogDescription>
+              <DialogDescription>Remplissez le formulaire pour ajouter une nouvelle entreprise.</DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmitAdd} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="nom">Nom de l'entreprise *</Label>
-                  <Input
-                    id="nom"
-                    name="nom"
-                    value={formData.nom}
-                    onChange={handleInputChange}
-                    placeholder="Ex: Tech Solutions"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="secteur">Secteur d'activité</Label>
-                  <Input
-                    id="secteur"
-                    name="secteur"
-                    value={formData.secteur}
-                    onChange={handleInputChange}
-                    placeholder="Ex: Technologie"
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="adresse">Adresse</Label>
-                <Textarea
-                  id="adresse"
-                  name="adresse"
-                  value={formData.adresse}
+              <div>
+                <Label htmlFor="raisonSocial">Raison sociale</Label>
+                <Input
+                  id="raisonSocial"
+                  name="raisonSocial"
+                  value={formData.raisonSocial}
                   onChange={handleInputChange}
-                  placeholder="Adresse complète de l'entreprise"
-                  rows={2}
+                  required
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="telephone">Téléphone</Label>
-                  <Input
-                    id="telephone"
-                    name="telephone"
-                    value={formData.telephone}
-                    onChange={handleInputChange}
-                    placeholder="+33 1 23 45 67 89"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="contact@entreprise.com"
-                  />
+              <div>
+                <Label htmlFor="adresse">Adresse</Label>
+                <div className="flex gap-2">
+                  <Select
+                    value={formData.adresse_id !== null ? String(formData.adresse_id) : ""}
+                    onValueChange={(val) => handleAdresseChange(val ? Number(val) : null)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner une adresse" />
+                    </SelectTrigger>
+                    <SelectContent side="bottom" alignOffset={-4}>
+                      {adresses.map((adresse) => (
+                        <SelectItem key={adresse.id} value={adresse.id.toString()}>
+                          {formatAdresse(adresse)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button type="button" variant="outline" onClick={() => setIsAddAdresseOpen(true)}>
+                    + Ajouter adresse
+                  </Button>
                 </div>
               </div>
+              <div>
+                <Label htmlFor="telephoneStandard">Téléphone</Label>
+                <Input
+                  id="telephoneStandard"
+                  name="telephoneStandard"
+                  value={formData.telephoneStandard}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="emailStandart">Email</Label>
+                <Input
+                  id="emailStandart"
+                  name="emailStandart"
+                  type="email"
+                  value={formData.emailStandart}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="utilisateur">Utilisateur</Label>
+                <Select
+                  value={formData.utilisateur_id !== null ? String(formData.utilisateur_id) : ""}
+                  onValueChange={(val) => handleUtilisateurChange(val ? Number(val) : null)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner un utilisateur" />
+                  </SelectTrigger>
+                  <SelectContent side="bottom" alignOffset={-4}>
+                    {utilisateurs.map((utilisateur) => (
+                      <SelectItem key={utilisateur.id} value={utilisateur.id.toString()}>
+                        {utilisateur.nom} {utilisateur.prenom}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setIsAddModalOpen(false)}>
-                  Annuler
-                </Button>
-                <Button type="submit">Ajouter l'entreprise</Button>
+                <Button type="submit">Ajouter</Button>
               </DialogFooter>
             </form>
           </DialogContent>
         </Dialog>
 
-        {/* Modal Modifier Entreprise */}
-        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-          <DialogContent className="sm:max-w-[600px]">
+        {/* Modal ajout adresse */}
+        <Dialog open={isAddAdresseOpen} onOpenChange={setIsAddAdresseOpen}>
+          <DialogContent>
             <DialogHeader>
-              <DialogTitle>Modifier l'entreprise</DialogTitle>
-              <DialogDescription>Modifiez les informations de l'entreprise {currentEntreprise?.nom}</DialogDescription>
+              <DialogTitle>Ajouter une adresse</DialogTitle>
+              <DialogDescription>Remplissez les champs pour ajouter une nouvelle adresse.</DialogDescription>
             </DialogHeader>
-            <form onSubmit={handleSubmitEdit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="edit-nom">Nom de l'entreprise *</Label>
-                  <Input
-                    id="edit-nom"
-                    name="nom"
-                    value={formData.nom}
-                    onChange={handleInputChange}
-                    placeholder="Ex: Tech Solutions"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-secteur">Secteur d'activité</Label>
-                  <Input
-                    id="edit-secteur"
-                    name="secteur"
-                    value={formData.secteur}
-                    onChange={handleInputChange}
-                    placeholder="Ex: Technologie"
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-adresse">Adresse</Label>
-                <Textarea
-                  id="edit-adresse"
-                  name="adresse"
-                  value={formData.adresse}
-                  onChange={handleInputChange}
-                  placeholder="Adresse complète de l'entreprise"
-                  rows={2}
+            <form onSubmit={handleSubmitAdresse} className="space-y-3">
+              <div>
+                <Label htmlFor="ligneAdresse1">Ligne adresse 1</Label>
+                <Input
+                  id="ligneAdresse1"
+                  name="ligneAdresse1"
+                  value={adresseForm.ligneAdresse1}
+                  onChange={handleAdresseInputChange}
+                  required
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="edit-telephone">Téléphone</Label>
-                  <Input
-                    id="edit-telephone"
-                    name="telephone"
-                    value={formData.telephone}
-                    onChange={handleInputChange}
-                    placeholder="+33 1 23 45 67 89"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-email">Email</Label>
-                  <Input
-                    id="edit-email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="contact@entreprise.com"
-                  />
-                </div>
+              <div>
+                <Label htmlFor="ligneAdresse2">Ligne adresse 2</Label>
+                <Input
+                  id="ligneAdresse2"
+                  name="ligneAdresse2"
+                  value={adresseForm.ligneAdresse2}
+                  onChange={handleAdresseInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="ville">Ville</Label>
+                <Input
+                  id="ville"
+                  name="ville"
+                  value={adresseForm.ville}
+                  onChange={handleAdresseInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="cp">Code postal</Label>
+                <Input
+                  id="cp"
+                  name="cp"
+                  value={adresseForm.cp}
+                  onChange={handleAdresseInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="pays">Pays</Label>
+                <Input
+                  id="pays"
+                  name="pays"
+                  value={adresseForm.pays}
+                  onChange={handleAdresseInputChange}
+                  required
+                />
               </div>
               <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setIsEditModalOpen(false)}>
-                  Annuler
-                </Button>
-                <Button type="submit">Modifier l'entreprise</Button>
+                <Button type="submit">Ajouter adresse</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Modifier l'entreprise</DialogTitle>
+              <DialogDescription>Modifiez les informations de l'entreprise.</DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmitEdit} className="space-y-4">
+              <div>
+                <Label htmlFor="raisonSocialEdit">Raison sociale</Label>
+                <Input
+                  id="raisonSocialEdit"
+                  name="raisonSocial"
+                  value={formData.raisonSocial}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="adresseEdit">Adresse</Label>
+                <div className="flex gap-2">
+                  <Select
+                    value={formData.adresse_id !== null ? String(formData.adresse_id) : ""}
+                    onValueChange={(val) => handleAdresseChange(val ? Number(val) : null)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner une adresse" />
+                    </SelectTrigger>
+                    <SelectContent side="bottom" alignOffset={-4}>
+                      {adresses.map((adresse) => (
+                        <SelectItem key={adresse.id} value={adresse.id.toString()}>
+                          {formatAdresse(adresse)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button type="button" variant="outline" onClick={() => setIsAddAdresseOpen(true)}>
+                    + Ajouter adresse
+                  </Button>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="telephoneStandardEdit">Téléphone</Label>
+                <Input
+                  id="telephoneStandardEdit"
+                  name="telephoneStandard"
+                  value={formData.telephoneStandard}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="emailStandartEdit">Email</Label>
+                <Input
+                  id="emailStandartEdit"
+                  name="emailStandart"
+                  type="email"
+                  value={formData.emailStandart}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="utilisateurEdit">Utilisateur</Label>
+                <Select
+                  value={formData.utilisateur_id !== null ? String(formData.utilisateur_id) : ""}
+                  onValueChange={(val) => handleUtilisateurChange(val ? Number(val) : null)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner un utilisateur" />
+                  </SelectTrigger>
+                  <SelectContent side="bottom" alignOffset={-4}>
+                    {utilisateurs.map((utilisateur) => (
+                      <SelectItem key={utilisateur.id} value={utilisateur.id.toString()}>
+                        {utilisateur.nom} {utilisateur.prenom}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <DialogFooter>
+                <Button type="submit">Modifier</Button>
               </DialogFooter>
             </form>
           </DialogContent>

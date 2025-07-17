@@ -23,5 +23,6 @@ class CampagneRead(BaseModel):
     description: Optional[str] = None
     projetProspection_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True  # ✅ Nécessaire pour .from_orm() en Pydantic v2
+    }

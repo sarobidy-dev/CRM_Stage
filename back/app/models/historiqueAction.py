@@ -10,11 +10,11 @@ class HistoriqueAction(Base):
     commentaire = Column(Text, nullable=True)
     action=Column(String(45), nullable=False)
     pourcentageVente= Column(Double, nullable=True)
-    #forey key 
+    
     entreprise_id = Column(Integer, ForeignKey("entreprise.id", ondelete="CASCADE"))
     campagne_id = Column(Integer, ForeignKey("campagne.id", ondelete="CASCADE"))
     utilisateur_id = Column(Integer, ForeignKey("utilisateur.id",ondelete="CASCADE"))
-    # Relation
+    
     utilisateur = relationship("Utilisateur", back_populates="historique_actions")
     campagne = relationship("Campagne", back_populates="historique_actions")
     entreprise = relationship("Entreprise", back_populates="historique_actions")

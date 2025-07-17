@@ -3,21 +3,92 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
-import { LayoutDashboard, MessageSquare, Users, Target, Building2, User, Menu, PhoneCall } from "lucide-react"
+import {
+  LayoutDashboard,
+  MessageSquare,
+  Users,
+  Target,
+  Building2,
+  User,
+  Menu,
+  PhoneCall,
+  BookOpen,
+  Briefcase,
+  Calendar,
+  ClipboardList,
+  DollarSign,
+  FileText,
+  Globe,
+  Home,
+  Inbox,
+  Key,
+  Layers,
+  MapPin,
+  Settings,
+  Shield,
+  ShoppingCart,
+  Star,
+  Tag,
+  ThumbsUp,
+  Truck,
+  UserCheck,
+  UserPlus,
+  Zap,
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+
+// Exemple d'association lettre -> icône
+const letterIcons: Record<string, React.ComponentType<any>> = {
+  A: BookOpen,
+  B: Briefcase,
+  C: Calendar,
+  D: ClipboardList,
+  E: DollarSign,
+  F: FileText,
+  G: Globe,
+  H: Home,
+  I: Inbox,
+  J: Key,
+  K: Layers,
+  L: MapPin,
+  M: MessageSquare,
+  N: Settings,
+  O: Shield,
+  P: ShoppingCart,
+  Q: Star,
+  R: Tag,
+  S: ThumbsUp,
+  T: Truck,
+  U: UserCheck,
+  V: UserPlus,
+  W: Zap,
+  X: LayoutDashboard,
+  Y: Target,
+  Z: Building2,
+}
 
 const links = {
   Management: [
     { name: "Tableau de bord", href: "/", icon: LayoutDashboard },
     { name: "Interaction", href: "/interaction", icon: MessageSquare },
     { name: "Contact", href: "/contacts", icon: Users },
-    { name: "Opportunité", href: "/opportunnite", icon: Target },
+    { name: "Projet prospection", href: "/projetProspection", icon: Target },
     { name: "Entreprise", href: "/entreprise", icon: Building2 },
     { name: "Utilisateur", href: "/utilisateur", icon: User },
-     { name: "Tache", href: "/tache", icon: PhoneCall },
+    { name: "Tache", href: "/tache", icon: PhoneCall },
   ],
+  Historique: [
+    { name: "Historques d'action", href: "/historique", icon: Target },
+    { name: "Campagne", href: "/campagne", icon: Building2 },
+    { name: "Utilisateur", href: "/utilisateur", icon: User },
+  ],
+}
+
+const getIconForName = (name: string, defaultIcon: React.ComponentType<any>) => {
+  const firstLetter = name.charAt(0).toUpperCase()
+  return letterIcons[firstLetter] || defaultIcon
 }
 
 const Navbar = () => {
@@ -37,8 +108,9 @@ const Navbar = () => {
           <div key={section}>
             <h2 className="text-sm text-gray-400 mb-3 font-medium uppercase tracking-wider">{section}</h2>
             <ul className="space-y-1">
-              {items.map(({ name, href, icon: Icon }) => {
+              {items.map(({ name, href, icon }) => {
                 const isActive = pathname === href
+                const Icon = getIconForName(name, icon)
                 return (
                   <li key={name}>
                     <Link

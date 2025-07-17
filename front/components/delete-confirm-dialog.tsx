@@ -1,5 +1,4 @@
 "use client"
-
 import { useState } from "react"
 import { AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -89,7 +88,6 @@ export function DeleteConfirmDialog({
       }
     } catch (error: any) {
       console.warn("Erreur lors de la suppression :", error)
-
       let errorMessage = "Erreur lors de la suppression du contact"
 
       if (error.name === "HttpError") {
@@ -138,8 +136,8 @@ export function DeleteConfirmDialog({
           <p className="text-sm text-gray-700">
             {isMultiple ? (
               <>
-                Êtes-vous sûr de vouloir supprimer <strong>{count} contacts</strong> sélectionnés ? Cette action supprimera
-                définitivement tous les contacts sélectionnés et leurs données associées.
+                Êtes-vous sûr de vouloir supprimer <strong>{count} contacts</strong> sélectionnés ? Cette action
+                supprimera définitivement tous les contacts sélectionnés et leurs données associées.
               </>
             ) : (
               <>

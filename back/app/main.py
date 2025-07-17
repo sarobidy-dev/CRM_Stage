@@ -1,3 +1,4 @@
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -17,7 +18,8 @@ from api import (
     historiqueAction,
     projetProspection,
     projetUtilisateur,
-    utilisateur   
+    utilisateur,   
+    email_controller
 )
 
 # Création du dossier media si nécessaire
@@ -48,7 +50,7 @@ app.include_router(historiqueAction.router)
 app.include_router(projetProspection.router)
 app.include_router(projetUtilisateur.router)
 app.include_router(utilisateur.router)
-
+app.include_router(email_controller.router)
 
 app.mount("/media", StaticFiles(directory="media"), name="media")
 

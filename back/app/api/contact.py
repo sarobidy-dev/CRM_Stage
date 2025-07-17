@@ -24,11 +24,10 @@ router = APIRouter(
 @router.post("/", response_model=dict)
 async def create(item: ContactCreate, db: AsyncSession = Depends(get_async_session)):
     try:
-        obj = await create_contact(db, item.dict())
-        return response(True, "Contact créé", ContactRead.from_orm(obj).dict())
+        obj = await create_contact(db, item.model_dump())  # ⬅️ PAS .dict() en Pydantic v2
+        return response(True, "Contact créé", ContactRead.from_orm(obj).model_dump())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
 
 @router.get("/", response_model=dict)
 async def get_all(db: AsyncSession = Depends(get_async_session)):

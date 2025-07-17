@@ -5,6 +5,8 @@
 //     email: string
 // }
 export interface Utilisateur{
+  id: number | null | undefined;
+  prenom: any;
   id_utilisateur: any;
   nom: string,
   email: string,
