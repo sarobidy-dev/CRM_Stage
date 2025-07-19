@@ -1,43 +1,41 @@
 "use client"
+
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Edit, Trash2, Plus } from "lucide-react"
+import { Trash2 } from "lucide-react"
 import { toast } from "@/hooks/use-toast"
 import Navbar from "@/components/navbarLink/nav"
-import { createHistorique, deleteHistorique, getAllHistoriques, updateHistorique } from "@/service/historiqueAction.service"
-import { HistoriqueAction } from "@/types/HistoriqueAction.type"
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts"
+import { deleteHistorique, getAllHistoriques } from "@/service/historiqueAction.service"
+import { HistoriqueAction } from "@/types/historiqueAction.type"
 import { Progress } from "@/components/ui/progress"
+import { getAllCampagnes } from "@/service/campagne.service"
+import { Campagne } from "@/types/campagne.type"
+
+type FilterType = "appel" | "email"
 
 export default function HistoriquePage() {
   const [historiques, setHistoriques] = useState<HistoriqueAction[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [currentHistorique, setCurrentHistorique] = useState<HistoriqueAction | null>(null)
-  const [formData, setFormData] = useState({
-    date: "",
-    commentaire: "",
-    action: "",
-    pourcentageVente: 0,
-    entreprise_id: 1,
-    campagne_id: 1,
-    utilisateur_id: 1,
-  })
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null)
+  const [selectedHistorique, setSelectedHistorique] = useState<HistoriqueAction | null>(null)
+  const [filterType, setFilterType] = useState<FilterType>("appel")
+  const [campagnes, setCampagnes] = useState<Campagne[]>([])
 
-  useEffect(() => {
-    reloadHistoriques()
-  }, [])
+  const reloadCampagnes = async () => {
+    try {
+      const res = await getAllCampagnes()
+      setCampagnes(res.data)
+    } catch {
+      toast({ title: "Erreur", description: "Impossible de charger les campagnes", variant: "destructive" })
+    }
+  }
 
   const reloadHistoriques = async () => {
     setIsLoading(true)
@@ -51,151 +49,153 @@ export default function HistoriquePage() {
     }
   }
 
-  const handleAddHistorique = () => {
-    setCurrentHistorique(null)
-    setFormData({
-      date: "",
-      commentaire: "",
-      action: "",
-      pourcentageVente: 0,
-      entreprise_id: 1,
-      campagne_id: 1,
-      utilisateur_id: 1,
-    })
-    setIsAddModalOpen(true)
-  }
+  useEffect(() => {
+    reloadCampagnes()
+    reloadHistoriques()
+  }, [])
 
-  const handleEditHistorique = (historique: HistoriqueAction) => {
-    setCurrentHistorique(historique)
-    setFormData({
-      date: historique.date,
-      commentaire: historique.commentaire || "",
-      action: historique.action,
-      pourcentageVente: historique.pourcentageVente || 0,
-      entreprise_id: historique.entreprise_id,
-      campagne_id: historique.campagne_id,
-      utilisateur_id: historique.utilisateur_id,
-    })
-    setIsEditModalOpen(true)
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: name === "pourcentageVente" ? parseFloat(value) : value }))
-  }
-
-  const handleSubmitAdd = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const confirmDelete = async () => {
+    if (deleteConfirmId === null) return
     try {
-      await createHistorique(formData)
-      toast({ title: "Succès", description: "Historique ajouté avec succès" })
-      setIsAddModalOpen(false)
-      reloadHistoriques()
-    } catch {
-      toast({ title: "Erreur", description: "Impossible d'ajouter l'historique", variant: "destructive" })
-    }
-  }
-
-  const handleSubmitEdit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!currentHistorique) return
-    try {
-      await updateHistorique(currentHistorique.id, formData)
-      toast({ title: "Succès", description: "Historique modifié avec succès" })
-      setIsEditModalOpen(false)
-      reloadHistoriques()
-    } catch {
-      toast({ title: "Erreur", description: "Impossible de modifier l'historique", variant: "destructive" })
-    }
-  }
-
-  const handleDeleteHistorique = async (id: number) => {
-    try {
-      await deleteHistorique(id)
-      toast({ title: "Succès", description: "Historique supprimé avec succès" })
+      await deleteHistorique(deleteConfirmId)
+      toast({ title: "Succès", description: "Historique supprimé" })
       reloadHistoriques()
     } catch {
       toast({ title: "Erreur", description: "Impossible de supprimer l'historique", variant: "destructive" })
+    } finally {
+      setDeleteConfirmId(null)
     }
   }
 
-  const chartData = historiques.map(h => ({
-    name: h.action,
-    pourcentageVente: h.pourcentageVente ?? 0,
-  }))
+  const filteredHistoriques = historiques.filter(h =>
+    filterType === "appel"
+      ? h.action.toLowerCase().includes("appel")
+      : h.action.toLowerCase().includes("email")
+  )
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-50">
       <Navbar />
-      <main className="flex-1 p-6 space-y-8">
-        <section className="flex items-center justify-between">
+      <main className="flex-1 p-8 w-full">
+        <header className="mb-8 flex flex-col sm:flex-col items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Historiques d'action</h1>
-            <p className="text-gray-600">Nombre total : <span className="font-bold">{historiques.length}</span></p>
+            <h1 className="text-4xl font-extrabold text-primary">Historiques d'action</h1>
+            <p className="text-muted-foreground mt-1">
+              Total : <span className="font-semibold text-accent-foreground">{filteredHistoriques.length}</span>
+            </p>
           </div>
-          <Button onClick={handleAddHistorique} className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
-            Nouvel historique
-          </Button>
-        </section>
+          <div className="flex space-x-4">
+            <Button
+              variant={filterType === "appel" ? "default" : "outline"}
+              onClick={() => setFilterType("appel")}
+              className="capitalize"
+            >
+              Appels
+            </Button>
+            <Button
+              variant={filterType === "email" ? "default" : "outline"}
+              onClick={() => setFilterType("email")}
+              className="capitalize"
+            >
+              Emails
+            </Button>
+          </div>
+        </header>
 
-        {/* Diagramme */}
-        <section className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-lg font-semibold mb-4 text-gray-800">Diagramme des probabilités de vente</h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis domain={[0, 100]} />
-              <Tooltip />
-              <Bar dataKey="pourcentageVente" fill="#2563eb" />
-            </BarChart>
-          </ResponsiveContainer>
-        </section>
-
-        {/* Liste */}
-        <section className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-lg font-semibold mb-4 text-gray-800">Liste des historiques</h2>
+        {/* Tableau des historiques */}
+        <section className="bg-white rounded-lg shadow p-6 w-full overflow-x-auto">
           {isLoading ? (
-            <div className="text-center py-10 text-gray-500">Chargement des historiques...</div>
+            <p className="text-center text-gray-500 text-lg">Chargement...</p>
+          ) : filteredHistoriques.length === 0 ? (
+            <p className="text-center text-gray-500 text-lg">Aucun historique {filterType} trouvé.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {historiques.length === 0 && (
-                <div className="col-span-full text-center p-4 text-gray-500">
-                  Aucun historique trouvé.
-                </div>
-              )}
-              {historiques.map((h) => (
-                <div key={h.id} className="border rounded-lg p-4 bg-gray-50 shadow flex flex-col gap-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-blue-700">{h.action}</span>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={() => handleEditHistorique(h)}>
-                        <Edit className="h-4 w-4" />
+            <table className="min-w-full text-sm text-left border">
+              <thead className="bg-gray-100 text-xs uppercase text-gray-600 border-b">
+                <tr>
+                  <th className="px-4 py-2">Action</th>
+                  <th className="px-4 py-2">Date</th>
+                  <th className="px-4 py-2">Commentaire</th>
+                  <th className="px-4 py-2">Entreprise</th>
+                  <th className="px-4 py-2">Campagne</th>
+                  <th className="px-4 py-2">Utilisateur</th>
+                  <th className="px-4 py-2">Pourcentage Vente</th>
+                  <th className="px-4 py-2">Suppression</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredHistoriques.map((h) => (
+                  <tr key={h.id} className="border-b hover:bg-gray-50">
+                    <td className="px-4 py-2 font-semibold text-blue-700">{h.action}</td>
+                    <td className="px-4 py-2">{new Date(h.date).toLocaleDateString()}</td>
+                    <td className="px-4 py-2">{h.commentaire || <em>-</em>}</td>
+                    <td className="px-4 py-2 text-indigo-600">{h.entreprise?.nom ?? `ID ${h.entreprise_id}`}</td>
+                    <td className="px-4 py-2 text-teal-600">{h.campagne?.libelle ?? `ID ${h.campagne_id}`}</td>
+                    <td className="px-4 py-2 text-orange-600">{h.utilisateur?.nom ?? `ID ${h.utilisateur_id}`}</td>
+                    <td className="px-4 py-2">
+                      <div className="mb-1">{h.pourcentageVente ?? 0}%</div>
+                      <Progress value={h.pourcentageVente ?? 0} className="h-2 w-24 rounded" />
+                    </td>
+                    <td className="px-4 py-2 flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setSelectedHistorique(h)}
+                        aria-label={`Voir l'historique ${h.id}`}
+                      >
+                        Voir
                       </Button>
-                      <Button size="sm" variant="destructive" onClick={() => handleDeleteHistorique(h.id)}>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => setDeleteConfirmId(h.id)}
+                        aria-label={`Supprimer l'historique ${h.action}`}
+                      >
                         <Trash2 className="h-4 w-4" />
                       </Button>
-                    </div>
-                  </div>
-                  <div className="text-sm text-gray-600">Date : <span className="font-medium">{h.date}</span></div>
-                  <div className="text-sm text-gray-600">Commentaire : <span className="font-medium">{h.commentaire || "-"}</span></div>
-                  <div className="text-sm text-gray-600">Pourcentage Vente :</div>
-                  <Progress value={h.pourcentageVente ?? 0} className="h-2" />
-                  <div className="text-xs text-right text-gray-500">
-                    {h.pourcentageVente ?? 0}%
-                  </div>
-                  <div className="text-sm text-gray-600">Entreprise ID : <span className="font-medium">{h.entreprise_id}</span></div>
-                  <div className="text-sm text-gray-600">Campagne ID : <span className="font-medium">{h.campagne_id}</span></div>
-                  <div className="text-sm text-gray-600">Utilisateur ID : <span className="font-medium">{h.utilisateur_id}</span></div>
-                </div>
-              ))}
-            </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
         </section>
 
-        {/* Modals inchangés */}
-        {/* ... [Les deux Dialogs sont inchangés, tu peux garder ceux de ton code actuel] ... */}
+        {/* Dialog de suppression */}
+        <Dialog open={deleteConfirmId !== null} onOpenChange={() => setDeleteConfirmId(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirmer la suppression</DialogTitle>
+            </DialogHeader>
+            <p>Êtes-vous sûr de vouloir supprimer cet historique ? Cette action est irréversible.</p>
+            <DialogFooter className="flex gap-2 justify-end">
+              <Button variant="ghost" onClick={() => setDeleteConfirmId(null)}>Annuler</Button>
+              <Button variant="destructive" onClick={confirmDelete}>Supprimer</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Dialog de détails */}
+        <Dialog open={selectedHistorique !== null} onOpenChange={() => setSelectedHistorique(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Détail de l’historique</DialogTitle>
+            </DialogHeader>
+            {selectedHistorique && (
+              <div className="space-y-2 text-sm text-gray-700">
+                <p><strong>Action :</strong> {selectedHistorique.action}</p>
+                <p><strong>Date :</strong> {new Date(selectedHistorique.date).toLocaleString()}</p>
+                <p><strong>Commentaire :</strong> {selectedHistorique.commentaire || <em>Aucun</em>}</p>
+                <p><strong>Entreprise :</strong> {selectedHistorique.entreprise?.nom ?? `ID ${selectedHistorique.entreprise_id}`}</p>
+                <p><strong>Campagne :</strong> {selectedHistorique.campagne?.libelle ?? `ID ${selectedHistorique.campagne_id}`}</p>
+                <p><strong>Utilisateur :</strong> {selectedHistorique.utilisateur?.nom ?? `ID ${selectedHistorique.utilisateur_id}`}</p>
+                <p><strong>Pourcentage vente :</strong> {selectedHistorique.pourcentageVente ?? 0}%</p>
+              </div>
+            )}
+            <DialogFooter className="flex justify-end pt-4">
+              <Button onClick={() => setSelectedHistorique(null)}>Fermer</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   )

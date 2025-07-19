@@ -1,4 +1,4 @@
-import { ApiResponse, HistoriqueAction } from "@/types/HistoriqueAction.type"
+import { ApiResponse, HistoriqueAction } from "@/types/historiqueAction.type"
 
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
@@ -17,10 +17,25 @@ export async function createHistorique(data: Omit<HistoriqueAction, "id">): Prom
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
-  })
-  if (!res.ok) throw new Error("Erreur lors de la création de l'historique")
+
+    
+  } )
+    console.log("donnees",data);
+  if (!res.ok) {
+    let errorMessage = "Erreur lors de la création de l'historique"
+    try {
+      const errorData = await res.json()
+      errorMessage = errorData.message || JSON.stringify(errorData)
+    } catch (e) {
+      // ignore erreur JSON parse
+    }
+    throw new Error(errorMessage)
+  }
+
   return await res.json()
 }
+
+
 
 export async function updateHistorique(id: number, data: Partial<HistoriqueAction>): Promise<ApiResponse<HistoriqueAction>> {
   const res = await fetch(`${apiUrl}/historiqueActions/${id}`, {

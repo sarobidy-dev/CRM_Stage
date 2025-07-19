@@ -39,7 +39,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
-// Exemple d'association lettre -> icône
+// Association lettre -> icône
 const letterIcons: Record<string, React.ComponentType<any>> = {
   A: BookOpen,
   B: Briefcase,
@@ -71,18 +71,19 @@ const letterIcons: Record<string, React.ComponentType<any>> = {
 
 const links = {
   Management: [
-    { name: "Tableau de bord", href: "/", icon: LayoutDashboard },
-    { name: "Interaction", href: "/interaction", icon: MessageSquare },
+    { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
+
     { name: "Contact", href: "/contacts", icon: Users },
     { name: "Projet prospection", href: "/projetProspection", icon: Target },
     { name: "Entreprise", href: "/entreprise", icon: Building2 },
+        { name: "Campagne", href: "/campagne", icon: Building2 },
     { name: "Utilisateur", href: "/utilisateur", icon: User },
-    { name: "Tache", href: "/tache", icon: PhoneCall },
+
   ],
   Historique: [
     { name: "Historques d'action", href: "/historique", icon: Target },
-    { name: "Campagne", href: "/campagne", icon: Building2 },
-    { name: "Utilisateur", href: "/utilisateur", icon: User },
+
+
   ],
 }
 
@@ -103,7 +104,7 @@ const Navbar = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-6 space-y-6">
+      <nav className="flex-1 p-6 space-y-6 overflow-y-auto">
         {Object.entries(links).map(([section, items]) => (
           <div key={section}>
             <h2 className="text-sm text-gray-400 mb-3 font-medium uppercase tracking-wider">{section}</h2>
@@ -154,7 +155,10 @@ const Navbar = () => {
               <Menu className="w-5 h-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-64 p-0 bg-[#0d1530] border-gray-700">
+          <SheetContent
+            side="left"
+            className="w-64 p-0 bg-[#0d1530] border-gray-700 overflow-y-auto"
+          >
             <NavContent />
           </SheetContent>
         </Sheet>

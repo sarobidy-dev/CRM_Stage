@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, use } from "react"
 import { Search, Filter, Plus, MoreHorizontal, Mail, Edit, Trash2, MessageSquare, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,6 +18,11 @@ import { getAllEntreprises } from "@/service/Entreprise.service"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import Navbar from "@/components/navbarLink/nav"
+import AddHistoriqueDialog from "@/components/DialogueHistorique"
+import { log } from "node:console"
+import { getAllCampagnes } from "@/service/campagne.service"
+import { toast } from "@/hooks/use-toast"
+import { Campagne } from "@/types/Campagne.type"
 
 interface Contact {
   id: number
@@ -51,12 +56,34 @@ export default function ContactsPage() {
   const [entreprises, setEntreprises] = useState<Entreprise[]>([])
 
   // Dialog states
+  const [utilisateur, setUtilisateur] = useState<{ id: number }>({ id: 1 });
   const [showContactForm, setShowContactForm] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [showMessageDialog, setShowMessageDialog] = useState(false)
   const [showFilterDialog, setShowFilterDialog] = useState(false)
   const [editingContact, setEditingContact] = useState<Contact | null>(null)
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null)
+  const [campagnes, setCampagnes] = useState<Campagne[]>([])
+  useEffect(() => {
+    const fetchCampagnes = async () => {
+      try {
+        const res = await getAllCampagnes()
+        setCampagnes(res.data)
+        console.log("Campagnes loaded:", res.data);
+
+      } catch {
+        toast({ title: "Erreur", description: "Impossible de charger les campagnes", variant: "destructive" })
+      } finally {
+
+      }
+    }
+    fetchCampagnes();
+  }, []);
+
+
+
+
+
 
   // Filter state
   const [activeFilters, setActiveFilters] = useState<FilterOptions>({
@@ -310,9 +337,20 @@ export default function ContactsPage() {
                     <Trash2 className="h-4 w-4 mr-2" />
                     Supprimer
                   </Button>
+                  <AddHistoriqueDialog
+                    entrepriseId={
+                      selectedContacts.length === 1
+                        ? filteredContacts.find((c) => c.id === selectedContacts[0])?.entreprise_id ?? 0
+                        : 0
+                    }
+                    utilisateurId={utilisateur?.id ?? 1}
+                    campagnes={campagnes}
+                    entreprises={entreprises}
+                  />
                 </div>
               </div>
             )}
+
 
             <div className="border rounded-lg">
               <Table>
@@ -435,6 +473,8 @@ export default function ContactsPage() {
           onFiltersChange={setActiveFilters}
         />
       </div>
+
+
     </div>
   )
 }

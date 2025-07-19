@@ -15,7 +15,7 @@ import { Edit, Trash2, Plus } from "lucide-react"
 import { toast } from "@/hooks/use-toast"
 import Navbar from "@/components/navbarLink/nav"
 
-import { createCampagne, getAllCampagnes, updateCampagne, deleteCampagne } from "@/service/Campagne.service"
+import { createCampagne, getAllCampagnes, updateCampagne, deleteCampagne } from "@/service/campagne.service"
 import { Campagne } from "@/types/Campagne.type"
 
 export default function CampagnePage() {
@@ -103,32 +103,32 @@ export default function CampagnePage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
       <Navbar />
-      <main className="flex-1 p-6 space-y-8">
-        <section className="flex items-center justify-between">
+      <main className="flex-1 p-4 md:p-6 space-y-8 overflow-x-auto">
+        <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Campagnes</h1>
             <p className="text-gray-600">Gérez vos campagnes de prospection</p>
           </div>
-          <Button onClick={handleAddCampagne} className="flex items-center gap-2">
+          <Button onClick={handleAddCampagne} className="flex items-center gap-2 self-start md:self-auto">
             <Plus className="h-5 w-5" />
             Nouvelle campagne
           </Button>
         </section>
 
-        <section className="bg-white rounded-lg shadow p-6">
+        <section className="bg-white rounded-lg shadow p-4 md:p-6 overflow-auto">
           {isLoading ? (
             <div className="text-center py-10 text-gray-500">Chargement des campagnes...</div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full">
+              <table className="min-w-full table-auto md:table-fixed">
                 <thead className="bg-gray-50 border-b">
                   <tr>
-                    <th className="text-left p-3 font-semibold text-gray-700">Libellé</th>
-                    <th className="text-left p-3 font-semibold text-gray-700">Description</th>
-                    <th className="text-left p-3 font-semibold text-gray-700">Projet Prospection ID</th>
-                    <th className="text-right p-3 font-semibold text-gray-700">Actions</th>
+                    <th className="text-left p-2 md:p-3 font-semibold text-gray-700">Libellé</th>
+                    <th className="text-left p-2 md:p-3 font-semibold text-gray-700 hidden sm:table-cell">Description</th>
+                    <th className="text-left p-2 md:p-3 font-semibold text-gray-700 hidden md:table-cell">Projet Prospection ID</th>
+                    <th className="text-right p-2 md:p-3 font-semibold text-gray-700">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -141,10 +141,10 @@ export default function CampagnePage() {
                   )}
                   {campagnes.map((campagne) => (
                     <tr key={campagne.id} className="border-b hover:bg-gray-50 transition">
-                      <td className="p-3">{campagne.libelle}</td>
-                      <td className="p-3">{campagne.description || "-"}</td>
-                      <td className="p-3">{campagne.projetProspection_id}</td>
-                      <td className="p-3 text-right space-x-2">
+                      <td className="p-2 md:p-3 break-words max-w-[150px]">{campagne.libelle}</td>
+                      <td className="p-2 md:p-3 hidden sm:table-cell break-words max-w-[250px]">{campagne.description || "-"}</td>
+                      <td className="p-2 md:p-3 hidden md:table-cell">{campagne.projetProspection_id}</td>
+                      <td className="p-2 md:p-3 text-right space-x-1 md:space-x-2 whitespace-nowrap">
                         <Button
                           size="sm"
                           variant="outline"
@@ -215,7 +215,7 @@ export default function CampagnePage() {
                 />
               </div>
               <DialogFooter>
-                <Button type="submit" className="w-full">Ajouter</Button>
+                <Button type="submit" className="w-full md:w-auto">Ajouter</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -264,7 +264,7 @@ export default function CampagnePage() {
                 />
               </div>
               <DialogFooter>
-                <Button type="submit" className="w-full">Modifier</Button>
+                <Button type="submit" className="w-full md:w-auto">Modifier</Button>
               </DialogFooter>
             </form>
           </DialogContent>

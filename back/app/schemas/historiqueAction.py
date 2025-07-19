@@ -32,10 +32,10 @@ class HistoriqueActionRead(BaseModel):
     commentaire: Optional[str]
     action: str
     pourcentageVente: Optional[float]
-    entreprise_id: int
-    campagne_id: int
-    utilisateur_id: int
+    entreprise_id: Optional[int]
+    campagne_id: Optional[int]
+    utilisateur_id: Optional[int] 
 
-    model_config = {
-        "from_attributes": True  # ✅ Nécessaire pour .from_orm() en Pydantic v2
-    }
+    
+    class Config:
+        from_attributes = True

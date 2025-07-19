@@ -45,3 +45,15 @@ async def delete_historique_action(db: AsyncSession, historique_action_id: int):
         await db.delete(obj)
         await db.commit()
     return obj
+
+
+async def check_foreign_keys_exist(db: AsyncSession, campagne_id: int, entreprise_id: int, utilisateur_id: int):
+    campagne = await db.execute(select(Campagne).where(Campagne.id == campagne_id))
+    if not campagne.scalars().first():
+        raise HTTPException(status_code=400, detail=f"Campagne id={campagne_id} inexistante")
+    entreprise = await db.execute(select(Entreprise).where(Entreprise.id == entreprise_id))
+    if not entreprise.scalars().first():
+        raise HTTPException(status_code=400, detail=f"Entreprise id={entreprise_id} inexistante")
+    utilisateur = await db.execute(select(Utilisateur).where(Utilisateur.id == utilisateur_id))
+    if not utilisateur.scalars().first():
+        raise HTTPException(status_code=400, detail=f"Utilisateur id={utilisateur_id} inexistant")

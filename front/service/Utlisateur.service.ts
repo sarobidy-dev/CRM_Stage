@@ -128,7 +128,7 @@ export const deleteUtilisateur = async (id: number): Promise<void> => {
 /**
  * Récupère un utilisateur par son ID
  */
-export const fetchUtilisateurById = async (id: number): Promise<Utilisateur> => {
+export const getUserById = async (id: number): Promise<Utilisateur> => {
   try {
     const response = await fetch(`${API_BASE_URL}/utilisateurs/${id}`, {
       method: "GET",

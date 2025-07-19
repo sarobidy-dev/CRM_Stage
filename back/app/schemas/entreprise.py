@@ -24,6 +24,6 @@ class EntrepriseRead(BaseModel):
     telephoneStandard: str
     emailStandart: str
     adresse_id: int
-    utilisateur_id: int
+    utilisateur_id: Optional[int]
     
     model_config = ConfigDict(from_attributes=True) 

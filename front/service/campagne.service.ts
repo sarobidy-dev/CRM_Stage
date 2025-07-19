@@ -1,4 +1,4 @@
-import { ApiResponse, Campagne } from "@/types/Campagne.type"
+import { ApiResponse, Campagne } from "@/types/campagne.type"
 
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL

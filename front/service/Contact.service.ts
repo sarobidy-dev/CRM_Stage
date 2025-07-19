@@ -131,3 +131,19 @@ export async function deleteMultipleContacts(ids: number[]): Promise<void> {
     throw new Error(`Erreur suppression multiple contacts: ${response.statusText}`)
   }
 }
+export const getContactsStats = async (): Promise<{ perdus: number; gagnes: number; encours: number }> => {
+  try {
+    const contacts = await getAllContacts()
+
+    const stats = {
+      perdus: contacts.filter((c) => c.statut === "perdu").length,
+      gagnes: contacts.filter((c) => c.statut === "gagne").length,
+      encours: contacts.filter((c) => c.statut === "encours").length,
+    }
+
+    return stats
+  } catch (error) {
+    console.error("Erreur lors du calcul des statistiques contacts:", error)
+    return { perdus: 0, gagnes: 0, encours: 0 }
+  }
+}

@@ -1,4 +1,5 @@
 export interface Contact {
+  statut: string
   id: number
   nom: string
   prenom: string
