@@ -1,7 +1,6 @@
 "use client"
 
 import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-
 import { useEffect, useState, useCallback } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -42,7 +41,7 @@ import {
   Phone,
   Calendar,
 } from "lucide-react"
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation"
 import { toast } from "@/hooks/use-toast"
 import Navbar from "@/components/navbarLink/nav"
 import type { Contact } from "@/types/Contact.type"
@@ -51,7 +50,6 @@ import { fetchUtilisateurs } from "@/service/Utlisateur.service"
 import { getAllContacts } from "@/service/Contact.service"
 import { getAllEntreprises } from "@/service/Entreprise.service"
 import { getAllCampagnes } from "@/service/campagne.service"
-
 import { getAllHistoriques, getStatistiques } from "@/service/historiqueAction.service"
 import {
   Bar,
@@ -70,12 +68,8 @@ import {
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import getUserFromCookie from "@/service/cookieUtil"
 
-// adapte le chemin si besoin
-
-
-
+// Interfaces
 interface DashboardStats {
   totalUtilisateurs: number
   totalContacts: number
@@ -153,8 +147,7 @@ const deleteCookie = (name: string) => {
 }
 
 const AccueilPage = () => {
-
-
+  // États du composant
   const [stats, setStats] = useState<DashboardStats>({
     totalUtilisateurs: 0,
     totalContacts: 0,
@@ -166,6 +159,7 @@ const AccueilPage = () => {
     actionsAppel: 0,
     actionsReunion: 0,
   })
+
   const [previousStats, setPreviousStats] = useState<DashboardStats | null>(null)
   const [recentActivity, setRecentActivity] = useState<RecentActivity>({
     actions: [],
@@ -222,18 +216,17 @@ const AccueilPage = () => {
   const [statsNombre, setstatsNombre] = useState<{ gagnes: number; encours: number; perdus: number } | null>(null)
   const [error, setError] = useState("")
 
+  // Chargement des statistiques
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const res = await getStatistiques()
         setstatsNombre(res)
-        
       } catch (err) {
         console.error(err)
         setError("Impossible de charger les statistiques")
       }
     }
-
     fetchStats()
   }, [])
 
@@ -249,7 +242,6 @@ const AccueilPage = () => {
     setCookie("crm_user_role", user.role, 30)
     setCookie("crm_last_login", new Date().toISOString(), 30)
   }, [])
-
 
   const loadUserFromCookies = useCallback((): UserProfile | null => {
     const userProfileCookie = getCookie("crm_user_profile")
@@ -505,8 +497,7 @@ const AccueilPage = () => {
       setStats(newStats)
 
       const recentActions = actions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5)
-      const recentContacts = Array.isArray(contacts) ? contacts.slice(0, 5) : [];
-
+      const recentContacts = Array.isArray(contacts) ? contacts.slice(0, 5) : []
 
       setRecentActivity({
         actions: recentActions,
@@ -622,7 +613,7 @@ const AccueilPage = () => {
       `Pourcentage Vente Moyen: ${data.stats.pourcentageVenteMoyen}%`,
       "",
       "=== ACTIONS RÉCENTES ===",
-      ...data.actions.map(  
+      ...data.actions.map(
         (action: HistoriqueAction) =>
           `${formatDate(action.date)} - ${action.commentaire} (${action.pourcentageVente}%)`,
       ),
@@ -697,22 +688,21 @@ const AccueilPage = () => {
       description: `Les notifications ${setting} ont été mises à jour.`,
     })
   }
-  const router = useRouter();
-  const handleLogout = () => {
 
+  const router = useRouter()
+
+  const handleLogout = () => {
     deleteCookie("crm_user_profile")
     deleteCookie("crm_user_id")
     deleteCookie("crm_user_name")
     deleteCookie("crm_user_email")
     deleteCookie("crm_user_role")
     deleteCookie("crm_last_login")
-
     toast({
       title: "Déconnexion",
       description: "Vous avez été déconnecté avec succès.",
     })
-
-    router.push('/');
+    router.push("/")
   }
 
   if (isLoading) {
@@ -733,7 +723,9 @@ const AccueilPage = () => {
       <div className="flex min-h-screen bg-gray-100 text-gray-800">
         <Navbar />
         <div
-          className={`min-h-screen w-full transition-colors duration-300 ${isDarkMode ? "bg-gray-900" : "bg-gradient-to-br from-slate-50 to-slate-100"}`}
+          className={`min-h-screen w-full transition-colors duration-300 ${
+            isDarkMode ? "bg-gray-900" : "bg-gradient-to-br from-slate-50 to-slate-100"
+          }`}
         >
           {/* Notification Toast */}
           {showToastNotification && (
@@ -743,13 +735,11 @@ const AccueilPage = () => {
                   <CheckCircle className="h-5 w-5 text-green-500" />
                   <div>
                     <p className="font-medium text-sm">Données mises à jour !</p>
-
                   </div>
                 </div>
               </div>
             </div>
           )}
-
 
           <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
             <div className="px-6 py-4">
@@ -802,7 +792,6 @@ const AccueilPage = () => {
                         </Badge>
                       )}
                     </Button>
-
                     {showNotifications && (
                       <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 animate-slide-in-top">
                         <div className="p-4 border-b border-gray-200 flex items-center justify-between">
@@ -828,8 +817,9 @@ const AccueilPage = () => {
                             notifications.map((notification) => (
                               <div
                                 key={notification.id}
-                                className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${!notification.read ? "bg-blue-50 border-l-4 border-l-blue-500" : ""
-                                  }`}
+                                className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${
+                                  !notification.read ? "bg-blue-50 border-l-4 border-l-blue-500" : ""
+                                }`}
                                 onClick={() => markNotificationAsRead(notification.id)}
                               >
                                 <div className="flex items-start space-x-3">
@@ -881,32 +871,32 @@ const AccueilPage = () => {
                             <div className="flex flex-col">
                               <span>Thème</span>
                               <span className="text-xs text-gray-500">
-                                {theme === 'light' ? 'Clair' : theme === 'dark' ? 'Sombre' : 'Système'}
+                                {theme === "light" ? "Clair" : theme === "dark" ? "Sombre" : "Système"}
                               </span>
                             </div>
                           </div>
                           <div className="flex items-center gap-1">
                             <Button
-                              variant={theme === 'light' ? 'default' : 'ghost'}
+                              variant={theme === "light" ? "default" : "ghost"}
                               size="sm"
                               className="h-6 w-6 p-0"
-                              onClick={() => handleThemeChange('light')}
+                              onClick={() => handleThemeChange("light")}
                             >
                               <Sun className="h-3 w-3" />
                             </Button>
                             <Button
-                              variant={theme === 'dark' ? 'default' : 'ghost'}
+                              variant={theme === "dark" ? "default" : "ghost"}
                               size="sm"
                               className="h-6 w-6 p-0"
-                              onClick={() => handleThemeChange('dark')}
+                              onClick={() => handleThemeChange("dark")}
                             >
                               <Moon className="h-3 w-3" />
                             </Button>
                             <Button
-                              variant={theme === 'system' ? 'default' : 'ghost'}
+                              variant={theme === "system" ? "default" : "ghost"}
                               size="sm"
                               className="h-6 w-6 p-0"
-                              onClick={() => handleThemeChange('system')}
+                              onClick={() => handleThemeChange("system")}
                             >
                               <Monitor className="h-3 w-3" />
                             </Button>
@@ -922,7 +912,7 @@ const AccueilPage = () => {
                             <div className="flex flex-col">
                               <span>Langue</span>
                               <span className="text-xs text-gray-500">
-                                {language === 'fr' ? 'Français' : language === 'en' ? 'English' : 'Malagasy'}
+                                {language === "fr" ? "Français" : language === "en" ? "English" : "Malagasy"}
                               </span>
                             </div>
                           </div>
@@ -943,16 +933,18 @@ const AccueilPage = () => {
 
                       {/* Notifications */}
                       <DropdownMenuLabel className="text-xs text-gray-500">Notifications</DropdownMenuLabel>
-                      <DropdownMenuItem className="cursor-pointer" onClick={() => handleNotificationToggle('email')}>
+                      <DropdownMenuItem className="cursor-pointer" onClick={() => handleNotificationToggle("email")}>
                         <div className="flex items-center justify-between w-full">
                           <span className="text-sm">Notifications email</span>
                           <div
-                            className={`w-8 h-4 rounded-full ${notificationSettings.email ? 'bg-blue-500' : 'bg-gray-300'
-                              } relative transition-colors`}
+                            className={`w-8 h-4 rounded-full ${
+                              notificationSettings.email ? "bg-blue-500" : "bg-gray-300"
+                            } relative transition-colors`}
                           >
                             <div
-                              className={`w-3 h-3 bg-white rounded-full absolute top-0.5 transition-transform ${notificationSettings.email ? 'translate-x-4' : 'translate-x-0.5'
-                                }`}
+                              className={`w-3 h-3 bg-white rounded-full absolute top-0.5 transition-transform ${
+                                notificationSettings.email ? "translate-x-4" : "translate-x-0.5"
+                              }`}
                             />
                           </div>
                         </div>
@@ -961,7 +953,10 @@ const AccueilPage = () => {
                       <DropdownMenuSeparator />
 
                       {/* Déconnexion */}
-                      <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600">
+                      <DropdownMenuItem
+                        onClick={handleLogout}
+                        className="cursor-pointer text-red-600 focus:text-red-600"
+                      >
                         <LogOut className="h-4 w-4 mr-2" />
                         Se déconnecter
                       </DropdownMenuItem>
@@ -970,23 +965,21 @@ const AccueilPage = () => {
 
                   {/* Avatar avec photo ou initiales */}
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={userProfile.avatar || '/placeholder.svg'} />
+                    <AvatarImage src={userProfile.avatar || "/placeholder.svg"} />
                     <AvatarFallback>
                       {userProfile.name
-                        .split(' ')
+                        .split(" ")
                         .map((n) => n[0])
-                        .join('')
+                        .join("")
                         .toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-
                 </div>
               </div>
             </div>
           </div>
 
           <div className="flex">
-
             <div className="flex-1 p-6 space-y-6">
               {/* Quick Actions Bar */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
@@ -1039,8 +1032,7 @@ const AccueilPage = () => {
                       <div>
                         <p className="text-sm font-medium text-red-700">Entreprises perdu</p>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-3xl font-bold text-red-900">{statsNombre.perdus}</span>
-                          
+                          <span className="text-3xl font-bold text-red-900">{statsNombre?.perdus || 0}</span>
                         </div>
                         <p className="text-xs text-red-600 mt-1">Partenaires actifs</p>
                       </div>
@@ -1050,14 +1042,14 @@ const AccueilPage = () => {
                     </div>
                   </CardContent>
                 </Card>
-                 <Card className="bg-gradient-to-br from-green-50 to-green-300 border-0 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">
+
+                <Card className="bg-gradient-to-br from-green-50 to-green-300 border-0 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-green-700">Entreprises gagnee</p>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-3xl font-bold text-green-900">{statsNombre.gagnes}</span>
-                          
+                          <span className="text-3xl font-bold text-green-900">{statsNombre?.gagnes || 0}</span>
                         </div>
                         <p className="text-xs text-green-600 mt-1">Partenaires actifs</p>
                       </div>
@@ -1067,14 +1059,14 @@ const AccueilPage = () => {
                     </div>
                   </CardContent>
                 </Card>
-                 <Card className="bg-gradient-to-br from-green-50 to-green-100 border-0 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">
+
+                <Card className="bg-gradient-to-br from-green-50 to-green-100 border-0 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-green-700">Entreprises encours</p>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-3xl font-bold text-green-900">{statsNombre.encours}</span>
-                         
+                          <span className="text-3xl font-bold text-green-900">{statsNombre?.encours || 0}</span>
                         </div>
                         <p className="text-xs text-green-600 mt-1">Partenaires actifs</p>
                       </div>
@@ -1084,7 +1076,7 @@ const AccueilPage = () => {
                     </div>
                   </CardContent>
                 </Card>
-             
+
                 <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-0 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
@@ -1282,7 +1274,7 @@ const AccueilPage = () => {
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
                           className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-500"
-                          style={{ width: `${Math.min(stats.pourcentageVenteMoyen, 100)}%`}}
+                          style={{ width: `${Math.min(stats.pourcentageVenteMoyen, 100)}%` }}
                         ></div>
                       </div>
                     </div>
@@ -1421,6 +1413,7 @@ const AccueilPage = () => {
                 <Button variant="outline" onClick={() => setShowFilters(false)}>
                   Annuler
                 </Button>
+                <Button onClick={() => setShowFilters(false)}>Annuler</Button>
                 <Button onClick={applyFilters}>Appliquer les filtres</Button>
               </div>
             </DialogContent>
@@ -1446,7 +1439,10 @@ const AccueilPage = () => {
                       <p className="text-xs text-gray-500">Format tableur</p>
                     </CardContent>
                   </Card>
-                  <Card className="cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => exportData("excel")}>
+                  <Card
+                    className="cursor-pointer hover:bg-gray-50 transition-colors"
+                    onClick={() => exportData("excel")}
+                  >
                     <CardContent className="p-4 text-center">
                       <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
                         <Download className="h-6 w-6 text-blue-600" />
