@@ -14,7 +14,7 @@ import os, uuid, aiofiles
 
 from database import get_async_session
 from schemas.Utilisateur import UtilisateurRead
-from crud.Utilisateur import (
+from services.utilisateur import (
     get_utilisateurs,
     get_utilisateur,
     create_utilisateur,
@@ -26,9 +26,6 @@ router = APIRouter()
 UPLOAD_DIR = "media/photos"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# ---------------------------------------------------------
-# utilitaire d’upload asynchrone
-# ---------------------------------------------------------
 async def _save_photo(file: UploadFile) -> str:
     ext = os.path.splitext(file.filename)[1]
     filename = f"{uuid.uuid4()}{ext}"
@@ -38,17 +35,10 @@ async def _save_photo(file: UploadFile) -> str:
     return path
 
 
-# ---------------------------------------------------------
-# GET /utilisateurs
-# ---------------------------------------------------------
 @router.get("/utilisateurs", response_model=List[UtilisateurRead])
 async def read_utilisateurs(db: AsyncSession = Depends(get_async_session)):
     return await get_utilisateurs(db)
 
-
-# ---------------------------------------------------------
-# GET /utilisateurs/{id}
-# ---------------------------------------------------------
 @router.get("/utilisateurs/{utilisateur_id}", response_model=UtilisateurRead)
 async def read_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_async_session)):
     utilisateur = await get_utilisateur(db, utilisateur_id)
@@ -67,9 +57,6 @@ async def read_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_a
     )
 
 
-# ---------------------------------------------------------
-# POST /utilisateurs
-# ---------------------------------------------------------
 @router.post("/utilisateurs", response_model=UtilisateurRead, status_code=status.HTTP_201_CREATED)
 async def create_utilisateur_endpoint(
     nom: str = Form(...),
@@ -93,9 +80,6 @@ async def create_utilisateur_endpoint(
     return await create_utilisateur(db, data)
 
 
-# ---------------------------------------------------------
-# PUT /utilisateurs/{id}
-# ---------------------------------------------------------
 @router.put("/utilisateurs/{utilisateur_id}", response_model=UtilisateurRead)
 async def update_utilisateur_endpoint(
     utilisateur_id: int,
@@ -125,10 +109,6 @@ async def update_utilisateur_endpoint(
 
     return utilisateur
 
-
-# ---------------------------------------------------------
-# DELETE /utilisateurs/{id}
-# ---------------------------------------------------------
 @router.delete("/utilisateurs/{utilisateur_id}", response_model=UtilisateurRead)
 async def delete_utilisateur_endpoint(utilisateur_id: int, db: AsyncSession = Depends(get_async_session)):
     utilisateur = await delete_utilisateur(db, utilisateur_id)

@@ -1,5 +1,7 @@
+from models.historiqueAction import HistoriqueAction
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 from database import get_async_session
 from services.historiqueAction import (
     create_historique_action,
@@ -32,6 +34,20 @@ async def get_all(db: AsyncSession = Depends(get_async_session)):
     items = await get_all_historique_actions(db)
     return response(True, "Liste des historiques récupérée", [HistoriqueActionRead.from_orm(i).dict() for i in items])
 
+@router.get("/statistiques")
+async def get_statistiques(db: AsyncSession = Depends(get_async_session)):
+    result = await db.execute(select(HistoriqueAction))
+    historiques = result.scalars().all()
+
+    gagnés = sum(1 for h in historiques if h.pourcentageVente >= 80)
+    en_cours = sum(1 for h in historiques if 30 <= h.pourcentageVente < 80)
+    perdus = sum(1 for h in historiques if h.pourcentageVente < 30)
+
+    return {
+        "gagnes": gagnés,
+        "encours": en_cours,
+        "perdus": perdus
+    }
 
 @router.get("/{id}", response_model=dict)
 async def get_one(id: int, db: AsyncSession = Depends(get_async_session)):

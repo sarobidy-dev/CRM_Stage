@@ -16,7 +16,7 @@ import { toast } from "@/hooks/use-toast"
 import Navbar from "@/components/navbarLink/nav"
 
 import { createCampagne, getAllCampagnes, updateCampagne, deleteCampagne } from "@/service/campagne.service"
-import { Campagne } from "@/types/Campagne.type"
+import { Campagne } from "@/types/campagne.type"
 
 export default function CampagnePage() {
   const [campagnes, setCampagnes] = useState<Campagne[]>([])

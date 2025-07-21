@@ -22,7 +22,7 @@ import AddHistoriqueDialog from "@/components/DialogueHistorique"
 import { log } from "node:console"
 import { getAllCampagnes } from "@/service/campagne.service"
 import { toast } from "@/hooks/use-toast"
-import { Campagne } from "@/types/Campagne.type"
+import { Campagne } from "@/types/campagne.type"
 
 interface Contact {
   id: number

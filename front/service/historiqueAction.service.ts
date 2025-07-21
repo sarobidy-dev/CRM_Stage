@@ -11,7 +11,17 @@ export async function getAllHistoriques(): Promise<ApiResponse<HistoriqueAction[
   if (!res.ok) throw new Error("Erreur lors de la récupération des historiques")
   return await res.json()
 }
+export interface StatistiqueData {
+  gagnes: number
+  encours: number
+  perdus: number
+}
 
+export async function getStatistiques(): Promise<StatistiqueData> {
+  const res = await fetch(`${apiUrl}/historiqueActions/statistiques`)
+  if (!res.ok) throw new Error("Erreur lors de la récupération des statistiques")
+  return await res.json()
+}
 export async function createHistorique(data: Omit<HistoriqueAction, "id">): Promise<ApiResponse<HistoriqueAction>> {
   const res = await fetch(`${apiUrl}/historiqueActions`, {
     method: "POST",

@@ -29,7 +29,7 @@ os.makedirs("media/photos", exist_ok=True)
 app = FastAPI(title="Video Call Recording API", version="1.0.0")
 
 # Configuration CORS
-origins = ["http://localhost:3000"]
+origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
