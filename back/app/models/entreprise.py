@@ -6,15 +6,9 @@ class Entreprise(Base):
     __tablename__ = "entreprise"
 
     id = Column(Integer, primary_key=True, index=True)
-<<<<<<< HEAD
     raisonSocial = Column(String(120), nullable=False)
     telephoneStandard = Column(String(20), unique=True)
     emailStandart = Column(String(120), unique=True)
-=======
-    raisonSocial = Column(String(20), nullable=False)
-    telephoneStandard = Column(String(20), unique=True)
-    emailStandart = Column(String(20), unique=True)
->>>>>>> c30d4e42dc3b458af4b31e95d80d16f7cd91d065
 
     adresse_id = Column(Integer, ForeignKey("adresse.id", ondelete="CASCADE"))
     utilisateur_id = Column(Integer, ForeignKey("utilisateur.id", ondelete="CASCADE"))
