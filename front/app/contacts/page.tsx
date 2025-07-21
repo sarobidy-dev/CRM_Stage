@@ -258,7 +258,7 @@ export default function ContactsPage() {
 
   return (
     <div className="flex min-h-screen bg-gray-100 text-gray-800">
-      <Navbar />
+      <Navbar/>
       <div className="container mx-auto p-6 space-y-6">
         {error && (
           <Alert variant="destructive">
@@ -350,7 +350,6 @@ export default function ContactsPage() {
                 </div>
               </div>
             )}
-
 
             <div className="border rounded-lg">
               <Table>
