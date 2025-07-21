@@ -1,3 +1,6 @@
+from schemas import Utilisateur
+from models.campagne import Campagne
+from models.entreprise import Entreprise
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from models.historiqueAction import HistoriqueAction
