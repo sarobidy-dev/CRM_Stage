@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Campagne } from "@/types/Campagne.type"
+import { Campagne } from "@/types/campagne.type"
 import { Entreprise } from "@/types/Entreprise.type"
 import { CreateHistoriqueInput } from "@/types/historiqueAction.type"
 import { createHistorique } from "@/service/historiqueAction.service"
@@ -125,6 +125,7 @@ export default function AddHistoriqueDialog({
       <option value="">Sélectionnez une action</option>
       <option value="Email">Email</option>
       <option value="Appel">Appel</option>
+      <option value="Réunions">Réunion</option>
     </select>
   </div>
 

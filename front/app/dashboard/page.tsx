@@ -373,7 +373,7 @@ const AccueilPage = () => {
     // Données du graphique en secteurs pour les types d'actions
     const emailCount = actions.filter((a) => a.action.toLowerCase() === "email").length
     const callCount = actions.filter((a) => a.action.toLowerCase() === "appel").length
-    const meetingCount = actions.filter((a) => a.action.toLowerCase() === "reunion").length
+    const meetingCount = actions.filter((a) => a.action.toLowerCase() === "réunion").length
     const visitCount = actions.filter((a) => a.action.toLowerCase() === "visite").length
     const otherCount = actions.length - emailCount - callCount - meetingCount - visitCount
 
@@ -479,7 +479,7 @@ const AccueilPage = () => {
       // Calcul des statistiques
       const actionsEmail = actions.filter((a) => a.action?.toLowerCase() === "email").length
       const actionsAppel = actions.filter((a) => a.action?.toLowerCase() === "appel").length
-      const actionsReunion = actions.filter((a) => a.action?.toLowerCase() === "reunion").length
+      const actionsReunion = actions.filter((a) => a.action?.toLowerCase() === "réunion").length
 
       const pourcentageVenteMoyen =
         actions.length > 0
@@ -1040,9 +1040,7 @@ const AccueilPage = () => {
                         <p className="text-sm font-medium text-red-700">Entreprises perdu</p>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-3xl font-bold text-red-900">{statsNombre.perdus}</span>
-                          <Badge className="bg-green-100 text-red-700 text-xs">
-                            +{previousStats ? Math.max(0, stats.totalEntreprises - previousStats.totalEntreprises) : 0}
-                          </Badge>
+                          
                         </div>
                         <p className="text-xs text-red-600 mt-1">Partenaires actifs</p>
                       </div>
@@ -1059,9 +1057,7 @@ const AccueilPage = () => {
                         <p className="text-sm font-medium text-green-700">Entreprises gagnee</p>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-3xl font-bold text-green-900">{statsNombre.gagnes}</span>
-                          <Badge className="bg-green-100 text-green-700 text-xs">
-                            +{previousStats ? Math.max(0, stats.totalEntreprises - previousStats.totalEntreprises) : 0}
-                          </Badge>
+                          
                         </div>
                         <p className="text-xs text-green-600 mt-1">Partenaires actifs</p>
                       </div>
@@ -1078,9 +1074,7 @@ const AccueilPage = () => {
                         <p className="text-sm font-medium text-green-700">Entreprises encours</p>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-3xl font-bold text-green-900">{statsNombre.encours}</span>
-                          <Badge className="bg-green-100 text-green-700 text-xs">
-                            +{previousStats ? Math.max(0, stats.totalEntreprises - previousStats.totalEntreprises) : 0}
-                          </Badge>
+                         
                         </div>
                         <p className="text-xs text-green-600 mt-1">Partenaires actifs</p>
                       </div>

@@ -5,7 +5,7 @@ import os
 
 # Database & Models
 from database import engine, Base, test_connection
-from api import Utilisateur
+from api import utilisateur
 
 # Routes
 from api import (
@@ -37,7 +37,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
  
-# Inclusion des routes
+
 
 app.include_router(adresse.router)
 app.include_router(campagne.router)
@@ -48,7 +48,7 @@ app.include_router(haContact.router)
 app.include_router(historiqueAction.router)
 app.include_router(projetProspection.router)
 app.include_router(projetUtilisateur.router)
-app.include_router(Utilisateur.router)
+app.include_router(utilisateur.router)
 app.include_router(email_controller.router)
 
 app.mount("/media", StaticFiles(directory="media"), name="media")
