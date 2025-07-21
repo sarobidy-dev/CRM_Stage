@@ -1,0 +1,1 @@
+pip install python-dotenv python-multipart email-validator
