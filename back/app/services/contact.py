@@ -4,15 +4,9 @@ from models.contact import Contact
 
 
 async def create_contact(db: AsyncSession, data: dict):
-<<<<<<< HEAD
     try:
         obj = Contact(**data)  # Contact est ton modèle SQLAlchemy
         db.add(obj)
-=======
-    obj = Contact(**data)
-    db.add(obj)
-    try:
->>>>>>> c30d4e42dc3b458af4b31e95d80d16f7cd91d065
         await db.commit()
         await db.refresh(obj)
         return obj

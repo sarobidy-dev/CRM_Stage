@@ -32,7 +32,6 @@ class HistoriqueActionRead(BaseModel):
     commentaire: Optional[str]
     action: str
     pourcentageVente: Optional[float]
-<<<<<<< HEAD
     entreprise_id: Optional[int]
     campagne_id: Optional[int]
     utilisateur_id: Optional[int] 
@@ -40,11 +39,3 @@ class HistoriqueActionRead(BaseModel):
     
     class Config:
         from_attributes = True
-=======
-    entreprise_id: int
-    campagne_id: int
-    utilisateur_id: int
-
-    class Config:
-        orm_mode = True
->>>>>>> c30d4e42dc3b458af4b31e95d80d16f7cd91d065
