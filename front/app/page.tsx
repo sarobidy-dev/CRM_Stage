@@ -372,114 +372,116 @@ export default function LoginPage() {
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col overflow-hidden">
       {/* Éléments décoratifs d'arrière-plan avec beaucoup plus de cercles animés */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Cercles principaux */}
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-indigo-400 to-purple-600 rounded-full opacity-10 animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-purple-400 to-orange-500 rounded-full opacity-10 animate-pulse delay-1000"></div>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="w-full h-full filter blur-md">
+          {/* Cercles principaux */}
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-indigo-400 to-purple-600 rounded-full opacity-10 animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-purple-400 to-orange-500 rounded-full opacity-10 animate-pulse delay-1000"></div>
 
-        {/* Cercle central rotatif */}
-        <div
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-blue-400 to-indigo-600 rounded-full opacity-5 animate-spin"
-          style={{ animationDuration: "20s" }}
-        ></div>
+          {/* Cercle central rotatif */}
+          <div
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-blue-400 to-indigo-600 rounded-full opacity-5 animate-spin"
+            style={{ animationDuration: "20s" }}
+          ></div>
 
-        {/* Nouveaux cercles animés partout */}
-        <div
-          className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full opacity-8 animate-bounce"
-          style={{ animationDuration: "3s" }}
-        ></div>
-        <div
-          className="absolute top-20 right-20 w-24 h-24 bg-gradient-to-br from-pink-400 to-orange-500 rounded-full opacity-8 animate-pulse"
-          style={{ animationDelay: "1s" }}
-        ></div>
-        <div
-          className="absolute bottom-20 left-20 w-40 h-40 bg-gradient-to-br from-green-400 to-blue-500 rounded-full opacity-6 animate-ping"
-          style={{ animationDuration: "4s" }}
-        ></div>
-        <div
-          className="absolute bottom-32 right-32 w-28 h-28 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full opacity-8 animate-bounce"
-          style={{ animationDuration: "2.5s", animationDelay: "0.5s" }}
-        ></div>
+          {/* Nouveaux cercles animés partout */}
+          <div
+            className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full opacity-8 animate-bounce"
+            style={{ animationDuration: "3s" }}
+          ></div>
+          <div
+            className="absolute top-20 right-20 w-24 h-24 bg-gradient-to-br from-pink-400 to-orange-500 rounded-full opacity-8 animate-pulse"
+            style={{ animationDelay: "1s" }}
+          ></div>
+          <div
+            className="absolute bottom-20 left-20 w-40 h-40 bg-gradient-to-br from-green-400 to-blue-500 rounded-full opacity-6 animate-ping"
+            style={{ animationDuration: "4s" }}
+          ></div>
+          <div
+            className="absolute bottom-32 right-32 w-28 h-28 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full opacity-8 animate-bounce"
+            style={{ animationDuration: "2.5s", animationDelay: "0.5s" }}
+          ></div>
 
-        {/* Cercles moyens flottants */}
-        <div
-          className="absolute top-1/4 left-1/4 w-20 h-20 bg-gradient-to-br from-violet-400 to-blue-500 rounded-full opacity-10 animate-pulse"
-          style={{ animationDuration: "2s" }}
-        ></div>
-        <div
-          className="absolute top-3/4 right-1/4 w-16 h-16 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full opacity-12 animate-bounce"
-          style={{ animationDuration: "3.5s" }}
-        ></div>
-        <div
-          className="absolute top-1/3 right-1/3 w-36 h-36 bg-gradient-to-br from-rose-400 to-orange-500 rounded-full opacity-6 animate-spin"
-          style={{ animationDuration: "15s" }}
-        ></div>
-        <div
-          className="absolute bottom-1/3 left-1/3 w-44 h-44 bg-gradient-to-br from-indigo-300 to-blue-400 rounded-full opacity-8 animate-pulse"
-          style={{ animationDuration: "4s", animationDelay: "2s" }}
-        ></div>
+          {/* Cercles moyens flottants */}
+          <div
+            className="absolute top-1/4 left-1/4 w-20 h-20 bg-gradient-to-br from-violet-400 to-blue-500 rounded-full opacity-10 animate-pulse"
+            style={{ animationDuration: "2s" }}
+          ></div>
+          <div
+            className="absolute top-3/4 right-1/4 w-16 h-16 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full opacity-12 animate-bounce"
+            style={{ animationDuration: "3.5s" }}
+          ></div>
+          <div
+            className="absolute top-1/3 right-1/3 w-36 h-36 bg-gradient-to-br from-rose-400 to-orange-500 rounded-full opacity-6 animate-spin"
+            style={{ animationDuration: "15s" }}
+          ></div>
+          <div
+            className="absolute bottom-1/3 left-1/3 w-44 h-44 bg-gradient-to-br from-indigo-300 to-blue-400 rounded-full opacity-8 animate-pulse"
+            style={{ animationDuration: "4s", animationDelay: "2s" }}
+          ></div>
 
-        {/* Petits cercles dispersés */}
-        <div
-          className="absolute top-16 left-1/2 w-12 h-12 bg-gradient-to-br from-lime-400 to-blue-500 rounded-full opacity-15 animate-ping"
-          style={{ animationDuration: "3s" }}
-        ></div>
-        <div
-          className="absolute top-1/2 right-16 w-14 h-14 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full opacity-12 animate-bounce"
-          style={{ animationDuration: "2.8s" }}
-        ></div>
-        <div
-          className="absolute bottom-16 left-1/2 w-18 h-18 bg-gradient-to-br from-fuchsia-400 to-blue-500 rounded-full opacity-10 animate-pulse"
-          style={{ animationDuration: "3.2s" }}
-        ></div>
-        <div
-          className="absolute top-1/2 left-16 w-22 h-22 bg-gradient-to-br from-sky-400 to-blue-500 rounded-full opacity-14 animate-spin"
-          style={{ animationDuration: "12s" }}
-        ></div>
+          {/* Petits cercles dispersés */}
+          <div
+            className="absolute top-16 left-1/2 w-12 h-12 bg-gradient-to-br from-lime-400 to-blue-500 rounded-full opacity-15 animate-ping"
+            style={{ animationDuration: "3s" }}
+          ></div>
+          <div
+            className="absolute top-1/2 right-16 w-14 h-14 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full opacity-12 animate-bounce"
+            style={{ animationDuration: "2.8s" }}
+          ></div>
+          <div
+            className="absolute bottom-16 left-1/2 w-18 h-18 bg-gradient-to-br from-fuchsia-400 to-blue-500 rounded-full opacity-10 animate-pulse"
+            style={{ animationDuration: "3.2s" }}
+          ></div>
+          <div
+            className="absolute top-1/2 left-16 w-22 h-22 bg-gradient-to-br from-sky-400 to-blue-500 rounded-full opacity-14 animate-spin"
+            style={{ animationDuration: "12s" }}
+          ></div>
 
-        {/* Cercles très petits pour effet de particules */}
-        <div
-          className="absolute top-24 right-1/3 w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full opacity-20 animate-pulse"
-          style={{ animationDuration: "1.5s" }}
-        ></div>
-        <div
-          className="absolute bottom-24 left-1/4 w-6 h-6 bg-gradient-to-br from-orange-400 to-blue-500 rounded-full opacity-25 animate-bounce"
-          style={{ animationDuration: "2.2s" }}
-        ></div>
-        <div
-          className="absolute top-40 left-3/4 w-10 h-10 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-full opacity-18 animate-ping"
-          style={{ animationDuration: "2.8s" }}
-        ></div>
-        <div
-          className="absolute bottom-40 right-1/4 w-7 h-7 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full opacity-22 animate-pulse"
-          style={{ animationDuration: "1.8s" }}
-        ></div>
+          {/* Cercles très petits pour effet de particules */}
+          <div
+            className="absolute top-24 right-1/3 w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full opacity-20 animate-pulse"
+            style={{ animationDuration: "1.5s" }}
+          ></div>
+          <div
+            className="absolute bottom-24 left-1/4 w-6 h-6 bg-gradient-to-br from-orange-400 to-blue-500 rounded-full opacity-25 animate-bounce"
+            style={{ animationDuration: "2.2s" }}
+          ></div>
+          <div
+            className="absolute top-40 left-3/4 w-10 h-10 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-full opacity-18 animate-ping"
+            style={{ animationDuration: "2.8s" }}
+          ></div>
+          <div
+            className="absolute bottom-40 right-1/4 w-7 h-7 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full opacity-22 animate-pulse"
+            style={{ animationDuration: "1.8s" }}
+          ></div>
 
-        {/* Cercles en mouvement orbital */}
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 animate-spin" style={{ animationDuration: "30s" }}>
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-violet-400 to-purple-500 rounded-full opacity-15"></div>
+          {/* Cercles en mouvement orbital */}
+          <div className="absolute top-1/2 left-1/2 w-64 h-64 animate-spin" style={{ animationDuration: "30s" }}>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-violet-400 to-purple-500 rounded-full opacity-15"></div>
+          </div>
+          <div
+            className="absolute top-1/2 left-1/2 w-48 h-48 animate-spin"
+            style={{ animationDuration: "25s", animationDirection: "reverse" }}
+          >
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full opacity-20"></div>
+          </div>
+          <div className="absolute top-1/2 left-1/2 w-80 h-80 animate-spin" style={{ animationDuration: "40s" }}>
+            <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full opacity-12"></div>
+          </div>
+
+          {/* Cercles avec animation de scale */}
+          <div
+            className="absolute top-1/4 right-1/4 w-32 h-32 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full opacity-8 animate-pulse"
+            style={{ animationDuration: "4s" }}
+          ></div>
+          <div
+            className="absolute bottom-1/4 left-1/4 w-28 h-28 bg-gradient-to-br from-teal-400 to-green-500 rounded-full opacity-10 animate-ping"
+            style={{ animationDuration: "3.5s" }}
+          ></div>
         </div>
-        <div
-          className="absolute top-1/2 left-1/2 w-48 h-48 animate-spin"
-          style={{ animationDuration: "25s", animationDirection: "reverse" }}
-        >
-          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full opacity-20"></div>
-        </div>
-        <div className="absolute top-1/2 left-1/2 w-80 h-80 animate-spin" style={{ animationDuration: "40s" }}>
-          <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full opacity-12"></div>
-        </div>
 
-        {/* Cercles avec animation de scale */}
-        <div
-          className="absolute top-1/4 right-1/4 w-32 h-32 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full opacity-8 animate-pulse"
-          style={{ animationDuration: "4s" }}
-        ></div>
-        <div
-          className="absolute bottom-1/4 left-1/4 w-28 h-28 bg-gradient-to-br from-teal-400 to-green-500 rounded-full opacity-10 animate-ping"
-          style={{ animationDuration: "3.5s" }}
-        ></div>
       </div>
-
       <Navbar />
 
       <main className="flex flex-col lg:flex-row w-full h-[calc(100vh-80px)] mt-20 relative z-10 justify-center">
@@ -495,7 +497,7 @@ export default function LoginPage() {
           </div>
         </section>
 
-    
+
       </main>
 
       <style jsx>{`

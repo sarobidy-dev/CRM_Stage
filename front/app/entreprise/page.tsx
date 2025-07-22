@@ -1,26 +1,12 @@
 "use client"
+
 import { useEffect, useState } from "react"
 import type React from "react"
-
-import {
-  Building2,
-  Users,
-  Plus,
-  Search,
-  Edit,
-  Trash2,
-} from "lucide-react"
+import { Building2, Users, Plus, Search, Edit, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "@/hooks/use-toast"
 import Navbar from "@/components/navbarLink/nav"
 import {
@@ -43,16 +29,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Label } from "@/components/ui/label"
-
 import type { Entreprise } from "@/types/Entreprise.type"
 import type { Adresse } from "@/types/Adresse.type"
 import type { Utilisateur } from "@/types/Utilisateur.type"
-import {
-  createEntreprise,
-  deleteEntreprise,
-  getAllEntreprises,
-  updateEntreprise,
-} from "@/service/Entreprise.service"
+import { createEntreprise, deleteEntreprise, getAllEntreprises, updateEntreprise } from "@/service/Entreprise.service"
 import { getAllAdresses, postAdresse } from "@/service/Adresse.service"
 import { fetchUtilisateurs } from "@/service/Utlisateur.service"
 
@@ -60,11 +40,9 @@ export default function EntreprisesPage() {
   const [entreprises, setEntreprises] = useState<Entreprise[]>([])
   const [adresses, setAdresses] = useState<Adresse[]>([])
   const [utilisateurs, setUtilisateurs] = useState<Utilisateur[]>([])
-
   const [filteredEntreprises, setFilteredEntreprises] = useState<Entreprise[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState<string>("")
-
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isAddAdresseOpen, setIsAddAdresseOpen] = useState(false)
@@ -91,12 +69,16 @@ export default function EntreprisesPage() {
         const [entrepriseRes, adresseRes, utilisateurRes] = await Promise.all([
           getAllEntreprises(),
           getAllAdresses(),
-          fetchUtilisateurs()
+          fetchUtilisateurs(),
         ])
-        setEntreprises(entrepriseRes)
-        setAdresses(adresseRes?.data ?? [])
-        setUtilisateurs(utilisateurRes ?? [])
+
+        console.log("Données chargées:", { entrepriseRes, adresseRes, utilisateurRes })
+
+        setEntreprises(Array.isArray(entrepriseRes) ? entrepriseRes : [])
+        setAdresses(Array.isArray(adresseRes?.data) ? adresseRes.data : Array.isArray(adresseRes) ? adresseRes : [])
+        setUtilisateurs(Array.isArray(utilisateurRes) ? utilisateurRes : [])
       } catch (error) {
+        console.error("Erreur lors du chargement:", error)
         toast({ title: "Erreur", description: "Erreur lors du chargement des données", variant: "destructive" })
       } finally {
         setIsLoading(false)
@@ -108,8 +90,9 @@ export default function EntreprisesPage() {
   const reloadEntreprises = async () => {
     try {
       const res = await getAllEntreprises()
-      setEntreprises(res)
-    } catch {
+      setEntreprises(Array.isArray(res) ? res : [])
+    } catch (error) {
+      console.error("Erreur reload entreprises:", error)
       toast({ title: "Erreur", description: "Impossible de recharger les entreprises", variant: "destructive" })
     }
   }
@@ -117,8 +100,9 @@ export default function EntreprisesPage() {
   const reloadAdresses = async () => {
     try {
       const res = await getAllAdresses()
-      setAdresses(res?.data ?? [])
-    } catch {
+      setAdresses(Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [])
+    } catch (error) {
+      console.error("Erreur reload adresses:", error)
       toast({ title: "Erreur", description: "Impossible de recharger les adresses", variant: "destructive" })
     }
   }
@@ -130,7 +114,8 @@ export default function EntreprisesPage() {
       filtered = filtered.filter((e) => {
         const adresseStr = formatAdresse(getAdresseById(e.adresse_id)).toLowerCase()
         const utilisateur = getUtilisateurById(e.utilisateur_id)
-        const utilisateurStr = utilisateur ? `${utilisateur.nom}`.toLowerCase() : ""
+        const utilisateurStr = utilisateur ? `${utilisateur.nom} ${utilisateur.prenom}`.toLowerCase() : ""
+
         return (
           e.raisonSocial.toLowerCase().includes(search) ||
           (e.telephoneStandard?.toLowerCase().includes(search) ?? false) ||
@@ -144,20 +129,23 @@ export default function EntreprisesPage() {
   }, [entreprises, searchTerm, adresses, utilisateurs])
 
   const getAdresseById = (id: number | null | undefined) => adresses.find((a) => a.id === id)
-  const getUtilisateurById = (id: number | null | undefined) => utilisateurs.find((u) => u.id === id)
-  // Bonne pratique pour afficher l'adresse complète
+
+  const getUtilisateurById = (id: number | null | undefined) => {
+    if (!id) return null
+    return utilisateurs.find((u) => u.id === id || u.id_utilisateur === id)
+  }
+
   const formatAdresse = (adresse?: Adresse) =>
     adresse
-      ? [
-          adresse.ligneAdresse1,
-          adresse.ligneAdresse2,
-          adresse.ville,
-          adresse.cp,
-          adresse.pays,
-        ]
+      ? [adresse.ligneAdresse1, adresse.ligneAdresse2, adresse.ville, adresse.cp, adresse.pays]
           .filter(Boolean)
           .join(", ")
       : "-"
+
+  const formatUtilisateur = (utilisateur?: Utilisateur | null) => {
+    if (!utilisateur) return "-"
+    return `${utilisateur.nom} ${utilisateur.prenom}`.trim()
+  }
 
   const handleAddEntreprise = () => {
     setCurrentEntreprise(null)
@@ -186,24 +174,33 @@ export default function EntreprisesPage() {
   const handleSubmitAdd = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
+      console.log("Données à envoyer:", formData)
       await createEntreprise(formData)
       toast({ title: "Succès", description: "Entreprise ajoutée avec succès" })
       setIsAddModalOpen(false)
       reloadEntreprises()
-    } catch (error) {
-      toast({ title: "Erreur", description: "Impossible d'ajouter l'entreprise", variant: "destructive" })
+    } catch (error: any) {
+      console.error("Erreur création:", error)
+      toast({
+        title: "Erreur",
+        description: error?.message || "Impossible d'ajouter l'entreprise",
+        variant: "destructive",
+      })
     }
   }
 
   const handleSubmitEdit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!currentEntreprise) return
+
     try {
+      console.log("Données à modifier:", formData)
       await updateEntreprise(currentEntreprise.id, formData)
       toast({ title: "Succès", description: "Entreprise modifiée avec succès" })
       setIsEditModalOpen(false)
       reloadEntreprises()
     } catch (error: any) {
+      console.error("Erreur modification:", error)
       const errorMessage = error?.message || "Impossible de modifier l'entreprise"
       toast({ title: "Erreur", description: errorMessage, variant: "destructive" })
     }
@@ -211,11 +208,17 @@ export default function EntreprisesPage() {
 
   const handleDeleteEntreprise = async (id: number) => {
     try {
+      console.log("Suppression entreprise ID:", id)
       await deleteEntreprise(id)
       toast({ title: "Succès", description: "Entreprise supprimée avec succès" })
       reloadEntreprises()
-    } catch (error) {
-      toast({ title: "Erreur", description: "Impossible de supprimer l'entreprise", variant: "destructive" })
+    } catch (error: any) {
+      console.error("Erreur suppression:", error)
+      toast({
+        title: "Erreur",
+        description: error?.message || "Impossible de supprimer l'entreprise",
+        variant: "destructive",
+      })
     }
   }
 
@@ -232,7 +235,6 @@ export default function EntreprisesPage() {
     setFormData((prev) => ({ ...prev, utilisateur_id: utilisateurId }))
   }
 
-  // Ajout d'une adresse
   const handleAdresseInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setAdresseForm((prev) => ({ ...prev, [name]: value }))
@@ -252,12 +254,17 @@ export default function EntreprisesPage() {
         pays: "",
       })
       reloadAdresses()
-      // Sélectionne la nouvelle adresse dans le formulaire entreprise
+
       if (res?.data?.id) {
         setFormData((prev) => ({ ...prev, adresse_id: res.data.id }))
       }
-    } catch (error) {
-      toast({ title: "Erreur", description: "Impossible d'ajouter l'adresse", variant: "destructive" })
+    } catch (error: any) {
+      console.error("Erreur ajout adresse:", error)
+      toast({
+        title: "Erreur",
+        description: error?.message || "Impossible d'ajouter l'adresse",
+        variant: "destructive",
+      })
     }
   }
 
@@ -355,7 +362,7 @@ export default function EntreprisesPage() {
                     <td className="p-3">{formatAdresse(adresse)}</td>
                     <td className="p-3">{entreprise.telephoneStandard || "-"}</td>
                     <td className="p-3">{entreprise.emailStandart || "-"}</td>
-                    <td className="p-3">{utilisateur ? `${utilisateur.nom}` : "-"}</td>
+                    <td className="p-3">{formatUtilisateur(utilisateur)}</td>
                     <td className="p-3 text-right space-x-2">
                       <Button size="sm" variant="outline" onClick={() => handleEditEntreprise(entreprise)}>
                         <Edit className="h-4 w-4" />
@@ -370,7 +377,8 @@ export default function EntreprisesPage() {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Êtes-vous sûr de vouloir supprimer cette entreprise ?
+                              Êtes-vous sûr de vouloir supprimer l'entreprise "{entreprise.raisonSocial}" ? Cette action
+                              est irréversible.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
@@ -389,6 +397,7 @@ export default function EntreprisesPage() {
           </table>
         </div>
 
+        {/* Modal ajout entreprise */}
         <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
           <DialogContent>
             <DialogHeader>
@@ -460,7 +469,7 @@ export default function EntreprisesPage() {
                   <SelectContent side="bottom" alignOffset={-4}>
                     {utilisateurs.map((utilisateur) => (
                       <SelectItem key={utilisateur.id} value={utilisateur.id.toString()}>
-                        {utilisateur.nom} {utilisateur.prenom}
+                        {formatUtilisateur(utilisateur)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -473,70 +482,7 @@ export default function EntreprisesPage() {
           </DialogContent>
         </Dialog>
 
-        {/* Modal ajout adresse */}
-        <Dialog open={isAddAdresseOpen} onOpenChange={setIsAddAdresseOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Ajouter une adresse</DialogTitle>
-              <DialogDescription>Remplissez les champs pour ajouter une nouvelle adresse.</DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleSubmitAdresse} className="space-y-3">
-              <div>
-                <Label htmlFor="ligneAdresse1">Ligne adresse 1</Label>
-                <Input
-                  id="ligneAdresse1"
-                  name="ligneAdresse1"
-                  value={adresseForm.ligneAdresse1}
-                  onChange={handleAdresseInputChange}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="ligneAdresse2">Ligne adresse 2</Label>
-                <Input
-                  id="ligneAdresse2"
-                  name="ligneAdresse2"
-                  value={adresseForm.ligneAdresse2}
-                  onChange={handleAdresseInputChange}
-                />
-              </div>
-              <div>
-                <Label htmlFor="ville">Ville</Label>
-                <Input
-                  id="ville"
-                  name="ville"
-                  value={adresseForm.ville}
-                  onChange={handleAdresseInputChange}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="cp">Code postal</Label>
-                <Input
-                  id="cp"
-                  name="cp"
-                  value={adresseForm.cp}
-                  onChange={handleAdresseInputChange}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="pays">Pays</Label>
-                <Input
-                  id="pays"
-                  name="pays"
-                  value={adresseForm.pays}
-                  onChange={handleAdresseInputChange}
-                  required
-                />
-              </div>
-              <DialogFooter>
-                <Button type="submit">Ajouter adresse</Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
-
+        {/* Modal modification entreprise */}
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
           <DialogContent>
             <DialogHeader>
@@ -608,7 +554,7 @@ export default function EntreprisesPage() {
                   <SelectContent side="bottom" alignOffset={-4}>
                     {utilisateurs.map((utilisateur) => (
                       <SelectItem key={utilisateur.id} value={utilisateur.id.toString()}>
-                        {utilisateur.nom} {utilisateur.prenom}
+                        {formatUtilisateur(utilisateur)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -616,6 +562,52 @@ export default function EntreprisesPage() {
               </div>
               <DialogFooter>
                 <Button type="submit">Modifier</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Modal ajout adresse */}
+        <Dialog open={isAddAdresseOpen} onOpenChange={setIsAddAdresseOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Ajouter une adresse</DialogTitle>
+              <DialogDescription>Remplissez les champs pour ajouter une nouvelle adresse.</DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmitAdresse} className="space-y-3">
+              <div>
+                <Label htmlFor="ligneAdresse1">Ligne adresse 1</Label>
+                <Input
+                  id="ligneAdresse1"
+                  name="ligneAdresse1"
+                  value={adresseForm.ligneAdresse1}
+                  onChange={handleAdresseInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="ligneAdresse2">Ligne adresse 2</Label>
+                <Input
+                  id="ligneAdresse2"
+                  name="ligneAdresse2"
+                  value={adresseForm.ligneAdresse2}
+                  onChange={handleAdresseInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="ville">Ville</Label>
+                <Input id="ville" name="ville" value={adresseForm.ville} onChange={handleAdresseInputChange} required />
+              </div>
+              <div>
+                <Label htmlFor="cp">Code postal</Label>
+                <Input id="cp" name="cp" value={adresseForm.cp} onChange={handleAdresseInputChange} required />
+              </div>
+              <div>
+                <Label htmlFor="pays">Pays</Label>
+                <Input id="pays" name="pays" value={adresseForm.pays} onChange={handleAdresseInputChange} required />
+              </div>
+              <DialogFooter>
+                <Button type="submit">Ajouter adresse</Button>
               </DialogFooter>
             </form>
           </DialogContent>

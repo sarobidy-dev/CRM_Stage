@@ -7,7 +7,7 @@ class Entreprise(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     raisonSocial = Column(String(120), nullable=False)
-    telephoneStandard = Column(String(20), unique=True)
+    telephoneStandard = Column(String(15), unique=True)
     emailStandart = Column(String(120), unique=True)
 
     adresse_id = Column(Integer, ForeignKey("adresse.id", ondelete="CASCADE"))

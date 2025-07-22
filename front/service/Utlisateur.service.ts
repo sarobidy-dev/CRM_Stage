@@ -1,32 +1,4 @@
-// import axios from "axios";
-// import ApiService from "./api.service";
-// import { Utilisateur } from "@/types/Utilisateur.type";
-// const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-// export const fetchUtilisateurs = async (): Promise<Utilisateur[]> => {
-//     return await ApiService.get(`${apiUrl}/utilisateurs`);
-// };
-
-// const API = process.env.NEXT_PUBLIC_API_URL;
-
-// export const createUtilisateur = async (formData: FormData) => {
-//   const res = await axios.post(`${API}/utilisateurs/`, formData, {
-//     headers: { "Content-Type": "multipart/form-data" },
-//   });
-//   return res.data;
-// };
-
-// export const updateUtilisateur = async (id: number, formData: FormData) => {
-//   const res = await axios.put(`${apiUrl}/utilisateurs/${id}`, formData, {
-//     headers: { "Content-Type": "multipart/form-data" },
-//   });
-//   return res.data;
-// };
-
-// export const deleteUtilisateur = async (id: number) => {
-//   const res = await axios.delete(`${apiUrl}/utilisateurs/${id}`);
-//   return res.data;
-// };
-import type { Utilisateur } from "@/types/Utilisateur.type"
+import type { Utilisateur, CreateUtilisateurRequest, UpdateUtilisateurRequest } from "@/types/Utilisateur.type"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
 
@@ -47,21 +19,41 @@ export const fetchUtilisateurs = async (): Promise<Utilisateur[]> => {
     }
 
     const data = await response.json()
-    return data
+
+    // Gérer différents formats de réponse
+    if (data.success && Array.isArray(data.data)) {
+      return data.data
+    } else if (Array.isArray(data)) {
+      return data
+    } else {
+      return []
+    }
   } catch (error) {
     console.error("Erreur lors de la récupération des utilisateurs:", error)
-    throw error
+    return [] // Retourner un tableau vide plutôt que de throw
   }
 }
 
 /**
  * Crée un nouvel utilisateur
  */
-export const createUtilisateur = async (formData: FormData): Promise<Utilisateur> => {
+export const createUtilisateur = async (userData: CreateUtilisateurRequest): Promise<Utilisateur> => {
   try {
+    const formData = new FormData()
+    formData.append("nom", userData.nom)
+    formData.append("prenom", userData.prenom)
+    formData.append("email", userData.email)
+    formData.append("mot2pass", userData.mot2pass)
+    formData.append("role", userData.role)
+    formData.append("actif", userData.actif.toString())
+
+    if (userData.photo_profil) {
+      formData.append("photo_profil", userData.photo_profil)
+    }
+
     const response = await fetch(`${API_BASE_URL}/utilisateurs`, {
       method: "POST",
-      body: formData, // FormData pour gérer les fichiers
+      body: formData,
     })
 
     if (!response.ok) {
@@ -70,7 +62,7 @@ export const createUtilisateur = async (formData: FormData): Promise<Utilisateur
     }
 
     const data = await response.json()
-    return data
+    return data.success ? data.data : data
   } catch (error) {
     console.error("Erreur lors de la création de l'utilisateur:", error)
     throw error
@@ -80,11 +72,21 @@ export const createUtilisateur = async (formData: FormData): Promise<Utilisateur
 /**
  * Met à jour un utilisateur existant
  */
-export const updateUtilisateur = async (id: number, formData: FormData): Promise<Utilisateur> => {
+export const updateUtilisateur = async (id: number, userData: UpdateUtilisateurRequest): Promise<Utilisateur> => {
   try {
+    const formData = new FormData()
+
+    if (userData.nom) formData.append("nom", userData.nom)
+    if (userData.prenom) formData.append("prenom", userData.prenom)
+    if (userData.email) formData.append("email", userData.email)
+    if (userData.mot2pass) formData.append("mot2pass", userData.mot2pass)
+    if (userData.role) formData.append("role", userData.role)
+    if (userData.actif !== undefined) formData.append("actif", userData.actif.toString())
+    if (userData.photo_profil) formData.append("photo_profil", userData.photo_profil)
+
     const response = await fetch(`${API_BASE_URL}/utilisateurs/${id}`, {
       method: "PUT",
-      body: formData, // FormData pour gérer les fichiers
+      body: formData,
     })
 
     if (!response.ok) {
@@ -93,7 +95,7 @@ export const updateUtilisateur = async (id: number, formData: FormData): Promise
     }
 
     const data = await response.json()
-    return data
+    return data.success ? data.data : data
   } catch (error) {
     console.error("Erreur lors de la modification de l'utilisateur:", error)
     throw error
@@ -116,18 +118,12 @@ export const deleteUtilisateur = async (id: number): Promise<void> => {
       const errorData = await response.json().catch(() => ({}))
       throw new Error(errorData.detail || errorData.message || `Erreur HTTP: ${response.status}`)
     }
-
-    // La suppression ne retourne généralement pas de données
-    return
   } catch (error) {
     console.error("Erreur lors de la suppression de l'utilisateur:", error)
     throw error
   }
 }
 
-/**
- * Récupère un utilisateur par son ID
- */
 export const getUserById = async (id: number): Promise<Utilisateur> => {
   try {
     const response = await fetch(`${API_BASE_URL}/utilisateurs/${id}`, {
@@ -143,7 +139,7 @@ export const getUserById = async (id: number): Promise<Utilisateur> => {
     }
 
     const data = await response.json()
-    return data
+    return data.success ? data.data : data
   } catch (error) {
     console.error("Erreur lors de la récupération de l'utilisateur:", error)
     throw error

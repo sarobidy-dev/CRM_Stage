@@ -1,3 +1,4 @@
+from schemas.Utilisateur import UtilisateurRead
 from pydantic import BaseModel
 from typing import Optional
 from datetime import date
@@ -24,6 +25,16 @@ class HistoriqueActionUpdate(BaseModel):
     campagne_id: Optional[int] = None
     utilisateur_id: Optional[int] = None
 
+class HistoriqueActionReads(BaseModel):
+    id: int
+    date: date
+    commentaire: Optional[str]
+    action: str
+    pourcentageVente: Optional[float]
+    entreprise_id: Optional[int]
+    campagne_id: Optional[int]
+    utilisateur_id: Optional[int] 
+    utilisateur: Optional[UtilisateurRead]= None
 
 # 🔸 Lecture
 class HistoriqueActionRead(BaseModel):
@@ -36,6 +47,7 @@ class HistoriqueActionRead(BaseModel):
     campagne_id: Optional[int]
     utilisateur_id: Optional[int] 
 
-    
-    class Config:
-        from_attributes = True
+
+    model_config = {
+        "from_attributes": True
+    }

@@ -5,18 +5,6 @@ export interface HaContact {
   ha_id: number // ID de l'historique
   contact_id: number // ID du contact
 }
-// types/historique.type.ts
-
-export interface HistoriqueAction {
-  id: number;
-  date: string; // format ISO string (e.g. "2025-07-19")
-  commentaire: string;
-  action: string;
-  pourcentageVente: number;
-  entreprise_id: number | null;
-  campagne_id: number | null;
-  utilisateur_id: number;
-}
 
 export interface ContactHistoryItem {
   id: number
@@ -29,7 +17,7 @@ export interface ContactHistoryItem {
   utilisateur_id: number
 }
 
-// Créer une relation ha-contact
+
 export async function createHaContact(contactId: number, historiqueId: number): Promise<HaContact> {
   try {
     const response = await fetch(`${API_BASE_URL}/ha-contacts`, {
@@ -65,7 +53,7 @@ export async function createHaContact(contactId: number, historiqueId: number): 
 export async function getContactHistory(contactId: number): Promise<ContactHistoryItem[]> {
   try {
     // D'abord récupérer les relations ha-contact pour ce contact
-    const haContactsResponse = await fetch(`${API_BASE_URL}/ha-contacts`, {
+    const haContactsResponse = await fetch(`${API_BASE_URL}/ha-contacts?contact_id=${contactId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -80,15 +68,16 @@ export async function getContactHistory(contactId: number): Promise<ContactHisto
 
     let haContacts = []
     if (haContactsResult.success && Array.isArray(haContactsResult.data)) {
-      // Filtrer pour ne garder que les relations pour ce contact
-      haContacts = haContactsResult.data.filter((item: HaContact) => item.contact_id === contactId)
+      haContacts = haContactsResult.data
+    } else if (Array.isArray(haContactsResult)) {
+      haContacts = haContactsResult
     }
 
     if (haContacts.length === 0) {
       return []
     }
 
-    // Récupérer les détails de chaque historique
+  
     const historiques = await Promise.all(
       haContacts.map(async (haContact: HaContact) => {
         try {
@@ -101,7 +90,6 @@ export async function getContactHistory(contactId: number): Promise<ContactHisto
 
           const historiqueResult = await historiqueResponse.json()
 
-          // Gérer différents formats de réponse
           if (historiqueResult.success && historiqueResult.data) {
             return historiqueResult.data
           } else if (historiqueResult.id) {

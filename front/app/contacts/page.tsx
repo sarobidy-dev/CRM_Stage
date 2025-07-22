@@ -1,6 +1,21 @@
 "use client"
-import { useState, useEffect, use } from "react"
-import { Search, Filter, Plus, MoreHorizontal, Mail, Edit, Trash2, MessageSquare, X } from "lucide-react"
+
+import { useState, useEffect } from "react"
+import {
+  Search,
+  Filter,
+  Plus,
+  MoreHorizontal,
+  Mail,
+  Edit,
+  Trash2,
+  MessageSquare,
+  X,
+  History,
+  Phone,
+  Copy,
+  User,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -9,20 +24,21 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { ContactForm } from "@/components/contact-form"
 import { DeleteConfirmDialog } from "@/components/delete-confirm-dialog"
 import { SendMessageDialog } from "@/components/send-message-dialog"
 import { FilterDialog } from "@/components/filter-dialog"
+import { ContactHistoryDialog } from "@/components/contact-historique-dialog"
 import { getAllContacts } from "@/service/Contact.service"
 import { getAllEntreprises } from "@/service/Entreprise.service"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import Navbar from "@/components/navbarLink/nav"
 import AddHistoriqueDialog from "@/components/DialogueHistorique"
-import { log } from "node:console"
 import { getAllCampagnes } from "@/service/campagne.service"
 import { toast } from "@/hooks/use-toast"
-import { Campagne } from "@/types/campagne.type"
+import type { Campagne } from "@/types/campagne.type"
 
 interface Contact {
   id: number
@@ -56,34 +72,30 @@ export default function ContactsPage() {
   const [entreprises, setEntreprises] = useState<Entreprise[]>([])
 
   // Dialog states
-  const [utilisateur, setUtilisateur] = useState<{ id: number }>({ id: 1 });
+  const [utilisateur, setUtilisateur] = useState<{ id: number }>({ id: 1 })
   const [showContactForm, setShowContactForm] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [showMessageDialog, setShowMessageDialog] = useState(false)
   const [showFilterDialog, setShowFilterDialog] = useState(false)
+  const [showCallDialog, setShowCallDialog] = useState(false)
   const [editingContact, setEditingContact] = useState<Contact | null>(null)
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null)
+  const [contactToCall, setContactToCall] = useState<Contact | null>(null)
   const [campagnes, setCampagnes] = useState<Campagne[]>([])
+
   useEffect(() => {
     const fetchCampagnes = async () => {
       try {
         const res = await getAllCampagnes()
         setCampagnes(res.data)
-        console.log("Campagnes loaded:", res.data);
-
+        console.log("Campagnes loaded:", res.data)
       } catch {
         toast({ title: "Erreur", description: "Impossible de charger les campagnes", variant: "destructive" })
       } finally {
-
       }
     }
-    fetchCampagnes();
-  }, []);
-
-
-
-
-
+    fetchCampagnes()
+  }, [])
 
   // Filter state
   const [activeFilters, setActiveFilters] = useState<FilterOptions>({
@@ -95,7 +107,7 @@ export default function ContactsPage() {
     try {
       setLoading(true)
       setError("")
-      const response = await getAllContacts() as Contact[] | { data: Contact[] }
+      const response = (await getAllContacts()) as Contact[] | { data: Contact[] }
       if (Array.isArray(response)) {
         setContacts(response)
         setFilteredContacts(response)
@@ -157,17 +169,19 @@ export default function ContactsPage() {
         `${contact.prenom} ${contact.nom}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
         contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         contact.telephone.includes(searchTerm) ||
-        contact.fonction.toLowerCase().includes(searchTerm.toLowerCase())
+        contact.fonction.toLowerCase().includes(searchTerm.toLowerCase()),
     )
+
     if (activeFilters.fonction.length > 0) {
       filtered = filtered.filter((contact) => activeFilters.fonction.includes(contact.fonction))
     }
+
     setFilteredContacts(filtered)
   }, [searchTerm, contacts, activeFilters])
 
   const handleSelectContact = (contactId: number) => {
     setSelectedContacts((prev) =>
-      prev.includes(contactId) ? prev.filter((id) => id !== contactId) : [...prev, contactId]
+      prev.includes(contactId) ? prev.filter((id) => id !== contactId) : [...prev, contactId],
     )
   }
 
@@ -217,9 +231,27 @@ export default function ContactsPage() {
     setShowMessageDialog(true)
   }
 
+  // Fonction pour afficher le numéro de téléphone dans une fenêtre décorée
+  const handleCallContact = (contact: Contact) => {
+    setContactToCall(contact)
+    setShowCallDialog(true)
+  }
+
+  // Fonction pour copier le numéro de téléphone
+  const copyPhoneNumber = () => {
+    if (contactToCall) {
+      navigator.clipboard.writeText(contactToCall.telephone)
+      toast({
+        title: "Copié !",
+        description: "Le numéro de téléphone a été copié dans le presse-papiers",
+      })
+    }
+  }
+
   const getInitials = (prenom: string, nom: string) => {
     const prenomSafe = prenom && typeof prenom === "string" ? prenom.trim() : ""
     const nomSafe = nom && typeof nom === "string" ? nom.trim() : ""
+
     if (!prenomSafe || !nomSafe) {
       return prenomSafe
         ? prenomSafe.charAt(0).toUpperCase() + "?"
@@ -227,6 +259,7 @@ export default function ContactsPage() {
           ? "?" + nomSafe.charAt(0).toUpperCase()
           : "??"
     }
+
     return `${prenomSafe.charAt(0)}${nomSafe.charAt(0)}`.toUpperCase()
   }
 
@@ -241,7 +274,7 @@ export default function ContactsPage() {
 
   // Trouver le nom de l'entreprise à partir de l'id (supporte nom ou raisonSocial)
   const getEntrepriseName = (id: number) => {
-    const ent = entreprises.find(e => e.id === id)
+    const ent = entreprises.find((e) => e.id === id)
     return ent ? (ent.nom ?? ent.raisonSocial ?? "") : ""
   }
 
@@ -258,7 +291,7 @@ export default function ContactsPage() {
 
   return (
     <div className="flex min-h-screen bg-gray-100 text-gray-800">
-      <Navbar/>
+      <Navbar />
       <div className="container mx-auto p-6 space-y-6">
         {error && (
           <Alert variant="destructive">
@@ -280,6 +313,7 @@ export default function ContactsPage() {
               />
             </div>
           </div>
+
           <div className="flex items-center space-x-2">
             <Button variant="outline" size="sm" onClick={() => setShowFilterDialog(true)} className="relative">
               <Filter className="h-4 w-4 mr-2" />
@@ -324,6 +358,7 @@ export default function ContactsPage() {
           <TabsList>
             <TabsTrigger value="all">All Contacts ({filteredContacts.length})</TabsTrigger>
           </TabsList>
+
           <TabsContent value="all" className="space-y-4">
             {selectedContacts.length > 0 && (
               <div className="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
@@ -337,16 +372,16 @@ export default function ContactsPage() {
                     <Trash2 className="h-4 w-4 mr-2" />
                     Supprimer
                   </Button>
-                  <AddHistoriqueDialog
-                    entrepriseId={
-                      selectedContacts.length === 1
-                        ? filteredContacts.find((c) => c.id === selectedContacts[0])?.entreprise_id ?? 0
-                        : 0
-                    }
-                    utilisateurId={utilisateur?.id ?? 1}
-                    campagnes={campagnes}
-                    entreprises={entreprises}
-                  />
+                  {/* Afficher le bouton Ajouter historique seulement si exactement 1 contact est sélectionné */}
+                  {selectedContacts.length === 1 && (
+                    <AddHistoriqueDialog
+                      entrepriseId={filteredContacts.find((c) => c.id === selectedContacts[0])?.entreprise_id ?? 0}
+                      contactId={selectedContacts[0]}
+                      utilisateurId={utilisateur?.id ?? 1}
+                      campagnes={campagnes}
+                      entreprises={entreprises}
+                    />
+                  )}
                 </div>
               </div>
             )}
@@ -400,9 +435,7 @@ export default function ContactsPage() {
                       <TableCell>
                         <Badge variant="secondary">{contact.fonction}</Badge>
                       </TableCell>
-                      <TableCell className="text-gray-600">
-                        {getEntrepriseName(contact.entreprise_id)}
-                      </TableCell>
+                      <TableCell className="text-gray-600">{getEntrepriseName(contact.entreprise_id)}</TableCell>
                       <TableCell className="text-gray-600">{formatDate(contact.id)}</TableCell>
                       <TableCell>
                         <DropdownMenu>
@@ -412,6 +445,19 @@ export default function ContactsPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
+                            <ContactHistoryDialog
+                              contactId={contact.id}
+                              contactName={`${contact.prenom} ${contact.nom}`}
+                            >
+                              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                <History className="h-4 w-4 mr-2" />
+                                Voir l'historique
+                              </DropdownMenuItem>
+                            </ContactHistoryDialog>
+                            <DropdownMenuItem onClick={() => handleCallContact(contact)}>
+                              <Phone className="h-4 w-4 mr-2" />
+                              Appeler
+                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setShowMessageDialog(true)}>
                               <MessageSquare className="h-4 w-4 mr-2" />
                               Envoyer un message
@@ -441,12 +487,81 @@ export default function ContactsPage() {
           </TabsContent>
         </Tabs>
 
+        {/* Dialog pour afficher le numéro de téléphone */}
+        <Dialog open={showCallDialog} onOpenChange={setShowCallDialog}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3">
+                <div className="p-2 bg-green-100 rounded-full">
+                  <Phone className="h-6 w-6 text-green-600" />
+                </div>
+                Appeler le contact
+              </DialogTitle>
+            </DialogHeader>
+            {contactToCall && (
+              <div className="space-y-6">
+                {/* Informations du contact */}
+                <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                  <Avatar className="h-12 w-12">
+                    <AvatarFallback className="bg-blue-100 text-blue-600 text-lg">
+                      {getInitials(contactToCall.prenom, contactToCall.nom)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg">
+                      {contactToCall.prenom} {contactToCall.nom}
+                    </h3>
+                    <p className="text-gray-600 flex items-center gap-1">
+                      <User className="h-4 w-4" />
+                      {contactToCall.fonction}
+                    </p>
+                    <p className="text-gray-600">{getEntrepriseName(contactToCall.entreprise_id)}</p>
+                  </div>
+                </div>
+
+                {/* Numéro de téléphone */}
+                <div className="text-center space-y-4">
+                  <div className="p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border-2 border-green-200">
+                    <p className="text-sm text-gray-600 mb-2">Numéro de téléphone</p>
+                    <p className="text-3xl font-bold text-green-700 tracking-wider">{contactToCall.telephone}</p>
+                  </div>
+
+                  {/* Boutons d'action */}
+                  <div className="flex gap-3 justify-center">
+                    <Button
+                      onClick={copyPhoneNumber}
+                      variant="outline"
+                      className="flex items-center gap-2 hover:bg-blue-50 bg-transparent"
+                    >
+                      <Copy className="h-4 w-4" />
+                      Copier
+                    </Button>
+                    <Button
+                      onClick={() => setShowCallDialog(false)}
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                    >
+                      <Phone className="h-4 w-4 mr-2" />
+                      Fermer
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Informations supplémentaires */}
+                <div className="text-center text-sm text-gray-500 border-t pt-4">
+                  <p>💡 Vous pouvez copier le numéro et l'utiliser dans votre application d'appel</p>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
         <ContactForm
           open={showContactForm}
           onOpenChange={setShowContactForm}
           contact={editingContact}
           onSave={handleSaveContact}
         />
+
         <DeleteConfirmDialog
           open={showDeleteDialog}
           onOpenChange={setShowDeleteDialog}
@@ -457,6 +572,7 @@ export default function ContactsPage() {
           contactId={contactToDelete?.id}
           contactIds={selectedContacts}
         />
+
         <SendMessageDialog
           open={showMessageDialog}
           onOpenChange={setShowMessageDialog}
@@ -464,6 +580,7 @@ export default function ContactsPage() {
             selectedContacts.length > 0 ? filteredContacts.filter((c) => selectedContacts.includes(c.id)) : []
           }
         />
+
         <FilterDialog
           open={showFilterDialog}
           onOpenChange={setShowFilterDialog}
@@ -472,8 +589,6 @@ export default function ContactsPage() {
           onFiltersChange={setActiveFilters}
         />
       </div>
-
-
     </div>
   )
 }

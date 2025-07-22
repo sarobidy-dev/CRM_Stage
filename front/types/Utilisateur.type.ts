@@ -1,25 +1,18 @@
-// export interface Utilisateur {
-//     id_utilisateur: number
-//     nom: string
-//     prenom: string
-//     email: string
-// }
-export interface Utilisateur{
-  id: number | null | undefined;
-  prenom: any;
-  id_utilisateur: any;
-  nom: string,
-  email: string,
-  mot2pass: string,
-  role: string,
-  actif?: boolean,
+export interface Utilisateur {
+  id: number
+  id_utilisateur?: number // Pour compatibilité si votre API retourne les deux
+  nom: string
+  prenom: string
+  email: string
+  mot2pass?: string // Optionnel car on ne veut pas toujours l'exposer
+  role: string
+  actif?: boolean
   photo_profil?: string
 }
 
-
-
 export interface CreateUtilisateurRequest {
   nom: string
+  prenom: string
   email: string
   mot2pass: string
   role: string
@@ -29,6 +22,7 @@ export interface CreateUtilisateurRequest {
 
 export interface UpdateUtilisateurRequest {
   nom?: string
+  prenom?: string
   email?: string
   mot2pass?: string
   role?: string

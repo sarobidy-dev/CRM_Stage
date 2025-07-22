@@ -6,7 +6,7 @@ class ProjetProspection(Base):
     __tablename__ = "projet_prospection" 
     
     id = Column(Integer, primary_key=True, index=True)
-    projet = Column(String(40), nullable=False)
+    projet = Column(String(50), nullable=False)
     description= Column(Text, nullable=True)
     # Relations
     campagnes = relationship("Campagne", back_populates="projet_prospection")

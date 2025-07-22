@@ -6,7 +6,7 @@ class Campagne(Base):
     __tablename__ = "campagne" 
     
     id = Column(Integer, primary_key=True, index=True)
-    libelle = Column(String(405), nullable=False)
+    libelle = Column(String(700), nullable=False)
     description= Column(Text,nullable=True)
     #foreign key
     projetProspection_id = Column(Integer, ForeignKey("projet_prospection.id", ondelete="CASCADE"))
