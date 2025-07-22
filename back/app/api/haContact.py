@@ -1,5 +1,9 @@
+from models.haContact import HAContact
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from sqlalchemy.orm import joinedload
+from models.historiqueAction import HistoriqueAction
 from database import get_async_session
 from services.haContact import (
     create_ha_contact,
@@ -9,7 +13,8 @@ from services.haContact import (
 )
 from schemas.haContact import (
     HAContactCreate,
-    HAContactRead
+    HAContactRead,
+    HistoriqueActionRead
 )
 from utils.jsonResponse import response
 
@@ -40,6 +45,33 @@ async def get_one(id: int, db: AsyncSession = Depends(get_async_session)):
     if not item:
         raise HTTPException(status_code=404, detail="Lien introuvable")
     return response(True, "Lien trouvé", HAContactRead.from_orm(item).dict())
+
+@router.get("/{contact_id}/historiques")
+async def get_historiques_by_contact_id(contact_id: int, db: AsyncSession = Depends(get_async_session)):
+    stmt = (
+        select(HistoriqueAction)
+        .join(HAContact, HistoriqueAction.id == HAContact.ha_id)
+        .where(HAContact.contact_id == contact_id)
+        .options(
+            joinedload(HistoriqueAction.utilisateur),
+            joinedload(HistoriqueAction.entreprise),
+            joinedload(HistoriqueAction.campagne)
+        )
+    )
+
+    result = await db.execute(stmt)
+    historiques = result.scalars().all()
+
+    data = [
+        HistoriqueActionRead.model_validate(h, from_attributes=True).model_dump()
+        for h in historiques
+    ]
+
+    return {
+        "success": True,
+        "message": "Historique récupéré",
+        "data": data
+    }
 
 
 @router.delete("/{id}", response_model=dict)

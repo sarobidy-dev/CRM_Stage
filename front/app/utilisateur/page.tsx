@@ -16,31 +16,25 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
-/**
- * Page de gestion des utilisateurs.
- * - Recherche full‑text (nom, email, rôle)
- * - CRUD complet via API
- * - Validation e‑mail « @gmail.com » uniquement (ex : `nomPersonne@gmail.com`)
- * - Responsive mobile → desktop
- */
+
 const UtilisateurPage = () => {
-  /* --------------------------------------------------- */
-  /* ÉTATS                                               */
-  /* --------------------------------------------------- */
+
   const [data, setData] = useState<Utilisateur[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  // recherche
+
+
   const [search, setSearch] = useState("")
-  // formulaire / modale
+
+
   const [showForm, setShowForm] = useState(false)
   const [editUser, setEditUser] = useState<Utilisateur | null>(null)
   const [photoFile, setPhotoFile] = useState<File | null>(null)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  // suppression
+
   const [deleteError, setDeleteError] = useState<string | null>(null)
-  // données du formulaire
+
   const [formData, setFormData] = useState({
     nom: "",
     email: "",
@@ -53,6 +47,7 @@ const UtilisateurPage = () => {
   useEffect(() => {
     refreshData()
   }, [])
+
   const refreshData = async () => {
     setIsLoading(true)
     try {
@@ -66,9 +61,6 @@ const UtilisateurPage = () => {
     }
   }
 
-  /* --------------------------------------------------- */
-  /* OUTILS                                              */
-  /* --------------------------------------------------- */
   const getImageUrl = (imagePath?: string | null) => {
     if (!imagePath) return "/placeholder.svg?height=100&width=100"
     if (imagePath.startsWith("http")) return imagePath
@@ -79,30 +71,29 @@ const UtilisateurPage = () => {
   const getRoleBadgeColor = (role: string) => {
     switch (role.toLowerCase()) {
       case "admin":
+      case "administrateur":
         return "bg-red-100 text-red-800 border-red-200"
       case "commercial":
         return "bg-blue-100 text-blue-800 border-blue-200"
       case "manager":
+      case "superviseur":
         return "bg-purple-100 text-purple-800 border-purple-200"
       default:
         return "bg-gray-100 text-gray-800 border-gray-200"
     }
   }
 
-  /* --------------------------------------------------- */
-  /* RECHERCHE : filtrage MEMOISÉ                        */
-  /* --------------------------------------------------- */
   const displayedUsers = useMemo(() => {
     if (!search.trim()) return data
     const q = search.toLowerCase()
     return data.filter(
-      (u) => u.nom.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.role.toLowerCase().includes(q),
+      (u) =>
+        u.nom.toLowerCase().includes(q) ||
+        u.email.toLowerCase().includes(q) ||
+        u.role.toLowerCase().includes(q),
     )
   }, [search, data])
 
-  /* --------------------------------------------------- */
-  /* FORMULAIRE : ouvrir / changer / soumettre           */
-  /* --------------------------------------------------- */
   const openForm = (user?: Utilisateur) => {
     setErrorMessage(null)
     setDeleteError(null)
@@ -111,6 +102,7 @@ const UtilisateurPage = () => {
       setEditUser(user)
       setFormData({
         nom: user.nom,
+      
         email: user.email,
         mot2pass: "",
         role: user.role,
@@ -122,6 +114,7 @@ const UtilisateurPage = () => {
       setEditUser(null)
       setFormData({
         nom: "",
+        
         email: "",
         mot2pass: "",
         role: "",
@@ -151,7 +144,6 @@ const UtilisateurPage = () => {
     }
   }
 
-  // Validation « @gmail.com » – commence par une lettre
   const EMAIL_PATTERN = /^[A-Za-z][A-Za-z0-9._%+-]*@gmail\.com$/
 
   const handleSubmit = async () => {
@@ -159,15 +151,18 @@ const UtilisateurPage = () => {
       setErrorMessage("Veuillez remplir tous les champs obligatoires.")
       return
     }
-    // Vérif e‑mail @gmail.com
+
+   
     if (!EMAIL_PATTERN.test(formData.email)) {
       setErrorMessage("E‑mail invalide. Il doit se terminer par @gmail.com, ex : nomPersonne@gmail.com")
       return
     }
+
     if (!editUser && !formData.mot2pass) {
       setErrorMessage("Le mot de passe est obligatoire pour un nouvel utilisateur.")
       return
     }
+
     if (
       !window.confirm(
         editUser ? "Confirmer la modification de l'utilisateur ?" : "Confirmer l'ajout de l'utilisateur ?",
@@ -176,20 +171,31 @@ const UtilisateurPage = () => {
       return
 
     setIsSubmitting(true)
-    const payload = new FormData()
-    payload.append("nom", formData.nom)
-    payload.append("email", formData.email)
-    payload.append("role", formData.role)
-    payload.append("actif", formData.actif ? "true" : "false")
-    if (formData.mot2pass) payload.append("mot2pass", formData.mot2pass)
-    if (photoFile) payload.append("photo_profil", photoFile)
 
     try {
       if (editUser) {
-        await updateUtilisateur(editUser.id_utilisateur, payload)
+        const updateData = {
+          nom: formData.nom,
+       
+          email: formData.email,
+          role: formData.role,
+          actif: formData.actif,
+          ...(formData.mot2pass && { mot2pass: formData.mot2pass }),
+          ...(photoFile && { photo_profil: photoFile }),
+        }
+        await updateUtilisateur(editUser.id_utilisateur || editUser.id, updateData)
         alert(`L'utilisateur ${formData.nom} a été modifié avec succès.`)
       } else {
-        await createUtilisateur(payload)
+        const createData = {
+          nom: formData.nom,
+         
+          email: formData.email,
+          mot2pass: formData.mot2pass,
+          role: formData.role,
+          actif: formData.actif,
+          ...(photoFile && { photo_profil: photoFile }),
+        }
+        await createUtilisateur(createData)
         alert(`L'utilisateur ${formData.nom} a été créé avec succès.`)
       }
       setShowForm(false)
@@ -206,7 +212,6 @@ const UtilisateurPage = () => {
     }
   }
 
-
   const handleDelete = async (id: number | string): Promise<void> => {
     // Conversion de l'ID en number si c'est une string
     const userId = typeof id === "string" ? Number.parseInt(id, 10) : id
@@ -221,7 +226,7 @@ const UtilisateurPage = () => {
     setDeleteError(null)
 
     // Trouver l'utilisateur dans les données
-    const user = data.find((u) => u.id_utilisateur === userId)
+    const user = data.find((u) => (u.id_utilisateur || u.id) === userId)
     const name = user ? ` ${user.nom}` : ""
 
     // Confirmation de suppression
@@ -235,15 +240,12 @@ const UtilisateurPage = () => {
     try {
       // Appel de l'API de suppression avec l'ID converti
       await deleteUtilisateur(userId)
-
       // Actualiser les données
       await refreshData()
-
       // Message de succès
       alert(`L'utilisateur${name} a été supprimé avec succès.`)
     } catch (err: any) {
       console.error("Erreur lors de la suppression:", err)
-
       // Extraction du message d'erreur
       const msg = err?.response?.data?.detail || err?.response?.data?.message || err?.message || err?.toString() || ""
 
@@ -260,10 +262,10 @@ const UtilisateurPage = () => {
     }
   }
 
-
   return (
     <div className="flex min-h-screen bg-gray-50 relative">
       <Navbar />
+
       {/* —— CONTENU PRINCIPAL —— */}
       <div className={showForm ? "flex-1 p-6 filter blur-sm pointer-events-none select-none" : "flex-1 p-6"}>
         <div className="max-w-7xl mx-auto">
@@ -329,7 +331,7 @@ const UtilisateurPage = () => {
                 <div>
                   <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Admins</p>
                   <p className="text-3xl font-bold text-gray-900">
-                    {displayedUsers.filter((u) => u.role.toLowerCase() === "admin").length}
+                    {displayedUsers.filter((u) => u.role.toLowerCase().includes("admin")).length}
                   </p>
                 </div>
               </CardContent>
@@ -358,19 +360,20 @@ const UtilisateurPage = () => {
             ) : (
               displayedUsers.map((user, idx) => (
                 <Card
-                  key={`${user.id_utilisateur}-${idx}`}
+                  key={`${user.id_utilisateur || user.id}-${idx}`}
                   className="flex flex-col shadow-sm hover:shadow-md transition-shadow rounded-lg"
                 >
                   <CardContent className="flex items-center space-x-4">
                     <Avatar>
                       <AvatarImage
                         src={getImageUrl(user.photo_profil) || "/placeholder.svg"}
-                        alt={`${user.nom} photo`}
+                        alt={` ${user.nom} photo`}
                       />
-                      <AvatarFallback>{user.nom[0]}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-semibold truncate">{user.nom}</h3>
+                      <h3 className="text-lg font-semibold truncate">
+                        {user.nom}
+                      </h3>
                       <p className="text-sm text-gray-600 truncate">{user.email}</p>
                       <Badge
                         className={`mt-2 px-3 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(user.role)}`}
@@ -382,7 +385,7 @@ const UtilisateurPage = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        aria-label={`Modifier ${user.nom}`}
+                        aria-label={`Modifier  ${user.nom}`}
                         onClick={() => openForm(user)}
                       >
                         <Edit className="w-4 h-4" />
@@ -391,7 +394,7 @@ const UtilisateurPage = () => {
                         variant="destructive"
                         size="sm"
                         aria-label={`Supprimer ${user.nom}`}
-                        onClick={() => handleDelete(Number(user.id_utilisateur))}
+                        onClick={() => handleDelete(user.id_utilisateur || user.id)}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -412,6 +415,7 @@ const UtilisateurPage = () => {
             <h2 className="text-xl font-bold mb-4">
               {editUser ? "Modifier un utilisateur" : "Ajouter un nouvel utilisateur"}
             </h2>
+
             {/* Erreur formulaire */}
             {errorMessage && (
               <Alert className="mb-4 border-red-300 bg-red-100 flex items-center space-x-3 rounded-lg shadow-sm">
@@ -427,6 +431,7 @@ const UtilisateurPage = () => {
                 </Button>
               </Alert>
             )}
+
             {/* Formulaire */}
             <form
               onSubmit={(e) => {
@@ -436,9 +441,11 @@ const UtilisateurPage = () => {
               className="space-y-4"
               autoComplete="off"
             >
+             
+
               <div>
                 <label htmlFor="nom" className="block text-sm font-medium text-gray-700">
-                  Nom complet <span className="text-red-500">*</span>
+                  Nom <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="nom"
@@ -450,6 +457,7 @@ const UtilisateurPage = () => {
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50 transition"
                 />
               </div>
+
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                   E‑mail <span className="text-red-500">*</span>
@@ -464,6 +472,7 @@ const UtilisateurPage = () => {
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50 transition"
                 />
               </div>
+
               <div>
                 <label htmlFor="mot2pass" className="block text-sm font-medium text-gray-700">
                   Mot de passe{" "}
@@ -480,6 +489,7 @@ const UtilisateurPage = () => {
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50 transition"
                 />
               </div>
+
               <div>
                 <label htmlFor="role" className="block text-sm font-medium text-gray-700">
                   Rôle
@@ -498,6 +508,7 @@ const UtilisateurPage = () => {
                   <option value="Superviseur">Superviseur</option>
                 </select>
               </div>
+
               <div className="flex items-center space-x-3">
                 <input
                   id="actif"
@@ -511,6 +522,7 @@ const UtilisateurPage = () => {
                   Actif
                 </label>
               </div>
+
               <div>
                 <label htmlFor="photo_profil" className="block text-sm font-medium text-gray-700">
                   Photo de profil
@@ -531,6 +543,7 @@ const UtilisateurPage = () => {
                   />
                 )}
               </div>
+
               <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
                 <Button variant="ghost" type="button" onClick={() => setShowForm(false)} disabled={isSubmitting}>
                   Annuler

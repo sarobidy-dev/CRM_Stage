@@ -8,7 +8,7 @@ class HistoriqueAction(Base):
     id = Column(Integer, primary_key=True, index=True)
     date = Column(Date, nullable=False)
     commentaire = Column(Text, nullable=True)
-    action=Column(String(45), nullable=False)
+    action=Column(String(20), nullable=False)
     pourcentageVente= Column(Double, nullable=True)
     
     entreprise_id = Column(Integer, ForeignKey("entreprise.id", ondelete="CASCADE"))
