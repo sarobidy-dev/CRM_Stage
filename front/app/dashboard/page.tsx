@@ -436,7 +436,7 @@ const AccueilPage = () => {
           getAllHistoriques(),
         ])
 
-      // Extraction des données avec gestion des erreurs
+     
       const utilisateurs = utilisateursResult.status === "fulfilled" ? utilisateursResult.value : []
       const contacts = contactsResult.status === "fulfilled" ? contactsResult.value.data || [] : []
       const entreprises = entreprisesResult.status === "fulfilled" ? entreprisesResult.value : []

@@ -12,8 +12,7 @@ class Utilisateur(Base):
     role = Column(String(40), nullable=False)
     actif= Column(Boolean, default=True)
     photo_profil = Column(String(255), nullable=True)
-    
-    # Relations
+
     entreprises = relationship("Entreprise", back_populates="utilisateur")
     historique_actions  = relationship("HistoriqueAction", back_populates="utilisateur")
     projet_utilisateurs = relationship("ProjetUtilisateur", back_populates="utilisateur")

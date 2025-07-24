@@ -74,7 +74,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
     setSendResult(null)
 
     try {
-      // Utiliser la nouvelle fonction directe avec les contacts déjà disponibles
       const result = await sendEmailDirect({
         contacts: selectedContacts,
         subject: subject,
@@ -87,6 +86,31 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
       if (!result.success && !result.results?.some((r) => r.success)) {
         throw new Error(result.message || "Erreur lors de l'envoi")
       }
+
+      // Ajouter les données dans la table "envoyee"
+      const now = new Date().toISOString()
+      const payloads = selectedContacts.map((contact) => ({
+        id_contact: contact.id,
+        objet: subject,
+        message: message,
+        date_envoyee: now,
+      }))
+
+      await Promise.all(
+        payloads.map(async (payload) => {
+          try {
+            await fetch("http://127.0.0.1:8000/email", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            })
+          } catch (error) {
+            console.error("Erreur lors de l'enregistrement dans la table envoyée:", error)
+          }
+        })
+      )
 
       setSendResult(result)
 
@@ -152,7 +176,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Affichage des erreurs */}
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
@@ -160,7 +183,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
             </Alert>
           )}
 
-          {/* Affichage du résultat d'envoi */}
           {sendResult && (
             <Alert variant={sendResult.success ? "default" : "destructive"}>
               {sendResult.success ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
@@ -189,7 +211,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
             </Alert>
           )}
 
-          {/* Type de message */}
           <div className="space-y-2">
             <Label>Type de message</Label>
             <Select
@@ -217,7 +238,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
             </Select>
           </div>
 
-          {/* Destinataires */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4" />
@@ -242,7 +262,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
             </div>
           </div>
 
-          {/* Sujet (pour email seulement) */}
           {messageType === "email" && (
             <div className="space-y-2">
               <Label htmlFor="subject">Sujet *</Label>
@@ -257,7 +276,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
             </div>
           )}
 
-          {/* Message */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="message">Message *</Label>
@@ -280,7 +298,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
             )}
           </div>
 
-          {/* Aperçu */}
           {messageType === "email" && subject && message && selectedContacts.length > 0 && (
             <div className="border rounded-lg p-4 bg-gray-50">
               <h4 className="text-sm font-medium mb-2">Aperçu</h4>
