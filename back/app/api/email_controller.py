@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from services.email_service import EmailService
 from schemas.email import EmailRequest
 
@@ -20,3 +20,4 @@ async def send_email(email_request: EmailRequest):
         return {"message": "Email sent successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    

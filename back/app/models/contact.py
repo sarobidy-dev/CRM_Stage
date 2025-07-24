@@ -18,4 +18,6 @@ class Contact(Base):
     entreprise = relationship("Entreprise", back_populates="contacts")
     ha_contacts = relationship("HAContact", back_populates="contact")
 
+    emails = relationship("EmailEnvoye", back_populates="contact", cascade="all, delete-orphan")
+
     

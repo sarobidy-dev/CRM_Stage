@@ -21,7 +21,8 @@ class ContactUpdate(BaseModel):
     fonction: Optional[str] = None
     entreprise_id: Optional[int] = None
 
-
+class ContactResponse(BaseModel):
+    id: int
 class ContactRead(BaseModel):
     id: int
     nom: str

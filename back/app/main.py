@@ -1,3 +1,4 @@
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -17,7 +18,8 @@ from api import (
     haContact,
     historiqueAction,
     projetProspection,
-    projetUtilisateur,   
+    projetUtilisateur,
+    email,   
     email_controller
 )
 
@@ -50,7 +52,7 @@ app.include_router(projetProspection.router)
 app.include_router(projetUtilisateur.router)
 app.include_router(utilisateur.router)
 app.include_router(email_controller.router)
-
+app.include_router(email.router)
 app.mount("/media", StaticFiles(directory="media"), name="media")
 
 # Création des tables à la startup

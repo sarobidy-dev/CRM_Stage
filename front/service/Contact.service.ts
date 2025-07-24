@@ -21,7 +21,7 @@ export const createContact = async (contact: {
   fonction?: string;
   entreprise_id: number;
 }): Promise<Contact> => {
-  return await ApiService.post(`${apiUrl}/contacts`, contact); // ← envoie JSON
+  return await ApiService.post(`${apiUrl}/contacts`, contact); 
 };
 export interface ContactPayload {
   nom: string;
