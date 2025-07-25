@@ -5,6 +5,17 @@ from models.entreprise import Entreprise
 from models.utilisateur import Utilisateur 
 
 
+from models.entreprise import Entreprise
+
+async def get_entreprise_contact_by_id(db: AsyncSession, entreprise_id: int):
+    result = await db.execute(
+        select(Entreprise.emailStandart, Entreprise.telephoneStandard).where(Entreprise.id == entreprise_id)
+    )
+    row = result.first()
+    if row:
+        return {"emailStandart": row[0], "telephoneStandard": row[1]}
+    return None
+
 async def create_entreprise(db: AsyncSession, data: dict):
     utilisateur_id = data.get("utilisateur_id")
     if not utilisateur_id:

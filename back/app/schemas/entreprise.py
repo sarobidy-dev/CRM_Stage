@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr,ConfigDict
+from pydantic import BaseModel, EmailStr,ConfigDict,validator
 from typing import Optional
 
 
@@ -8,7 +8,11 @@ class EntrepriseCreate(BaseModel):
     emailStandart: EmailStr
     adresse_id: int
     utilisateur_id: int
-
+    @validator("telephoneStandard")
+    def validate_telephone(cls, v):
+        if not v.isdigit():
+            raise ValueError("Le téléphone doit contenir uniquement des chiffres")
+        return v
 
 class EntrepriseUpdate(BaseModel):
     raisonSocial: Optional[str] = None

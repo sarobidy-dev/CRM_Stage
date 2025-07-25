@@ -114,7 +114,7 @@ export default function EntreprisesPage() {
       filtered = filtered.filter((e) => {
         const adresseStr = formatAdresse(getAdresseById(e.adresse_id)).toLowerCase()
         const utilisateur = getUtilisateurById(e.utilisateur_id)
-        const utilisateurStr = utilisateur ? `${utilisateur.nom} ${utilisateur.prenom}`.toLowerCase() : ""
+        const utilisateurStr = utilisateur ? `${utilisateur.nom}`.toLowerCase() : ""
 
         return (
           e.raisonSocial.toLowerCase().includes(search) ||
@@ -144,7 +144,7 @@ export default function EntreprisesPage() {
 
   const formatUtilisateur = (utilisateur?: Utilisateur | null) => {
     if (!utilisateur) return "-"
-    return `${utilisateur.nom} ${utilisateur.prenom}`.trim()
+    return `${utilisateur.nom} `.trim()
   }
 
   const handleAddEntreprise = () => {

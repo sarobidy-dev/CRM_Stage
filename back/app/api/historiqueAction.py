@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from database import get_async_session
+from datetime import datetime,date
 from services.historiqueAction import (
     create_historique_action,
     get_all_historique_actions,
@@ -39,16 +40,25 @@ async def get_statistiques(db: AsyncSession = Depends(get_async_session)):
     result = await db.execute(select(HistoriqueAction))
     historiques = result.scalars().all()
 
-    gagnés = sum(1 for h in historiques if h.pourcentageVente >= 80)
-    en_cours = sum(1 for h in historiques if 30 <= h.pourcentageVente < 80)
-    perdus = sum(1 for h in historiques if h.pourcentageVente < 30)
+    # Date actuelle sans l'heure
+    today = date.today()
+
+    # Filtrer les actions créées aujourd’hui
+    historiques_aujourdhui = [
+        h for h in historiques
+        if (h.date.date() if isinstance(h.date, datetime) else h.date) == today
+    ]
+
+    # Compter selon le pourcentage de vente
+    gagnes = sum(1 for h in historiques_aujourdhui if h.pourcentageVente is not None and h.pourcentageVente >= 80)
+    encours = sum(1 for h in historiques_aujourdhui if h.pourcentageVente is not None and 30 <= h.pourcentageVente < 80)
+    perdus = sum(1 for h in historiques_aujourdhui if h.pourcentageVente is not None and h.pourcentageVente < 30)
 
     return {
-        "gagnes": gagnés,
-        "encours": en_cours,
+        "gagnes": gagnes,
+        "encours": encours,
         "perdus": perdus
     }
-
 @router.get("/{id}", response_model=dict)
 async def get_one(id: int, db: AsyncSession = Depends(get_async_session)):
     item = await get_historique_action_by_id(db, id)
