@@ -20,6 +20,14 @@ router = APIRouter(
     tags=["Entreprises"]
 )
 
+from services.entreprise import get_entreprise_contact_by_id
+
+@router.get("/{id}/contact", response_model=dict)
+async def get_contact(id: int, db: AsyncSession = Depends(get_async_session)):
+    contact = await get_entreprise_contact_by_id(db, id)
+    if not contact:
+        raise HTTPException(status_code=404, detail="Entreprise non trouvée")
+    return response(True, "Contact entreprise", contact)
 
 @router.post("/", response_model=dict)
 async def create(item: EntrepriseCreate, db: AsyncSession = Depends(get_async_session)):

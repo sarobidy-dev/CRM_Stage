@@ -21,3 +21,4 @@ class Contact(Base):
     emails = relationship("EmailEnvoye", back_populates="contact", cascade="all, delete-orphan")
 
     
+    sms_envoyes = relationship("SMS", back_populates="contact", cascade="all, delete-orphan")

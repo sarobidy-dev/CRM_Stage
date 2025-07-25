@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Date, Text, Double, ForeignKey
+from datetime import datetime
+from sqlalchemy import Column, Integer, String, Date, Text, Double, ForeignKey,DateTime
 from database import Base
 from sqlalchemy.orm import relationship
 
@@ -6,7 +7,7 @@ class HistoriqueAction(Base):
     __tablename__ = "historique_action" 
     
     id = Column(Integer, primary_key=True, index=True)
-    date = Column(Date, nullable=False)
+    date = Column(DateTime, default=datetime.utcnow)
     commentaire = Column(Text, nullable=True)
     action=Column(String(20), nullable=False)
     pourcentageVente= Column(Double, nullable=True)

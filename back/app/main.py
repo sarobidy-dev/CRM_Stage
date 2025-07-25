@@ -19,6 +19,7 @@ from api import (
     historiqueAction,
     projetProspection,
     projetUtilisateur,
+    sms,
     email,   
     email_controller
 )
@@ -53,6 +54,7 @@ app.include_router(projetUtilisateur.router)
 app.include_router(utilisateur.router)
 app.include_router(email_controller.router)
 app.include_router(email.router)
+app.include_router(sms.router)
 app.mount("/media", StaticFiles(directory="media"), name="media")
 
 # Création des tables à la startup

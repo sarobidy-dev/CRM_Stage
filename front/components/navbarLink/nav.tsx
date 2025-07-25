@@ -1,17 +1,11 @@
 "use client"
-
 import Link from "next/link"
+import type React from "react"
+
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 import {
-  LayoutDashboard,
-  MessageSquare,
-  Users,
-  Target,
-  Building2,
-  User,
   Menu,
-  PhoneCall,
   BookOpen,
   Briefcase,
   Calendar,
@@ -39,7 +33,24 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
-// Association lettre -> icône
+import { LayoutDashboard, Users, Target, Building2, User, Megaphone, History, Send } from "lucide-react"
+
+const links = {
+  Management: [
+    { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard }, // 📊 Dashboard - parfait
+    { name: "Contact", href: "/contacts", icon: Users }, // 👥 Contacts - parfait
+    { name: "Projet prospection", href: "/projetProspection", icon: Target }, // 🎯 Prospection - parfait
+    { name: "Entreprise", href: "/entreprise", icon: Building2 }, // 🏢 Entreprise - parfait
+    { name: "Campagne", href: "/campagne", icon: Megaphone }, // 📢 Campagne marketing - plus approprié
+    { name: "Utilisateur", href: "/utilisateur", icon: User }, // 👤 Utilisateur - parfait
+  ],
+  Historique: [
+    { name: "Historiques d'action", href: "/historique", icon: History }, // 🕒 Historique actions - plus spécifique
+    { name: "Historiques email envoyés", href: "/historiqueEmail", icon: Send }, // 📤 Emails envoyés - plus précis
+  ],
+}
+
+// Association lettre -> icône (gardée pour compatibilité mais pas utilisée maintenant)
 const letterIcons: Record<string, React.ComponentType<any>> = {
   A: BookOpen,
   B: Briefcase,
@@ -53,7 +64,6 @@ const letterIcons: Record<string, React.ComponentType<any>> = {
   J: Key,
   K: Layers,
   L: MapPin,
-  M: MessageSquare,
   N: Settings,
   O: Shield,
   P: ShoppingCart,
@@ -64,32 +74,13 @@ const letterIcons: Record<string, React.ComponentType<any>> = {
   U: UserCheck,
   V: UserPlus,
   W: Zap,
-  X: LayoutDashboard,
   Y: Target,
   Z: Building2,
 }
 
-const links = {
-  Management: [
-    { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
-
-    { name: "Contact", href: "/contacts", icon: Users },
-    { name: "Projet prospection", href: "/projetProspection", icon: Target },
-    { name: "Entreprise", href: "/entreprise", icon: Building2 },
-        { name: "Campagne", href: "/campagne", icon: Building2 },
-    { name: "Utilisateur", href: "/utilisateur", icon: User },
-
-  ],
-  Historique: [
-    { name: "Historques d'action", href: "/historique", icon: Target },
-
-
-  ],
-}
-
 const getIconForName = (name: string, defaultIcon: React.ComponentType<any>) => {
-  const firstLetter = name.charAt(0).toUpperCase()
-  return letterIcons[firstLetter] || defaultIcon
+  // Maintenant on utilise directement l'icône définie dans les links
+  return defaultIcon
 }
 
 const Navbar = () => {
@@ -98,8 +89,10 @@ const Navbar = () => {
 
   const NavContent = () => (
     <div className="flex flex-col h-full">
-      {/* Logo */}
-      <div className="p-6 border-b border-gray-700">
+      <div className="p-6 border-b border-gray-700 flex items-center gap-4 flex-row">
+        <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center p-4">
+          <span className="text-white font-bold text-sm">CRM</span>
+        </div>
         <h1 className="text-2xl font-bold text-white">CRM.io</h1>
       </div>
 
@@ -111,7 +104,8 @@ const Navbar = () => {
             <ul className="space-y-1">
               {items.map(({ name, href, icon }) => {
                 const isActive = pathname === href
-                const Icon = getIconForName(name, icon)
+                const Icon = icon // Utilisation directe de l'icône définie
+
                 return (
                   <li key={name}>
                     <Link
@@ -155,10 +149,7 @@ const Navbar = () => {
               <Menu className="w-5 h-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent
-            side="left"
-            className="w-64 p-0 bg-[#0d1530] border-gray-700 overflow-y-auto"
-          >
+          <SheetContent side="left" className="w-64 p-0 bg-[#0d1530] border-gray-700 overflow-y-auto">
             <NavContent />
           </SheetContent>
         </Sheet>

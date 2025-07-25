@@ -105,14 +105,11 @@ interface ChartData {
 
 interface UserProfile {
   id: string
-  name: string
+  nom: string
   email: string
   role: string
-  avatar: string
-  phone: string
-  department: string
-  joinDate: string
-  lastLogin: string
+  photo_profil: string | null
+  actif: boolean
   preferences: {
     theme: "light" | "dark" | "system"
     language: string
@@ -146,6 +143,41 @@ const deleteCookie = (name: string) => {
   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
 }
 
+// Service pour récupérer un utilisateur par ID
+const fetchUtilisateurById = async (id: string): Promise<UserProfile | null> => {
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/utilisateurs/${id}`)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    const result = await response.json()
+
+    if (result.success && result.data) {
+      return {
+        id: result.data.id.toString(),
+        nom: result.data.nom,
+        email: result.data.email,
+        role: result.data.role,
+        photo_profil: result.data.photo_profil,
+        actif: result.data.actif,
+        preferences: {
+          theme: "light",
+          language: "fr",
+          notifications: {
+            email: true,
+            push: true,
+            sound: false,
+          },
+        },
+      }
+    }
+    return null
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'utilisateur:", error)
+    return null
+  }
+}
+
 const AccueilPage = () => {
   // États du composant
   const [stats, setStats] = useState<DashboardStats>({
@@ -159,7 +191,6 @@ const AccueilPage = () => {
     actionsAppel: 0,
     actionsReunion: 0,
   })
-
   const [previousStats, setPreviousStats] = useState<DashboardStats | null>(null)
   const [recentActivity, setRecentActivity] = useState<RecentActivity>({
     actions: [],
@@ -190,18 +221,16 @@ const AccueilPage = () => {
   })
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [showProfileModal, setShowProfileModal] = useState(false)
+  const [userLoading, setUserLoading] = useState(true)
 
   // État utilisateur avec gestion des cookies
   const [userProfile, setUserProfile] = useState<UserProfile>({
     id: "",
-    name: "Admin User",
-    email: "admin@crm.com",
-    role: "Administrateur",
-    avatar: "/placeholder.svg?height=32&width=32",
-    phone: "+261 34 12 345 67",
-    department: "Direction",
-    joinDate: "2023-01-15",
-    lastLogin: new Date().toISOString(),
+    nom: "Utilisateur",
+    email: "user@crm.com",
+    role: "Utilisateur",
+    photo_profil: null,
+    actif: true,
     preferences: {
       theme: "light",
       language: "fr",
@@ -230,63 +259,48 @@ const AccueilPage = () => {
     fetchStats()
   }, [])
 
-  if (error) return <p className="text-red-500">{error}</p>
-  if (!stats) return <p>Chargement...</p>
-
   // Fonction pour sauvegarder l'utilisateur dans les cookies
   const saveUserToCookies = useCallback((user: UserProfile) => {
     setCookie("crm_user_profile", JSON.stringify(user), 30)
     setCookie("crm_user_id", user.id, 30)
-    setCookie("crm_user_name", user.name, 30)
+    setCookie("crm_user_name", user.nom, 30)
     setCookie("crm_user_email", user.email, 30)
     setCookie("crm_user_role", user.role, 30)
     setCookie("crm_last_login", new Date().toISOString(), 30)
   }, [])
 
-  const loadUserFromCookies = useCallback((): UserProfile | null => {
-    const userProfileCookie = getCookie("crm_user_profile")
-    if (userProfileCookie) {
-      try {
-        const user = JSON.parse(userProfileCookie)
-        return {
-          ...user,
-          lastLogin: getCookie("crm_last_login") || user.lastLogin,
+  // Chargement des données utilisateur depuis l'API
+  const loadUserFromAPI = useCallback(async () => {
+    setUserLoading(true)
+    try {
+      const userId = getCookie("userId")
+      if (userId) {
+        const userData = await fetchUtilisateurById(userId)
+        if (userData) {
+          setUserProfile(userData)
+          saveUserToCookies(userData)
+          setTheme(userData.preferences.theme)
+          setLanguage(userData.preferences.language)
+          setNotificationSettings(userData.preferences.notifications)
+          setIsDarkMode(userData.preferences.theme === "dark")
+        } else {
+          // Si l'utilisateur n'est pas trouvé, utiliser les données par défaut
+          console.warn("Utilisateur non trouvé, utilisation des données par défaut")
         }
-      } catch (error) {
-        console.error("Erreur lors du parsing du profil utilisateur:", error)
+      } else {
+        console.warn("Aucun ID utilisateur trouvé dans les cookies")
       }
+    } catch (error) {
+      console.error("Erreur lors du chargement de l'utilisateur:", error)
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger les informations utilisateur",
+        variant: "destructive",
+      })
+    } finally {
+      setUserLoading(false)
     }
-
-    const userId = getCookie("crm_user_id")
-    const userName = getCookie("crm_user_name")
-    const userEmail = getCookie("crm_user_email")
-    const userRole = getCookie("crm_user_role")
-
-    if (userId || userName || userEmail) {
-      return {
-        id: userId || "default_user",
-        name: userName || "Admin User",
-        email: userEmail || "admin@crm.com",
-        role: userRole || "Administrateur",
-        avatar: "/placeholder.svg?height=32&width=32",
-        phone: "+261 34 12 345 67",
-        department: "Direction",
-        joinDate: "2023-01-15",
-        lastLogin: getCookie("crm_last_login") || new Date().toISOString(),
-        preferences: {
-          theme: "light",
-          language: "fr",
-          notifications: {
-            email: true,
-            push: true,
-            sound: false,
-          },
-        },
-      }
-    }
-
-    return null
-  }, [])
+  }, [saveUserToCookies])
 
   // Fonction pour créer une notification dynamique
   const createNotification = useCallback((type: Notification["type"], title: string, message: string, data?: any) => {
@@ -330,7 +344,7 @@ const AccueilPage = () => {
 
       const emails = dayActions.filter((a) => a.action.toLowerCase() === "email").length
       const calls = dayActions.filter((a) => a.action.toLowerCase() === "appel").length
-      const meetings = dayActions.filter((a) => a.action.toLowerCase() === "reunion").length
+      const meetings = dayActions.filter((a) => a.action.toLowerCase() === "réunion").length
       const total = dayActions.length
 
       return {
@@ -384,40 +398,10 @@ const AccueilPage = () => {
     }
   }, [])
 
-  // Chargement initial des données utilisateur depuis les cookies
+  // Chargement initial des données utilisateur
   useEffect(() => {
-    const savedUser = loadUserFromCookies()
-    if (savedUser) {
-      setUserProfile(savedUser)
-      setTheme(savedUser.preferences.theme)
-      setLanguage(savedUser.preferences.language)
-      setNotificationSettings(savedUser.preferences.notifications)
-      setIsDarkMode(savedUser.preferences.theme === "dark")
-    } else {
-      const defaultUser: UserProfile = {
-        id: `user_${Date.now()}`,
-        name: "Admin User",
-        email: "admin@crm.com",
-        role: "Administrateur",
-        avatar: "/placeholder.svg?height=32&width=32",
-        phone: "+261 34 12 345 67",
-        department: "Direction",
-        joinDate: "2023-01-15",
-        lastLogin: new Date().toISOString(),
-        preferences: {
-          theme: "light",
-          language: "fr",
-          notifications: {
-            email: true,
-            push: true,
-            sound: false,
-          },
-        },
-      }
-      setUserProfile(defaultUser)
-      saveUserToCookies(defaultUser)
-    }
-  }, [loadUserFromCookies, saveUserToCookies])
+    loadUserFromAPI()
+  }, [loadUserFromAPI])
 
   useEffect(() => {
     loadDashboardData()
@@ -436,11 +420,9 @@ const AccueilPage = () => {
           getAllHistoriques(),
         ])
 
-     
       const utilisateurs = utilisateursResult.status === "fulfilled" ? utilisateursResult.value : []
       const contacts = contactsResult.status === "fulfilled" ? contactsResult.value.data || [] : []
       const entreprises = entreprisesResult.status === "fulfilled" ? entreprisesResult.value : []
-
       // Gestion des réponses API avec format ApiResponse
       const campagnes = campagnesResult.status === "fulfilled" ? campagnesResult.value.data || [] : []
       const actionsResponse = actionsResult.status === "fulfilled" ? actionsResult.value : { data: [] }
@@ -690,7 +672,6 @@ const AccueilPage = () => {
   }
 
   const router = useRouter()
-
   const handleLogout = () => {
     deleteCookie("crm_user_profile")
     deleteCookie("crm_user_id")
@@ -705,7 +686,19 @@ const AccueilPage = () => {
     router.push("/")
   }
 
-  if (isLoading) {
+  // Fonction pour construire l'URL complète de la photo
+  const getPhotoUrl = (photoPath: string | null) => {
+    if (!photoPath) return null
+    // Si le chemin commence déjà par http, le retourner tel quel
+    if (photoPath.startsWith("http")) return photoPath
+    // Sinon, construire l'URL complète
+    return `http://127.0.0.1:8000/${photoPath}`
+  }
+
+  if (error) return <p className="text-red-500">{error}</p>
+  if (!stats) return <p>Chargement...</p>
+
+  if (isLoading || userLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
         <div className="flex items-center justify-center min-h-screen">
@@ -746,9 +739,6 @@ const AccueilPage = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">CRM</span>
-                    </div>
                     <div>
                       <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
                       <p className="text-sm text-gray-500">Système de gestion client - Données en temps réel</p>
@@ -778,66 +768,7 @@ const AccueilPage = () => {
                   </div>
 
                   {/* Notifications */}
-                  <div className="relative">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setShowNotifications(!showNotifications)}
-                      className="relative"
-                    >
-                      <Bell className={`h-5 w-5 ${unreadNotifications > 0 ? "animate-pulse" : ""}`} />
-                      {unreadNotifications > 0 && (
-                        <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center bg-red-500 text-white text-xs animate-bounce">
-                          {unreadNotifications}
-                        </Badge>
-                      )}
-                    </Button>
-                    {showNotifications && (
-                      <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 animate-slide-in-top">
-                        <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-                          <h3 className="font-semibold text-gray-900">Notifications</h3>
-                          <div className="flex items-center gap-2">
-                            <Badge variant="secondary" className="text-xs">
-                              {unreadNotifications} non lues
-                            </Badge>
-                            {notifications.length > 0 && (
-                              <Button variant="ghost" size="sm" onClick={clearAllNotifications} className="text-xs">
-                                Tout effacer
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                        <div className="max-h-96 overflow-y-auto">
-                          {notifications.length === 0 ? (
-                            <div className="p-8 text-center text-gray-500">
-                              <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                              <p>Aucune notification</p>
-                            </div>
-                          ) : (
-                            notifications.map((notification) => (
-                              <div
-                                key={notification.id}
-                                className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${
-                                  !notification.read ? "bg-blue-50 border-l-4 border-l-blue-500" : ""
-                                }`}
-                                onClick={() => markNotificationAsRead(notification.id)}
-                              >
-                                <div className="flex items-start space-x-3">
-                                  {getNotificationIcon(notification.type)}
-                                  <div className="flex-1">
-                                    <p className="font-medium text-sm text-gray-900">{notification.title}</p>
-                                    <p className="text-sm text-gray-600">{notification.message}</p>
-                                    <p className="text-xs text-gray-400 mt-1">{notification.time}</p>
-                                  </div>
-                                  {!notification.read && <div className="w-2 h-2 bg-blue-500 rounded-full"></div>}
-                                </div>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                    
 
                   {/* Settings Dropdown */}
                   <DropdownMenu>
@@ -852,17 +783,15 @@ const AccueilPage = () => {
                         Paramètres
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
-
                       {/* Profil utilisateur connecté */}
                       <DropdownMenuItem onClick={() => setShowProfileModal(true)} className="cursor-pointer">
                         <User className="h-4 w-4 mr-2" />
                         <div className="flex flex-col">
                           <span>Profil utilisateur</span>
-                          <span className="text-xs text-gray-500">{userProfile.name}</span>
+                          <span className="text-xs text-gray-500">{userProfile.nom}</span>
                           <span className="text-xs text-gray-400">{userProfile.role}</span>
                         </div>
                       </DropdownMenuItem>
-
                       {/* Thème */}
                       <DropdownMenuItem className="cursor-pointer">
                         <div className="flex items-center justify-between w-full">
@@ -903,7 +832,6 @@ const AccueilPage = () => {
                           </div>
                         </div>
                       </DropdownMenuItem>
-
                       {/* Langue */}
                       <DropdownMenuItem className="cursor-pointer">
                         <div className="flex items-center justify-between w-full">
@@ -928,9 +856,7 @@ const AccueilPage = () => {
                           </Select>
                         </div>
                       </DropdownMenuItem>
-
                       <DropdownMenuSeparator />
-
                       {/* Notifications */}
                       <DropdownMenuLabel className="text-xs text-gray-500">Notifications</DropdownMenuLabel>
                       <DropdownMenuItem className="cursor-pointer" onClick={() => handleNotificationToggle("email")}>
@@ -949,9 +875,7 @@ const AccueilPage = () => {
                           </div>
                         </div>
                       </DropdownMenuItem>
-
                       <DropdownMenuSeparator />
-
                       {/* Déconnexion */}
                       <DropdownMenuItem
                         onClick={handleLogout}
@@ -965,9 +889,12 @@ const AccueilPage = () => {
 
                   {/* Avatar avec photo ou initiales */}
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={userProfile.avatar || "/placeholder.svg"} />
+                    <AvatarImage
+                      src={getPhotoUrl(userProfile.photo_profil) || "/placeholder.svg"}
+                      alt={userProfile.nom}
+                    />
                     <AvatarFallback>
-                      {userProfile.name
+                      {userProfile.nom
                         .split(" ")
                         .map((n) => n[0])
                         .join("")
@@ -1413,7 +1340,6 @@ const AccueilPage = () => {
                 <Button variant="outline" onClick={() => setShowFilters(false)}>
                   Annuler
                 </Button>
-                <Button onClick={() => setShowFilters(false)}>Annuler</Button>
                 <Button onClick={applyFilters}>Appliquer les filtres</Button>
               </div>
             </DialogContent>
@@ -1478,84 +1404,42 @@ const AccueilPage = () => {
               </DialogHeader>
               <div className="space-y-6 py-4">
                 <div className="flex items-center gap-4">
+                   
                   <Avatar className="h-16 w-16">
-                    <AvatarImage src={userProfile.avatar || "/placeholder.svg"} />
+                    <AvatarImage
+                      src={getPhotoUrl(userProfile.photo_profil) || "/placeholder.svg"}
+                      alt={userProfile.nom}
+                    />
                     <AvatarFallback>
-                      {userProfile.name
+                      {userProfile.nom
                         .split(" ")
                         .map((n) => n[0])
-                        .join("")}
+                        .join("")
+                        .toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <Button variant="outline" size="sm">
-                      Changer la photo
+                      Photo de photo
                     </Button>
                   </div>
+                 
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Nom complet</Label>
-                    <input
-                      type="text"
-                      value={userProfile.name}
-                      onChange={(e) => setUserProfile((prev) => ({ ...prev, name: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                    />
+                    <p>{userProfile.nom}</p>
                   </div>
                   <div className="space-y-2">
                     <Label>Email</Label>
-                    <input
-                      type="email"
-                      value={userProfile.email}
-                      onChange={(e) => setUserProfile((prev) => ({ ...prev, email: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Téléphone</Label>
-                    <input
-                      type="tel"
-                      value={userProfile.phone}
-                      onChange={(e) => setUserProfile((prev) => ({ ...prev, phone: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Département</Label>
-                    <Select
-                      value={userProfile.department}
-                      onValueChange={(value) => setUserProfile((prev) => ({ ...prev, department: value }))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Direction">Direction</SelectItem>
-                        <SelectItem value="Commercial">Commercial</SelectItem>
-                        <SelectItem value="Marketing">Marketing</SelectItem>
-                        <SelectItem value="Support">Support</SelectItem>
-                        <SelectItem value="IT">IT</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <p>{userProfile.email}</p>
+                    
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label>Rôle</Label>
-                  <Select
-                    value={userProfile.role}
-                    onValueChange={(value) => setUserProfile((prev) => ({ ...prev, role: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Administrateur">Administrateur</SelectItem>
-                      <SelectItem value="Manager">Manager</SelectItem>
-                      <SelectItem value="Commercial">Commercial</SelectItem>
-                      <SelectItem value="Utilisateur">Utilisateur</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <p>{userProfile.role}</p>
+              
                 </div>
               </div>
               <div className="flex justify-end gap-2">
@@ -1566,7 +1450,6 @@ const AccueilPage = () => {
                   onClick={() => {
                     const updatedProfile = {
                       ...userProfile,
-                      lastLogin: new Date().toISOString(),
                     }
                     setUserProfile(updatedProfile)
                     saveUserToCookies(updatedProfile)

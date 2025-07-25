@@ -148,59 +148,65 @@ export default function AddHistoriqueDialog({ entrepriseId, campagnes = [], entr
         <div className="space-y-4">
           <div>
             <label htmlFor="commentaire" className="block mb-1 font-medium">
-              Commentaire <span className="text-red-500">*</span>
+              Commentaire
             </label>
             <Textarea
               id="commentaire"
               placeholder="Commentaire"
               value={commentaire}
               onChange={(e) => setCommentaire(e.target.value)}
-              className={commentaire.trim() === "" ? "border-red-300" : ""}
+              className={commentaire.trim() === "" ? "border-black" : ""}
             />
-            {commentaire.trim() === "" && <p className="text-xs text-red-500 mt-1">Le commentaire est obligatoire</p>}
+            {commentaire.trim() === ""}
           </div>
           <div>
             <label htmlFor="action" className="block mb-1 font-medium">
-              Action <span className="text-red-500">*</span>
+              Action
             </label>
             <select
               id="action"
               value={action}
               onChange={(e) => setAction(e.target.value)}
-              className={`w-full border rounded px-2 py-1 ${action === "" ? "border-red-300" : ""}`}
+              className={`w-full border rounded px-2 py-1 ${action === "" ? "border-black" : ""}`}
             >
               <option value="">Sélectionnez une action</option>
               <option value="Email">Email</option>
               <option value="Appel">Appel</option>
-              <option value="Réunions">Réunion</option>
+              <option value="Réunion">Réunion</option>
             </select>
-            {action === "" && <p className="text-xs text-red-500 mt-1">Veuillez sélectionner une action</p>}
+            {action === ""}
           </div>
           <div>
             <label htmlFor="pourcentageVente" className="block mb-1 font-medium">
-              Pourcentage Vente <span className="text-red-500">*</span>
+              Pourcentage Vente
             </label>
             <Input
               id="pourcentageVente"
               type="number"
-              min="0"
+              min="1"
               max="100"
               placeholder="Pourcentage Vente"
               value={pourcentageVente}
-              onChange={(e) => setPourcentageVente(Number(e.target.value))}
-              className={pourcentageVente < 0 ? "border-red-300" : ""}
+              onChange={(e) => {
+                let value = Number(e.target.value)
+                if (value > 100) value = 100
+                if (value < 1) value = 1
+                setPourcentageVente(value)
+              }}
+              className={pourcentageVente < 0 ? "border-black" : ""}
             />
+
             {pourcentageVente < 0 && <p className="text-xs text-red-500 mt-1">Le pourcentage doit être positif</p>}
           </div>
           <div>
             <label htmlFor="campagne" className="block mb-1 font-medium">
-              Campagne <span className="text-red-500">*</span>
+              Campagne
             </label>
             <select
               id="campagne"
               value={campagneId}
               onChange={(e) => setCampagneId(Number(e.target.value))}
-              className={`w-full border rounded px-2 py-1 ${campagneId === 0 ? "border-red-300" : ""}`}
+              className={`w-full border rounded px-2 py-1 ${campagneId === 0 ? "border-black" : ""}`}
             >
               {Array.isArray(campagnes) && campagnes.length > 0 ? (
                 <>
