@@ -7,7 +7,7 @@ interface ApiConfig {
   useCache?: boolean;
 }
 
-class HttpError extends Error {
+export class HttpError extends Error {
   status: number;
   response?: any;
 
@@ -78,22 +78,20 @@ class ApiService {
         try {
           responseData = await response.json();
         } catch {
-          responseData = null; 
+          responseData = null;
         }
       }
 
       if (!response.ok) {
         throw new HttpError(
-          responseData?.message || `HTTP error! status: ${response.status}`,
+          responseData?.detail || responseData?.message || `HTTP error! status: ${response.status}`,
           response.status,
           responseData
         );
       }
-
       return responseData;
     } catch (error) {
-      console.error("API Service Error:", error);
-      throw error;
+     return Promise.reject(error); 
     }
   }
 

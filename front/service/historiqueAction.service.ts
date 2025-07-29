@@ -1,4 +1,5 @@
-import { ApiResponse, HistoriqueAction } from "@/types/historiqueAction.type"
+import { ApiResponse } from "@/types/campagne.type"
+import {HistoriqueAction } from "@/types/historiqueAction.type"
 
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL

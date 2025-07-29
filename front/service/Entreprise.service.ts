@@ -53,7 +53,9 @@ export const getEntrepriseById = async (id: number): Promise<Entreprise> => {
   }
 }
 
-export const createEntreprise = async (entrepriseData: CreateEntrepriseData): Promise<Entreprise> => {
+export const createEntreprise = async (
+  entrepriseData: CreateEntrepriseData
+): Promise<Entreprise> => {
   try {
     const response = await fetch(`${API_BASE_URL}/entreprises`, {
       method: "POST",
@@ -61,19 +63,21 @@ export const createEntreprise = async (entrepriseData: CreateEntrepriseData): Pr
         "Content-Type": "application/json",
       },
       body: JSON.stringify(entrepriseData),
-    })
+    });
+
+    const responseData = await response.json();
 
     if (!response.ok) {
-      throw new Error(`Erreur HTTP: ${response.status}`)
+      throw new Error(responseData.detail || "Erreur inconnue");
     }
 
-    const data = await response.json()
-    return data.data // ⚠️ uniformiser le retour comme pour update
-  } catch (error) {
-    console.error("Erreur lors de la création de l'entreprise:", error)
-    throw error
+    return responseData.data;
+  } catch (error: any) {
+    return Promise.reject(error);
   }
-}
+};
+
+
 
 export const updateEntreprise = async (
   id: number,
@@ -86,19 +90,19 @@ export const updateEntreprise = async (
         "Content-Type": "application/json",
       },
       body: JSON.stringify(entrepriseData),
-    })
+    });
+
+    const responseData = await response.json();
 
     if (!response.ok) {
-      throw new Error(`Erreur HTTP: ${response.status}`)
+      throw new Error(responseData.detail || "Erreur inconnue");
     }
 
-    const data = await response.json()
-    return data.data // ✅ uniformisé avec create
-  } catch (error) {
-    console.error("Erreur lors de la mise à jour de l'entreprise:", error)
-    throw error
+    return responseData.data; // ✅ uniformisé avec create
+  } catch (error: any) {
+    return Promise.reject(error);
   }
-}
+};
 
 export const deleteEntreprise = async (id: number): Promise<void> => {
   try {

@@ -171,40 +171,44 @@ export default function EntreprisesPage() {
     setIsEditModalOpen(true)
   }
 
-  const handleSubmitAdd = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      console.log("Données à envoyer:", formData)
-      await createEntreprise(formData)
-      toast({ title: "Succès", description: "Entreprise ajoutée avec succès" })
-      setIsAddModalOpen(false)
-      reloadEntreprises()
-    } catch (error: any) {
-      console.error("Erreur création:", error)
-      toast({
-        title: "Erreur",
-        description: error?.message || "Impossible d'ajouter l'entreprise",
-        variant: "destructive",
-      })
-    }
-  }
+const handleSubmitAdd = async (e: React.FormEvent) => {
+  e.preventDefault()
+  try {
+    console.log("Données à envoyer:", formData)
+    await createEntreprise(formData)
+    toast({ title: "Succès", description: "Entreprise ajoutée avec succès" })
+    setIsAddModalOpen(false)
+    reloadEntreprises()
+  } catch (error: any) {
+  alert(
+    `Erreur lors de l'ajout de l'entreprise : ${
+      typeof error === "string" ? error : error?.message || "Erreur inconnue"
+    }`
+  )
+  return
+}
 
-  const handleSubmitEdit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!currentEntreprise) return
+}
 
-    try {
-      console.log("Données à modifier:", formData)
-      await updateEntreprise(currentEntreprise.id, formData)
-      toast({ title: "Succès", description: "Entreprise modifiée avec succès" })
-      setIsEditModalOpen(false)
-      reloadEntreprises()
-    } catch (error: any) {
-      console.error("Erreur modification:", error)
-      const errorMessage = error?.message || "Impossible de modifier l'entreprise"
-      toast({ title: "Erreur", description: errorMessage, variant: "destructive" })
-    }
+const handleSubmitEdit = async (e: React.FormEvent) => {  
+  e.preventDefault()
+  if (!currentEntreprise) return
+
+  try {
+    console.log("Données à modifier:", formData)
+    await updateEntreprise(currentEntreprise.id, formData)
+    toast({ title: "Succès", description: "Entreprise modifiée avec succès" })
+    setIsEditModalOpen(false)
+    reloadEntreprises()
+  } catch (error: any) {
+
+ alert(
+    `Erreur lors de la modification de l'entreprise : ${
+      typeof error === "string" ? error : error?.message || "Erreur inconnue"
+    }`)
   }
+}
+
 
   const handleDeleteEntreprise = async (id: number) => {
     try {
@@ -362,7 +366,7 @@ export default function EntreprisesPage() {
                     <td className="p-3">{formatAdresse(adresse)}</td>
                     <td className="p-3">{entreprise.telephoneStandard || "-"}</td>
                     <td className="p-3">{entreprise.emailStandart || "-"}</td>
-                    <td className="p-3">{formatUtilisateur(utilisateur)}</td>
+                    <td className="p-3"> {utilisateur ? formatUtilisateur(utilisateur) : "utilisateur démission"}</td>
                     <td className="p-3 text-right space-x-2">
                       <Button size="sm" variant="outline" onClick={() => handleEditEntreprise(entreprise)}>
                         <Edit className="h-4 w-4" />

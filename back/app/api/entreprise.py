@@ -54,10 +54,14 @@ async def get_one(id: int, db: AsyncSession = Depends(get_async_session)):
 
 @router.put("/{id}", response_model=dict)
 async def update(id: int, data: EntrepriseUpdate, db: AsyncSession = Depends(get_async_session)):
-    item = await update_entreprise(db, id, data.dict(exclude_unset=True))
-    if not item:
-        raise HTTPException(status_code=404, detail="Entreprise non trouvée pour mise à jour")
-    return response(True, "Entreprise mise à jour", EntrepriseRead.from_orm(item).dict())
+    try:
+        item = await update_entreprise(db, id, data.dict(exclude_unset=True))
+        if not item:
+            raise HTTPException(status_code=404, detail="Entreprise non trouvée pour mise à jour")
+        return response(True, "Entreprise mise à jour", EntrepriseRead.from_orm(item).dict())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 
 
 @router.delete("/{id}", response_model=dict)

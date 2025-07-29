@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { getAllEntreprises } from "@/service/Entreprise.service"
 import { createContact, updateContact, getAllContacts } from "@/service/Contact.service"
 import type { Entreprise } from "@/types/Entreprise.type"
+import { HttpError } from "@/service/api.service"
 
 export interface Contact {
   id?: number
@@ -455,15 +456,11 @@ export function ContactForm({ open, onOpenChange, contact, onSave }: ContactForm
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     const newValue = name === "entreprise_id" ? Number.parseInt(value) : value
-
     setFormData((prev) => ({
       ...prev,
       [name]: newValue,
     }))
-
-    // Valider le champ en temps réel (avec délai pour email et téléphone)
     if (name === "email" || name === "telephone") {
-      // Délai pour éviter trop de requêtes
       setTimeout(() => {
         validateField(name, value)
       }, 500)
@@ -471,81 +468,85 @@ export function ContactForm({ open, onOpenChange, contact, onSave }: ContactForm
       validateField(name, value)
     }
   }
-
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    // Valider tous les champs avant soumission
-    const fieldsToValidate = ["nom", "prenom", "email", "telephone", "adresse", "fonction", "entreprise_id"]
-    let isValid = true
+    setErrors({}); // Réinitialise les erreurs
+
+    const fieldsToValidate = [
+      "nom",
+      "prenom",
+      "email",
+      "telephone",
+      "adresse",
+      "fonction",
+      "entreprise_id",
+    ];
+    let isValid = true;
 
     for (const field of fieldsToValidate) {
       const value =
-        field === "entreprise_id" ? formData[field].toString() : formData[field as keyof Contact]?.toString() || ""
+        field === "entreprise_id"
+          ? formData[field].toString()
+          : (formData[field as keyof Contact]?.toString() || "");
 
-      const fieldValid = await validateField(field, value)
+      const fieldValid = await validateField(field, value);
       if (!fieldValid) {
-        isValid = false
+        isValid = false;
       }
     }
 
     if (!isValid) {
-      alert("Veuillez corriger les erreurs dans le formulaire")
-      return
+      setErrors((prev) => ({
+        ...prev,
+        global: "Veuillez corriger les erreurs dans le formulaire.",
+      }));
+      return;
     }
-try {
-  const saved = contact
-    ? await updateContact(contact.id!, formData)
-    : await createContact(formData);
 
-  onSave(saved);
-  onOpenChange(false);
+    try {
+      const saved = contact
+        ? await updateContact(contact.id!, formData)
+        : await createContact(formData);
 
-} catch (error: any) {
-  console.error("Erreur complète:", error);
+      onSave(saved);
+      onOpenChange(false);
+    } catch (error: any) {
+      if (error instanceof HttpError) {
+        const msg = error.message?.toLowerCase() || "";
 
-  // Cas où l'erreur est une erreur HTTP personnalisée
-  if (error.name === "HttpError" && error.status) {
-    const detail = error.message || "Erreur inconnue côté serveur.";
-    alert(`Erreur ${error.status} : ${detail}`);
-    return;
-  }
-
-  // Si c’est une erreur Axios ou fetch avec response
-  if (error.response) {
-    const status = error.response.status ?? "inconnu";
-    const data = error.response.data;
-    const detail =
-      (data && (data.detail || data.message || JSON.stringify(data))) ||
-      "Erreur inconnue côté serveur.";
-
-    alert(`Erreur ${status} : ${detail}`);
-    return;
-  }
-
-  if (error.request) {
-    alert("Pas de réponse du serveur. Vérifie ta connexion internet.");
-    return;
-  }
-
-  if (error.message) {
-    alert(`Erreur : ${error.message}`);
-    return;
-  }
-
-  alert("Erreur réseau ou inconnue.");
-}
+        if (msg.includes("email")) {
+          setErrors((prev) => ({ ...prev, email: error.message }));
+        } else if (msg.includes("téléphone")) {
+          setErrors((prev) => ({ ...prev, telephone: error.message }));
+        } else {
+          setErrors((prev) => ({ ...prev, global: error.message }));
+        }
+      } else {
+        console.error(error);
+        setErrors((prev) => ({
+          ...prev,
+          global: "Une erreur inattendue est survenue.",
+        }));
+      }
+    }
+  };
 
 
 
 
-  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{contact ? "Modifier" : "Ajouter"} un contact</DialogTitle>
+          {errors.global && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+              ⚠️ {errors.global}
+            </div>
+          )}
+
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Résumé des erreurs */}

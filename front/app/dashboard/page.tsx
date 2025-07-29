@@ -748,12 +748,7 @@ const AccueilPage = () => {
 
                 <div className="flex-1 max-w-md mx-8">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <input
-                      type="text"
-                      placeholder="Rechercher contacts, entreprises..."
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
+                    
                   </div>
                 </div>
 
@@ -767,10 +762,7 @@ const AccueilPage = () => {
                     })}
                   </div>
 
-                  {/* Notifications */}
-                    
 
-                  {/* Settings Dropdown */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm">
@@ -783,7 +775,7 @@ const AccueilPage = () => {
                         Paramètres
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      {/* Profil utilisateur connecté */}
+
                       <DropdownMenuItem onClick={() => setShowProfileModal(true)} className="cursor-pointer">
                         <User className="h-4 w-4 mr-2" />
                         <div className="flex flex-col">
@@ -915,10 +907,6 @@ const AccueilPage = () => {
                     <Button variant="outline" onClick={loadDashboardData}>
                       <RefreshCw className="h-4 w-4 mr-2" />
                       Actualiser
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={() => setShowFilters(true)}>
-                      <Filter className="h-4 w-4 mr-2" />
-                      Filtrer
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => setShowExportDialog(true)}>
                       <Download className="h-4 w-4 mr-2" />

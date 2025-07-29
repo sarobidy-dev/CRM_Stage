@@ -24,8 +24,7 @@ export const createContact = async (contact: {
   try {
     return await ApiService.post(`${apiUrl}/contacts`, contact);
   } catch (error: any) {
-    console.error("Erreur API createContact:", error);
-    throw error;
+     return Promise.reject(error);
   }
 };
 
@@ -42,14 +41,18 @@ export interface ContactPayload {
 }
 export const updateContact = async (
   id: number,
-  contact: Partial<ContactPayload>   // ↔ tous les champs deviennent optionnels pour un PATCH
+  contact: Partial<ContactPayload>
 ): Promise<Contact> => {
-  console.log("=== SERVICE UPDATE CONTACT ===");
-  console.log(`Mise à jour du contact ID: ${id}`, contact);
+  try {
+    console.log("=== SERVICE UPDATE CONTACT ===");
+    console.log(`Mise à jour du contact ID: ${id}`, contact);
 
-  // Envoie l’objet tel quel : ApiService ajoutera l’en‑tête JSON
-  return await ApiService.put(`${apiUrl}/contacts/${id}`, contact);
+    return await ApiService.put(`${apiUrl}/contacts/${id}`, contact);
+  } catch (error: any) {
+    return Promise.reject(error); // pour que l’UI gère comme avec createContact
+  }
 };
+
 export const deleteContact = async (id: number): Promise<void> => {
   return await ApiService.delete(`${apiUrl}/contacts/${id}`)
 }

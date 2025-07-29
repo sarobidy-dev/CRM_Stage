@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import type { Campagne } from "@/types/campagne.type"
 import type { Entreprise } from "@/types/Entreprise.type"
-import type { CreateHistoriqueInput } from "@/types/historiqueAction.type"
+
 import { createHistorique } from "@/service/historiqueAction.service"
 import { fetchUtilisateurs } from "@/service/Utlisateur.service"
 import type { Utilisateur } from "@/types/Utilisateur.type"

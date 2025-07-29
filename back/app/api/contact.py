@@ -21,12 +21,18 @@ router = APIRouter(
 )
 
 
+from fastapi import HTTPException
+
 @router.post("/", response_model=dict)
 async def create(item: ContactCreate, db: AsyncSession = Depends(get_async_session)):
     try:
-        obj = await create_contact(db, item.model_dump())  # ⬅️ PAS .dict() en Pydantic v2
+        obj = await create_contact(db, item.model_dump())
         return response(True, "Contact créé", ContactRead.from_orm(obj).model_dump())
+    except HTTPException as http_exc:
+        # On propage les HTTPExceptions (409, 500, etc.) avec leur code et message
+        raise http_exc
     except Exception as e:
+        # Pour toute autre erreur non prévue, on renvoie une 400 Bad Request avec le message d'erreur
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/", response_model=dict)
