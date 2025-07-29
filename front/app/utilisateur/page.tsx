@@ -52,7 +52,7 @@ const UtilisateurPage = () => {
     setIsLoading(true)
     try {
       const response = await fetchUtilisateurs()
-      setData(response || [])
+      setData(response)
     } catch (err) {
       console.error("Erreur de récupération :", err)
       setData([])
@@ -102,7 +102,7 @@ const UtilisateurPage = () => {
       setEditUser(user)
       setFormData({
         nom: user.nom,
-      
+
         email: user.email,
         mot2pass: "",
         role: user.role,
@@ -114,7 +114,7 @@ const UtilisateurPage = () => {
       setEditUser(null)
       setFormData({
         nom: "",
-        
+
         email: "",
         mot2pass: "",
         role: "",
@@ -152,7 +152,7 @@ const UtilisateurPage = () => {
       return
     }
 
-   
+
     if (!EMAIL_PATTERN.test(formData.email)) {
       setErrorMessage("E‑mail invalide. Il doit se terminer par @gmail.com, ex : nomPersonne@gmail.com")
       return
@@ -176,7 +176,7 @@ const UtilisateurPage = () => {
       if (editUser) {
         const updateData = {
           nom: formData.nom,
-       
+
           email: formData.email,
           role: formData.role,
           actif: formData.actif,
@@ -188,7 +188,7 @@ const UtilisateurPage = () => {
       } else {
         const createData = {
           nom: formData.nom,
-         
+
           email: formData.email,
           mot2pass: formData.mot2pass,
           role: formData.role,
@@ -201,12 +201,19 @@ const UtilisateurPage = () => {
       setShowForm(false)
       refreshData()
     } catch (err: any) {
-      const msg = err?.response?.data?.detail || err?.response?.data?.message || err?.message || ""
+      const response = err?.response?.data;
+
+      const msg =
+        response?.message || // format personnalisé
+        response?.detail ||  // format standard FastAPI
+        err?.message ||      // fallback Node.js
+        "Une erreur inconnue est survenue.";
+
       setErrorMessage(
         /not found|404/i.test(msg)
           ? "L'utilisateur n'existe plus ou a déjà été supprimé."
-          : `Une erreur est survenue : ${msg}`,
-      )
+          : `Erreur : ${msg}`
+      );
     } finally {
       setIsSubmitting(false)
     }
@@ -441,7 +448,7 @@ const UtilisateurPage = () => {
               className="space-y-4"
               autoComplete="off"
             >
-             
+
 
               <div>
                 <label htmlFor="nom" className="block text-sm font-medium text-gray-700">

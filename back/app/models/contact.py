@@ -8,8 +8,8 @@ class Contact(Base):
     id = Column(Integer, primary_key=True, index=True)
     nom = Column(String(50), nullable=False)
     prenom = Column(String(50), nullable=True)
-    telephone = Column(String(15), nullable=True)
-    email = Column(String(120), nullable=True)
+    telephone = Column(String(15), nullable=True, unique=True)
+    email = Column(String(120), nullable=True, unique=True)
     adresse = Column(Text, nullable=True)
     fonction = Column(String(50), nullable=True)
     #forey key

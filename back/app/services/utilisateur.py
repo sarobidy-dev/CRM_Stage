@@ -2,21 +2,25 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from models.utilisateur import Utilisateur  # adapte le chemin si besoin
 
-
-# -------------------------------------------------
-# GET ALL
-# -------------------------------------------------
 async def get_utilisateurs(db: AsyncSession):
     """
     Retourne la liste complète des utilisateurs.
     """
     result = await db.execute(select(Utilisateur))
     return result.scalars().all()
+async def email_existe_pour_un_autre(db: AsyncSession, email: str, utilisateur_id: int) -> bool:
+    result = await db.execute(
+        select(Utilisateur).where(
+            Utilisateur.email == email,
+            Utilisateur.id != utilisateur_id
+        )
+    )
+    return result.scalar_one_or_none() is not None
 
+async def email_existe(db: AsyncSession, email: str) -> bool:
+    result = await db.execute(select(Utilisateur).where(Utilisateur.email == email))
+    return result.scalar_one_or_none() is not None
 
-# -------------------------------------------------
-# GET ONE
-# -------------------------------------------------
 async def get_utilisateur(db: AsyncSession, utilisateur_id: int):
     """
     Retourne un utilisateur par son id, ou None s’il n’existe pas.
@@ -29,10 +33,6 @@ async def get_utilisateur(db: AsyncSession, utilisateur_id: int):
     result = await db.execute(select(Utilisateur).where(Utilisateur.id == utilisateur_id))
     return result.scalars().first()
 
-
-# -------------------------------------------------
-# CREATE
-# -------------------------------------------------
 async def create_utilisateur(db: AsyncSession, utilisateur_data: dict):
     nouvel_utilisateur = Utilisateur(**utilisateur_data)
     db.add(nouvel_utilisateur)
@@ -41,9 +41,6 @@ async def create_utilisateur(db: AsyncSession, utilisateur_data: dict):
     return nouvel_utilisateur
 
 
-# -------------------------------------------------
-# UPDATE
-# -------------------------------------------------
 async def update_utilisateur(db: AsyncSession, utilisateur_id: int, update_data: dict):
     utilisateur = await get_utilisateur(db, utilisateur_id)
     if not utilisateur:
@@ -56,10 +53,6 @@ async def update_utilisateur(db: AsyncSession, utilisateur_id: int, update_data:
     await db.refresh(utilisateur)
     return utilisateur
 
-
-# -------------------------------------------------
-# DELETE
-# -------------------------------------------------
 async def delete_utilisateur(db: AsyncSession, utilisateur_id: int):
     utilisateur = await get_utilisateur(db, utilisateur_id)
     if not utilisateur:

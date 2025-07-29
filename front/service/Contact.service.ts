@@ -21,8 +21,16 @@ export const createContact = async (contact: {
   fonction?: string;
   entreprise_id: number;
 }): Promise<Contact> => {
-  return await ApiService.post(`${apiUrl}/contacts`, contact); 
+  try {
+    return await ApiService.post(`${apiUrl}/contacts`, contact);
+  } catch (error: any) {
+    console.error("Erreur API createContact:", error);
+    throw error;
+  }
 };
+
+
+
 export interface ContactPayload {
   nom: string;
   prenom?: string;

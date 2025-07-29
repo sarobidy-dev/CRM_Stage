@@ -493,15 +493,52 @@ export function ContactForm({ open, onOpenChange, contact, onSave }: ContactForm
       alert("Veuillez corriger les erreurs dans le formulaire")
       return
     }
+try {
+  const saved = contact
+    ? await updateContact(contact.id!, formData)
+    : await createContact(formData);
 
-    try {
-      const saved = contact ? await updateContact(contact.id!, formData) : await createContact(formData)
-      onSave(saved)
-      onOpenChange(false)
-    } catch (err) {
-      console.error(err)
-      alert("Erreur lors de l'enregistrement du contact")
-    }
+  onSave(saved);
+  onOpenChange(false);
+
+} catch (error: any) {
+  console.error("Erreur complète:", error);
+
+  // Cas où l'erreur est une erreur HTTP personnalisée
+  if (error.name === "HttpError" && error.status) {
+    const detail = error.message || "Erreur inconnue côté serveur.";
+    alert(`Erreur ${error.status} : ${detail}`);
+    return;
+  }
+
+  // Si c’est une erreur Axios ou fetch avec response
+  if (error.response) {
+    const status = error.response.status ?? "inconnu";
+    const data = error.response.data;
+    const detail =
+      (data && (data.detail || data.message || JSON.stringify(data))) ||
+      "Erreur inconnue côté serveur.";
+
+    alert(`Erreur ${status} : ${detail}`);
+    return;
+  }
+
+  if (error.request) {
+    alert("Pas de réponse du serveur. Vérifie ta connexion internet.");
+    return;
+  }
+
+  if (error.message) {
+    alert(`Erreur : ${error.message}`);
+    return;
+  }
+
+  alert("Erreur réseau ou inconnue.");
+}
+
+
+
+
   }
 
   return (

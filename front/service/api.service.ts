@@ -78,7 +78,7 @@ class ApiService {
         try {
           responseData = await response.json();
         } catch {
-          responseData = null; // corps vide ou non JSON
+          responseData = null; 
         }
       }
 

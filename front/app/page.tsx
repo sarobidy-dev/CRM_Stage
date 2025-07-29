@@ -10,7 +10,7 @@ import { FaFacebook, FaGlobe, FaEye, FaEyeSlash } from "react-icons/fa"
 type LoginValues = {
   email: string
   password: string
-  role: string
+
 }
 
 // Fonction améliorée pour sauvegarder les cookies avec photo_profil
@@ -29,7 +29,6 @@ const saveUserToCookies = (userData: any) => {
 
   // Cookies séparés pour un accès rapide
   document.cookie = `userId=${userData.id}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict`
-  document.cookie = `userRole=${encodeURIComponent(userData.role)}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict`
   document.cookie = `userName=${encodeURIComponent(userData.nom)}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict`
 
   // Cookie spécial pour la photo de profil
@@ -110,7 +109,7 @@ function LoginForm({
           <p className="text-gray-600">Accédez à votre espace personnel</p>
         </div>
 
-        <Formik<LoginValues> initialValues={{ email: "", password: "", role: "" }} onSubmit={onSubmit}>
+        <Formik<LoginValues> initialValues={{ email: "", password: "" }} onSubmit={onSubmit}>
           {() => (
             <Form className="space-y-6">
               <div className="space-y-2">
@@ -176,63 +175,10 @@ function LoginForm({
                     {showPassword ? <FaEyeSlash className="w-5 h-5" /> : <FaEye className="w-5 h-5" />}
                   </button>
                 </div>
-                <div className="mt-3 flex items-center">
-                  <input
-                    id="showPassword"
-                    type="checkbox"
-                    checked={showPassword}
-                    onChange={() => setShowPassword((prev) => !prev)}
-                    className="w-4 h-4 text-indigo-600 border-2 border-gray-300 rounded focus:ring-indigo-500 focus:ring-2"
-                  />
-                  <label
-                    htmlFor="showPassword"
-                    className="ml-2 text-sm text-gray-600 cursor-pointer hover:text-indigo-600 transition-colors"
-                  >
-                    Afficher le mot de passe
-                  </label>
-                </div>
+               
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="role" className="block text-sm font-semibold text-gray-700 mb-2">
-                  Rôle
-                </label>
-                <div className="relative">
-                  <Field
-                    as="select"
-                    name="role"
-                    id="role"
-                    required
-                    className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 transition-all duration-300 bg-white/50 backdrop-blur-sm appearance-none cursor-pointer"
-                  >
-                    <option value="">-- Sélectionner un rôle --</option>
-                    <option value="Administrateur">👑 Administrateur</option>
-                    <option value="Commercial">💼 Commercial</option>
-                    <option value="Superviseur">👥 Superviseur</option>
-                  </Field>
-                  <svg
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
-                  <svg
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
+
 
               {formError && (
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg animate-pulse">
@@ -327,7 +273,7 @@ export default function LoginPage() {
 
     try {
       const users = await fetchUtilisateurs()
-      const user = users.find((u) => u.email === values.email && u.role === values.role)
+      const user = users.find((u) => u.email === values.email)
 
       if (!user) {
         setFormError("Email ou rôle incorrect")

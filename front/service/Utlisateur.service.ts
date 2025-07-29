@@ -38,36 +38,35 @@ export const fetchUtilisateurs = async (): Promise<Utilisateur[]> => {
  * Crée un nouvel utilisateur
  */
 export const createUtilisateur = async (userData: CreateUtilisateurRequest): Promise<Utilisateur> => {
-  try {
-    const formData = new FormData()
-    formData.append("nom", userData.nom)
-    formData.append("prenom", userData.prenom)
-    formData.append("email", userData.email)
-    formData.append("mot2pass", userData.mot2pass)
-    formData.append("role", userData.role)
-    formData.append("actif", userData.actif.toString())
+  const formData = new FormData()
+  formData.append("nom", userData.nom)
+  formData.append("prenom", userData.prenom)
+  formData.append("email", userData.email)
+  formData.append("mot2pass", userData.mot2pass)
+  formData.append("role", userData.role)
+  formData.append("actif", userData.actif.toString())
 
-    if (userData.photo_profil) {
-      formData.append("photo_profil", userData.photo_profil)
-    }
+  if (userData.photo_profil) {
+    formData.append("photo_profil", userData.photo_profil)
+  }
 
-    const response = await fetch(`${API_BASE_URL}/utilisateurs`, {
-      method: "POST",
-      body: formData,
-    })
+  const response = await fetch(`${API_BASE_URL}/utilisateurs`, {
+    method: "POST",
+    body: formData,
+  })
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.detail || errorData.message || `Erreur HTTP: ${response.status}`)
-    }
+  const data = await response.json().catch(() => ({})) 
 
-    const data = await response.json()
-    return data.success ? data.data : data
-  } catch (error) {
-    console.error("Erreur lors de la création de l'utilisateur:", error)
+  if (!response.ok) {
+    const message = data.message || data.detail || `Erreur HTTP: ${response.status}`
+    const error = new Error(message)
+    ;(error as any).response = { data }  
     throw error
   }
+
+  return data.success ? data.data : data
 }
+
 
 /**
  * Met à jour un utilisateur existant

@@ -21,7 +21,8 @@ from api import (
     projetUtilisateur,
     sms,
     email,   
-    email_controller
+    email_controller, 
+    openia
 )
 
 # Création du dossier media si nécessaire
@@ -55,6 +56,7 @@ app.include_router(utilisateur.router)
 app.include_router(email_controller.router)
 app.include_router(email.router)
 app.include_router(sms.router)
+app.include_router(openia.router)
 app.mount("/media", StaticFiles(directory="media"), name="media")
 
 # Création des tables à la startup

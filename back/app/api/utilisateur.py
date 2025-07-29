@@ -57,6 +57,8 @@ async def read_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_a
     )
 
 
+from services.utilisateur import email_existe
+
 @router.post("/utilisateurs", response_model=UtilisateurRead, status_code=status.HTTP_201_CREATED)
 async def create_utilisateur_endpoint(
     nom: str = Form(...),
@@ -67,6 +69,11 @@ async def create_utilisateur_endpoint(
     photo_profil: UploadFile | None = File(None),
     db: AsyncSession = Depends(get_async_session),
 ):
+    if await email_existe(db, email):
+        raise HTTPException(
+            status_code=400,
+            detail="Cet email est déjà utilisé"
+        )
     photo_path: Optional[str] = await _save_photo(photo_profil) if photo_profil else None
 
     data = {
@@ -80,6 +87,8 @@ async def create_utilisateur_endpoint(
     return await create_utilisateur(db, data)
 
 
+from services.utilisateur import email_existe_pour_un_autre
+
 @router.put("/utilisateurs/{utilisateur_id}", response_model=UtilisateurRead)
 async def update_utilisateur_endpoint(
     utilisateur_id: int,
@@ -91,6 +100,12 @@ async def update_utilisateur_endpoint(
     photo_profil: UploadFile | None = File(None),
     db: AsyncSession = Depends(get_async_session),
 ):
+    if email and await email_existe_pour_un_autre(db, email, utilisateur_id):
+        raise HTTPException(
+            status_code=400,
+            detail={"success": False, "message": "Cet email est déjà utilisé par un autre utilisateur", "data": None}
+        )
+
     photo_path: Optional[str] = await _save_photo(photo_profil) if photo_profil else None
 
     update_dict = {
