@@ -5,9 +5,32 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from models.sms import SMS
 
 _executor = ThreadPoolExecutor()
+from sqlalchemy.ext.asyncio import AsyncSession
+from models.sms import SMS
+from schemas.sms import SendSMSRequest
+from datetime import datetime
+
+async def save_sms_to_db(
+    db: AsyncSession,
+    sms_data: SendSMSRequest,
+    statut: str = "envoyé"
+) -> SMS:
+    sms = SMS(
+        id_contact=sms_data.id_contact or 0,
+        message=sms_data.message,
+        telephone=sms_data.expediteur,
+        date_envoyee=datetime.utcnow(),
+        statut=statut,
+        type=sms_data.type or "sms",
+        expediteur=sms_data.expediteur
+    )
+    db.add(sms)
+    await db.commit()
+    await db.refresh(sms)
+    return sms
 
 def _send_sms_sync(numero: str, message: str, token: str):
-    token = token.strip()  # Nettoyage important ici
+    token = token.strip() 
     url = "https://messaging.mapi.mg/api/msg/send"
     payload = {
         'Recipient': numero,
@@ -15,8 +38,7 @@ def _send_sms_sync(numero: str, message: str, token: str):
         'Channel': 'sms'
     }
     headers = {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        'Authorization': "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbWVzc2FnaW5nLm1hcGkubWdcLyIsImlhdCI6MTc1NDU1Mzc1OCwiZXhwIjoxNzU0NTU3MzU4LCJ1c2VybmFtZSI6IjEyMzQ1Njc4OTAiLCJ1c2VyaWQiOjQ2N30.XxfyWuKSxkPrNq_ah91ZkYGdt5NBCDXQldPUhiNlbqw",
     }
     try:
         response = requests.post(url, headers=headers, data=payload)

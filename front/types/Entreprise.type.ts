@@ -12,3 +12,21 @@ export interface Entreprise {
   id: number
   id_utilisateur: number
 }
+
+
+export interface Adresse {
+  id: number;
+  ligneAdresse1: string;
+  ligneAdresse2: string | null;
+  ville: string;
+  cp: string;
+  pays: string;
+}
+
+export interface Utilisateur {
+  id: number;
+  id_utilisateur?: number; // Peut être id ou id_utilisateur selon l'API
+  nom: string;
+  prenom?: string;
+  email?: string;
+}

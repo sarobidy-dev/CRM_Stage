@@ -14,7 +14,7 @@ class SMSOut(BaseModel):
     id_contact: Optional[int]
     message: str
     date_envoyee: datetime
-    statut: str  # corrigé pour matcher le modèle SQLAlchemy
+    statut: str 
     type: Optional[str]
     expediteur: str
 

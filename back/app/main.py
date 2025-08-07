@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
 
-# Database & Models
 from database import engine, Base, test_connection
 from api import utilisateur
 
@@ -22,7 +21,8 @@ from api import (
     sms,
     email,   
     email_controller, 
-    openia
+    openia,
+    tache
 )
 
 # Création du dossier media si nécessaire
@@ -57,6 +57,7 @@ app.include_router(email_controller.router)
 app.include_router(email.router)
 app.include_router(sms.router)
 app.include_router(openia.router)
+app.include_router(tache.router)
 app.mount("/media", StaticFiles(directory="media"), name="media")
 
 # Création des tables à la startup

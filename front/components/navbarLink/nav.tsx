@@ -42,11 +42,13 @@ const links = {
     { name: "Projet prospection", href: "/projetProspection", icon: Target }, // 🎯 Prospection - parfait
     { name: "Entreprise", href: "/entreprise", icon: Building2 }, // 🏢 Entreprise - parfait
     { name: "Campagne", href: "/campagne", icon: Megaphone }, // 📢 Campagne marketing - plus approprié
-    { name: "Utilisateur", href: "/utilisateur", icon: User }, // 👤 Utilisateur - parfait
+    { name: "Utilisateur", href: "/utilisateur", icon: User },
+     // 👤 Utilisateur - parfait
   ],
   Historique: [
     { name: "Historiques d'action", href: "/historique", icon: History }, // 🕒 Historique actions - plus spécifique
-    { name: "Historiques email envoyés", href: "/historiqueEmail", icon: Send }, // 📤 Emails envoyés - plus précis
+    { name: "Historiques email envoyés", href: "/historiqueEmail", icon: Send },
+    { name: "Historiques de la tache", href: "/tache", icon: Send }, // 📤 Emails envoyés - plus précis
   ],
 }
 

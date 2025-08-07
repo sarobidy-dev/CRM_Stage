@@ -1,24 +1,7 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useParams, useRouter } from "next/navigation"
-import {
-  Building2,
-  Phone,
-  Mail,
-  MapPin,
-  Users,
-  TrendingUp,
-  Calendar,
-  Plus,
-  Edit,
-  MoreHorizontal,
-  Eye,
-  DollarSign,
-  Send,
-  Loader2,
-  Trash2,
-  ArrowLeft,
-} from "lucide-react"
+import { Building2, Users, Plus, Edit, MoreHorizontal, Eye, DollarSign, Send, Loader2, Trash2, ArrowLeft, Phone, Mail, MapPin, TrendingUp, Calendar } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -45,7 +28,7 @@ import { toast } from "@/hooks/use-toast"
 import Link from "next/link"
 
 // Import des types et services
-import type { Entreprise } from "@/types/Entreprise.type"
+import type { Entreprise, Adresse, Utilisateur } from "@/types/Entreprise.type" // Unified import
 import type { Contact } from "@/types/Contact.type"
 import type { Opportunite } from "@/types/opportunite.type"
 import type { Interaction } from "@/types/interaction.type"
@@ -53,6 +36,7 @@ import { getAllEntreprises } from "@/service/Entreprise.service"
 import { getAllContacts } from "@/service/Contact.service"
 import { getAllOpportunites } from "@/service/Opportunite.service"
 import { getInteractions } from "@/service/Interaction.service"
+import { getAllAdresses } from "@/service/Adresse.service" // Import getAllAdresses
 
 const getStatutColor = (statut: string) => {
   switch (statut.toLowerCase()) {
@@ -111,6 +95,7 @@ export default function PageEntreprise() {
   // États pour les données
   const [entreprise, setEntreprise] = useState<Entreprise | null>(null)
   const [allEntreprises, setAllEntreprises] = useState<Entreprise[]>([])
+  const [adresses, setAdresses] = useState<Adresse[]>([]) // State for addresses
   const [contacts, setContacts] = useState<Contact[]>([])
   const [opportunites, setOpportunites] = useState<Opportunite[]>([])
   const [interactions, setInteractions] = useState<Interaction[]>([])
@@ -130,6 +115,15 @@ export default function PageEntreprise() {
   const [isNouvelleInteractionOpen, setIsNouvelleInteractionOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date>()
 
+  // Helper functions for addresses and users (copied from entreprise/page.tsx)
+  const getAdresseById = useCallback((id: number | null | undefined) => adresses.find((a) => a.id === id), [adresses])
+  const formatAdresse = useCallback((adresse?: Adresse) =>
+    adresse
+      ? [adresse.ligneAdresse1, adresse.ligneAdresse2, adresse.ville, adresse.cp, adresse.pays]
+          .filter(Boolean)
+          .join(", ")
+      : "-", [adresses])
+
   // Chargement des données
   useEffect(() => {
     loadAllData()
@@ -137,19 +131,22 @@ export default function PageEntreprise() {
 
   // Rechargement des données quand l'entreprise change
   useEffect(() => {
-    if (allEntreprises.length > 0) {
+    if (allEntreprises.length > 0 && adresses.length > 0) { // Ensure addresses are loaded
       loadEntrepriseData(entrepriseId)
     }
-  }, [entrepriseId, allEntreprises])
+  }, [entrepriseId, allEntreprises, adresses]) // Add adresses to dependency array
 
   const loadAllData = async () => {
     try {
       setIsLoading(true)
       setError(null)
-
-      // Charger toutes les entreprises d'abord
-      const entreprisesData = await getAllEntreprises()
+      // Charger toutes les entreprises et adresses d'abord
+      const [entreprisesData, adressesData] = await Promise.all([
+        getAllEntreprises(),
+        getAllAdresses(),
+      ])
       setAllEntreprises(entreprisesData)
+      setAdresses(Array.isArray(adressesData?.data) ? adressesData.data : Array.isArray(adressesData) ? adressesData : [])
 
       // Charger les données pour l'entreprise spécifique
       await loadEntrepriseData(entrepriseId)
@@ -168,28 +165,25 @@ export default function PageEntreprise() {
   const loadEntrepriseData = async (id: number) => {
     try {
       // Charger toutes les données en parallèle
-      const [entreprisesData, contactsData, opportunitesData, interactionsData] = await Promise.all([
-        getAllEntreprises(),
+      const [contactsData, opportunitesData, interactionsData] = await Promise.all([
         getAllContacts(),
         getAllOpportunites(),
         getInteractions(),
       ])
 
-      // Trouver l'entreprise spécifique
-      const currentEntreprise = entreprisesData.find((e) => e.id_entreprise === id)
+      // Trouver l'entreprise spécifique parmi toutes les entreprises déjà chargées
+      const currentEntreprise = allEntreprises.find((e) => e.id === id) // Use e.id
       if (!currentEntreprise) {
         throw new Error("Entreprise non trouvée")
       }
       setEntreprise(currentEntreprise)
 
-      // Filtrer les contacts par entreprise (en utilisant le nom de l'entreprise)
-      const entrepriseContacts = contactsData.filter((c) => c.entreprise === currentEntreprise.nom)
-
+      // Filtrer les contacts par entreprise (en utilisant l'ID de l'entreprise)
+      const entrepriseContacts = contactsData.filter((c) => c.entreprise_id === currentEntreprise.id) // Use entreprise_id
       // Filtrer les opportunités par ID d'entreprise
       const entrepriseOpportunites = opportunitesData.filter((o) => o.id_entreprise === id)
-
       // Filtrer les interactions par contacts de l'entreprise
-      const contactIds = entrepriseContacts.map((c) => c.id_contact)
+      const contactIds = entrepriseContacts.map((c) => c.id) // Use c.id
       const entrepriseInteractions = interactionsData.filter((i) => contactIds.includes(i.id_contact))
 
       setContacts(entrepriseContacts)
@@ -217,8 +211,8 @@ export default function PageEntreprise() {
     return (
       <div className="min-h-screen bg-gray-50 flex w-full items-center justify-center">
         <div className="flex items-center space-x-2">
-          <Loader2 className="h-6 w-6 animate-spin" />
-          <span>Chargement des données...</span>
+          <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+          <span className="text-gray-700">Chargement des données...</span>
         </div>
       </div>
     )
@@ -227,10 +221,10 @@ export default function PageEntreprise() {
   if (!entreprise) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center w-full justify-center">
-        <Card className="w-96">
+        <Card className="w-96 shadow-lg">
           <CardContent className="p-6 text-center">
-            <h2 className="text-lg font-semibold mb-2">Entreprise non trouvée</h2>
-            <p className="text-gray-600 mb-4">L'entreprise demandée n'existe pas.</p>
+            <h2 className="text-lg font-semibold mb-2 text-gray-900">Entreprise non trouvée</h2>
+            <p className="text-gray-600 mb-4">L'entreprise demandée n'existe pas ou n'a pas pu être chargée.</p>
             <Link href="/entreprise">
               <Button>Retour à la liste des entreprises</Button>
             </Link>
@@ -239,6 +233,8 @@ export default function PageEntreprise() {
       </div>
     )
   }
+
+  const currentAdresse = getAdresseById(entreprise.adresse_id);
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 w-full">
@@ -260,10 +256,10 @@ export default function PageEntreprise() {
                 </SelectTrigger>
                 <SelectContent>
                   {allEntreprises.map((ent) => (
-                    <SelectItem key={ent.id_entreprise} value={ent.id_entreprise.toString()}>
+                    <SelectItem key={ent.id} value={ent.id.toString()}>
                       <div className="flex items-center gap-2">
                         <Building2 className="h-4 w-4" />
-                        {ent.nom}
+                        {ent.raisonSocial}
                       </div>
                     </SelectItem>
                   ))}
@@ -271,13 +267,13 @@ export default function PageEntreprise() {
               </Select>
             </div>
           </div>
-          <Badge variant="outline" className="text-xs">
-            ID: {entreprise.id_entreprise}
+          <Badge variant="outline" className="text-xs bg-gray-100 text-gray-700">
+            ID: {entreprise.id}
           </Badge>
         </div>
 
         {/* Header de l'entreprise */}
-        <Card>
+        <Card className="shadow-lg">
           <CardHeader>
             <div className="flex items-start justify-between">
               <div className="flex items-start space-x-4">
@@ -286,7 +282,7 @@ export default function PageEntreprise() {
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center space-x-3">
-                    <h1 className="text-3xl font-bold">{entreprise.nom}</h1>
+                    <h1 className="text-3xl font-bold text-gray-900">{entreprise.raisonSocial}</h1>
                     <Badge variant="secondary" className="bg-green-100 text-green-800">
                       Client actif
                     </Badge>
@@ -294,12 +290,14 @@ export default function PageEntreprise() {
                   <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center space-x-1">
                       <MapPin className="h-4 w-4" />
-                      <span>{entreprise.adresse}</span>
+                      <span>{formatAdresse(currentAdresse)}</span>
                     </div>
-                    <div className="flex items-center space-x-1">
-                      <Building2 className="h-4 w-4" />
-                      <span>{entreprise.secteur}</span>
-                    </div>
+                    {entreprise.secteur && (
+                      <div className="flex items-center space-x-1">
+                        <Building2 className="h-4 w-4" />
+                        <span>{entreprise.secteur}</span>
+                      </div>
+                    )}
                     <div className="flex items-center space-x-1">
                       <Users className="h-4 w-4" />
                       <span>
@@ -317,6 +315,7 @@ export default function PageEntreprise() {
                       Modifier
                     </Button>
                   </DialogTrigger>
+                  {/* Modifier Entreprise Dialog Content (kept as is for now) */}
                 </Dialog>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -346,15 +345,15 @@ export default function PageEntreprise() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">{entreprise.telephone}</span>
+                <span className="text-sm">{entreprise.telephoneStandard || "-"}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">{entreprise.email}</span>
+                <span className="text-sm">{entreprise.emailStandart || "-"}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Building2 className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">ID: {entreprise.id_entreprise}</span>
+                <span className="text-sm">ID: {entreprise.id}</span>
               </div>
             </div>
           </CardContent>
@@ -362,7 +361,7 @@ export default function PageEntreprise() {
 
         {/* Statistiques rapides */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <Card>
+          <Card className="shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -373,7 +372,7 @@ export default function PageEntreprise() {
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -384,7 +383,7 @@ export default function PageEntreprise() {
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -395,7 +394,7 @@ export default function PageEntreprise() {
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -416,11 +415,10 @@ export default function PageEntreprise() {
             <TabsTrigger value="opportunites">Opportunités ({opportunites.length})</TabsTrigger>
             <TabsTrigger value="interactions">Interactions ({interactions.length})</TabsTrigger>
           </TabsList>
-
           <TabsContent value="apercu" className="space-y-6">
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {/* Contacts récents */}
-              <Card>
+              {/* Contacts principaux */}
+              <Card className="shadow-sm">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Contacts principaux</CardTitle>
                   <Dialog open={isNouveauContactOpen} onOpenChange={setIsNouveauContactOpen}>
@@ -430,6 +428,7 @@ export default function PageEntreprise() {
                         Ajouter
                       </Button>
                     </DialogTrigger>
+                    {/* Nouveau Contact Dialog Content (kept as is for now) */}
                   </Dialog>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -437,13 +436,13 @@ export default function PageEntreprise() {
                     <p className="text-center text-muted-foreground py-4">Aucun contact trouvé</p>
                   ) : (
                     contacts.slice(0, 3).map((contact) => (
-                      <div key={contact.id_contact} className="flex items-center space-x-3">
+                      <div key={contact.id} className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-50 transition-colors">
                         <Avatar>
-                          <AvatarImage src={contact.photo_de_profil || "/placeholder.svg"} />
+                          <AvatarImage src={contact.photo_de_profil || "/placeholder.svg?height=40&width=40&query=contact profile"} />
                           <AvatarFallback>{`${contact.prenom[0] || ""}${contact.nom[0] || ""}`}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
-                          <p className="font-medium">
+                          <p className="font-medium text-gray-900">
                             {contact.prenom} {contact.nom}
                           </p>
                           <p className="text-sm text-muted-foreground">{contact.fonction}</p>
@@ -456,9 +455,8 @@ export default function PageEntreprise() {
                   )}
                 </CardContent>
               </Card>
-
               {/* Opportunités actives */}
-              <Card>
+              <Card className="shadow-sm">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Opportunités actives</CardTitle>
                   <Dialog open={isNouvelleOppOpen} onOpenChange={setIsNouvelleOppOpen}>
@@ -468,6 +466,7 @@ export default function PageEntreprise() {
                         Nouvelle
                       </Button>
                     </DialogTrigger>
+                    {/* Nouvelle Opportunité Dialog Content (kept as is for now) */}
                   </Dialog>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -475,9 +474,9 @@ export default function PageEntreprise() {
                     <p className="text-center text-muted-foreground py-4">Aucune opportunité trouvée</p>
                   ) : (
                     opportunites.slice(0, 2).map((opp) => (
-                      <div key={opp.id_opportunite} className="space-y-2">
+                      <div key={opp.id_opportunite} className="space-y-2 p-2 rounded-md hover:bg-gray-50 transition-colors">
                         <div className="flex items-center justify-between">
-                          <p className="font-medium">{opp.titre}</p>
+                          <p className="font-medium text-gray-900">{opp.titre}</p>
                           <Badge className={getStatutColor(opp.statut)}>{opp.statut}</Badge>
                         </div>
                         <div className="flex items-center justify-between text-sm text-muted-foreground">
@@ -491,9 +490,8 @@ export default function PageEntreprise() {
                 </CardContent>
               </Card>
             </div>
-
             {/* Interactions récentes */}
-            <Card>
+            <Card className="shadow-sm">
               <CardHeader>
                 <CardTitle>Interactions récentes</CardTitle>
               </CardHeader>
@@ -503,18 +501,18 @@ export default function PageEntreprise() {
                     <p className="text-center text-muted-foreground py-4">Aucune interaction trouvée</p>
                   ) : (
                     interactions.slice(0, 3).map((interaction) => {
-                      const contact = contacts.find((c) => c.id_contact === interaction.id_contact)
+                      const contact = contacts.find((c) => c.id === interaction.id_contact) // Use c.id
                       return (
                         <div
                           key={interaction.id_interaction}
-                          className="flex items-start space-x-3 border-b pb-4 last:border-b-0"
+                          className="flex items-start space-x-3 border-b pb-4 last:border-b-0 last:pb-0 p-2 rounded-md hover:bg-gray-50 transition-colors"
                         >
                           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
                             {getTypeIcon(interaction.type)}
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center justify-between">
-                              <p className="font-medium">{interaction.type}</p>
+                              <p className="font-medium text-gray-900">{interaction.type}</p>
                               <span className="text-sm text-muted-foreground">
                                 {formatDateTime(interaction.date_interaction)}
                               </span>
@@ -522,8 +520,11 @@ export default function PageEntreprise() {
                             <p className="text-sm text-muted-foreground">
                               avec {contact ? `${contact.prenom} ${contact.nom}` : "Contact inconnu"}
                             </p>
-                            <p className="text-sm">{interaction.contenu}</p>
+                            <p className="text-sm text-gray-700">{interaction.contenu}</p>
                           </div>
+                          <Button variant="ghost" size="sm" className="text-red-600 hover:bg-red-50">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </div>
                       )
                     })
@@ -534,11 +535,11 @@ export default function PageEntreprise() {
           </TabsContent>
 
           <TabsContent value="contacts" className="space-y-6">
-            <Card>
+            <Card className="shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                   <CardTitle>Contacts de l'entreprise</CardTitle>
-                  <CardDescription>Gérez tous les contacts liés à {entreprise.nom}</CardDescription>
+                  <CardDescription>Gérez tous les contacts liés à {entreprise.raisonSocial}</CardDescription>
                 </div>
                 <Dialog open={isNouveauContactOpen} onOpenChange={setIsNouveauContactOpen}>
                   <DialogTrigger asChild>
@@ -547,6 +548,7 @@ export default function PageEntreprise() {
                       Nouveau contact
                     </Button>
                   </DialogTrigger>
+                  {/* Nouveau Contact Dialog Content (kept as is for now) */}
                 </Dialog>
               </CardHeader>
               <CardContent>
@@ -561,14 +563,14 @@ export default function PageEntreprise() {
                     </div>
                   ) : (
                     contacts.map((contact) => (
-                      <div key={contact.id_contact} className="flex items-center justify-between rounded-lg border p-4">
+                      <div key={contact.id} className="flex items-center justify-between rounded-lg border p-4 shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex items-center space-x-4">
                           <Avatar>
-                            <AvatarImage src={contact.photo_de_profil || "/placeholder.svg"} />
+                            <AvatarImage src={contact.photo_de_profil || "/placeholder.svg?height=40&width=40&query=contact profile"} />
                             <AvatarFallback>{`${contact.prenom[0] || ""}${contact.nom[0] || ""}`}</AvatarFallback>
                           </Avatar>
                           <div>
-                            <p className="font-medium">
+                            <p className="font-medium text-gray-900">
                               {contact.prenom} {contact.nom}
                             </p>
                             <p className="text-sm text-muted-foreground">{contact.fonction}</p>
@@ -598,11 +600,11 @@ export default function PageEntreprise() {
           </TabsContent>
 
           <TabsContent value="opportunites" className="space-y-6">
-            <Card>
+            <Card className="shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                   <CardTitle>Opportunités commerciales</CardTitle>
-                  <CardDescription>Suivez toutes les opportunités pour {entreprise.nom}</CardDescription>
+                  <CardDescription>Suivez toutes les opportunités pour {entreprise.raisonSocial}</CardDescription>
                 </div>
                 <Dialog open={isNouvelleOppOpen} onOpenChange={setIsNouvelleOppOpen}>
                   <DialogTrigger asChild>
@@ -611,6 +613,7 @@ export default function PageEntreprise() {
                       Nouvelle opportunité
                     </Button>
                   </DialogTrigger>
+                  {/* Nouvelle Opportunité Dialog Content (kept as is for now) */}
                 </Dialog>
               </CardHeader>
               <CardContent>
@@ -625,9 +628,9 @@ export default function PageEntreprise() {
                     </div>
                   ) : (
                     opportunites.map((opp) => (
-                      <div key={opp.id_opportunite} className="rounded-lg border p-4">
+                      <div key={opp.id_opportunite} className="rounded-lg border p-4 shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between mb-3">
-                          <h3 className="font-medium">{opp.titre}</h3>
+                          <h3 className="font-medium text-gray-900">{opp.titre}</h3>
                           <Badge className={getStatutColor(opp.statut)}>{opp.statut}</Badge>
                         </div>
                         <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
@@ -650,7 +653,7 @@ export default function PageEntreprise() {
                         </div>
                         <div className="mt-3">
                           <p className="text-sm text-muted-foreground mb-2">Description:</p>
-                          <p className="text-sm">{opp.description}</p>
+                          <p className="text-sm text-gray-700">{opp.description}</p>
                         </div>
                         <div className="mt-3">
                           <div className="flex items-center justify-between mb-1">
@@ -668,12 +671,21 @@ export default function PageEntreprise() {
           </TabsContent>
 
           <TabsContent value="interactions" className="space-y-6">
-            <Card>
+            <Card className="shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                   <CardTitle>Historique des interactions</CardTitle>
-                  <CardDescription>Toutes les interactions avec {entreprise.nom}</CardDescription>
+                  <CardDescription>Toutes les interactions avec {entreprise.raisonSocial}</CardDescription>
                 </div>
+                <Dialog open={isNouvelleInteractionOpen} onOpenChange={setIsNouvelleInteractionOpen}>
+                  <DialogTrigger asChild>
+                    <Button>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Nouvelle interaction
+                    </Button>
+                  </DialogTrigger>
+                  {/* Nouvelle Interaction Dialog Content (kept as is for now) */}
+                </Dialog>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -687,18 +699,18 @@ export default function PageEntreprise() {
                     </div>
                   ) : (
                     interactions.map((interaction) => {
-                      const contact = contacts.find((c) => c.id_contact === interaction.id_contact)
+                      const contact = contacts.find((c) => c.id === interaction.id_contact) // Use c.id
                       return (
                         <div
                           key={interaction.id_interaction}
-                          className="flex items-start space-x-4 rounded-lg border p-4"
+                          className="flex items-start space-x-4 rounded-lg border p-4 shadow-sm hover:shadow-md transition-shadow"
                         >
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
                             {getTypeIcon(interaction.type)}
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-2">
-                              <h3 className="font-medium">{interaction.type}</h3>
+                              <h3 className="font-medium text-gray-900">{interaction.type}</h3>
                               <span className="text-sm text-muted-foreground">
                                 {formatDateTime(interaction.date_interaction)}
                               </span>
@@ -706,7 +718,7 @@ export default function PageEntreprise() {
                             <p className="text-sm text-muted-foreground mb-1">
                               avec {contact ? `${contact.prenom} ${contact.nom}` : "Contact inconnu"}
                             </p>
-                            <p className="text-sm">{interaction.contenu}</p>
+                            <p className="text-sm text-gray-700">{interaction.contenu}</p>
                             {interaction.fichier_joint && (
                               <div className="mt-2">
                                 <Badge variant="outline" className="text-xs">
@@ -715,7 +727,7 @@ export default function PageEntreprise() {
                               </div>
                             )}
                           </div>
-                          <Button variant="ghost" size="sm" className="bg-red-800 text-white">
+                          <Button variant="ghost" size="sm" className="text-red-600 hover:bg-red-50">
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -728,37 +740,37 @@ export default function PageEntreprise() {
           </TabsContent>
         </Tabs>
 
-        {/* Toutes les modales restent identiques... */}
+        {/* Modals (kept as is for now, but ensure they use the unified Entreprise type for data) */}
         {/* Modal Modifier Entreprise */}
         <Dialog open={isModifierOpen} onOpenChange={setIsModifierOpen}>
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
               <DialogTitle>Modifier l'entreprise</DialogTitle>
-              <DialogDescription>Modifiez les informations de l'entreprise {entreprise.nom}</DialogDescription>
+              <DialogDescription>Modifiez les informations de l'entreprise {entreprise.raisonSocial}</DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="nom">Nom de l'entreprise</Label>
-                  <Input id="nom" defaultValue={entreprise.nom} />
+                  <Label htmlFor="raisonSocial">Raison sociale</Label>
+                  <Input id="raisonSocial" defaultValue={entreprise.raisonSocial} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="secteur">Secteur d'activité</Label>
-                  <Input id="secteur" defaultValue={entreprise.secteur} />
+                  <Input id="secteur" defaultValue={entreprise.secteur || ''} />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="adresse">Adresse</Label>
-                <Input id="adresse" defaultValue={entreprise.adresse} />
+                <Input id="adresse" defaultValue={formatAdresse(currentAdresse)} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="telephone">Téléphone</Label>
-                  <Input id="telephone" defaultValue={entreprise.telephone} />
+                  <Input id="telephone" defaultValue={entreprise.telephoneStandard || ''} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" defaultValue={entreprise.email} />
+                  <Input id="email" type="email" defaultValue={entreprise.emailStandart || ''} />
                 </div>
               </div>
             </div>
@@ -776,46 +788,48 @@ export default function PageEntreprise() {
           <DialogContent className="sm:max-w-[700px]">
             <DialogHeader>
               <DialogTitle>Détails de l'entreprise</DialogTitle>
-              <DialogDescription>Informations complètes sur {entreprise.nom}</DialogDescription>
+              <DialogDescription>Informations complètes sur {entreprise.raisonSocial}</DialogDescription>
             </DialogHeader>
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <h3 className="font-semibold">Informations générales</h3>
+                  <h3 className="font-semibold text-gray-900">Informations générales</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Nom :</span>
-                      <span>{entreprise.nom}</span>
+                      <span className="text-gray-700">{entreprise.raisonSocial}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Secteur :</span>
-                      <span>{entreprise.secteur}</span>
-                    </div>
+                    {entreprise.secteur && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Secteur :</span>
+                        <span className="text-gray-700">{entreprise.secteur}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">ID :</span>
-                      <span>{entreprise.id_entreprise}</span>
+                      <span className="text-gray-700">{entreprise.id}</span>
                     </div>
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <h3 className="font-semibold">Contact</h3>
+                  <h3 className="font-semibold text-gray-900">Contact</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Adresse :</span>
-                      <span className="text-right">{entreprise.adresse}</span>
+                      <span className="text-right text-gray-700">{formatAdresse(currentAdresse)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Téléphone :</span>
-                      <span>{entreprise.telephone}</span>
+                      <span className="text-gray-700">{entreprise.telephoneStandard || '-'}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Email :</span>
-                      <span>{entreprise.email}</span>
+                      <span className="text-gray-700">{entreprise.emailStandart || '-'}</span>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-blue-600">{contacts.length}</p>
                   <p className="text-sm text-muted-foreground">Contacts</p>
@@ -841,7 +855,7 @@ export default function PageEntreprise() {
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
               <DialogTitle>Envoyer un email</DialogTitle>
-              <DialogDescription>Composer un email pour {entreprise.nom}</DialogDescription>
+              <DialogDescription>Composer un email pour {entreprise.raisonSocial}</DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -852,7 +866,7 @@ export default function PageEntreprise() {
                   </SelectTrigger>
                   <SelectContent>
                     {contacts.map((contact) => (
-                      <SelectItem key={contact.id_contact} value={contact.email}>
+                      <SelectItem key={contact.id} value={contact.email}>
                         {contact.prenom} {contact.nom} - {contact.email}
                       </SelectItem>
                     ))}
@@ -880,7 +894,208 @@ export default function PageEntreprise() {
           </DialogContent>
         </Dialog>
 
-        {/* Les autres modales restent identiques... */}
+        {/* Modal Programmer Appel (kept as is for now) */}
+        <Dialog open={isAppelOpen} onOpenChange={setIsAppelOpen}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Programmer un appel</DialogTitle>
+              <DialogDescription>Planifiez un appel avec un contact de {entreprise.raisonSocial}</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="contact-appel">Contact</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner un contact" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {contacts.map((contact) => (
+                      <SelectItem key={contact.id} value={contact.id.toString()}>
+                        {contact.prenom} {contact.nom}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="date-appel">Date et heure</Label>
+                <Input id="date-appel" type="datetime-local" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="notes-appel">Notes</Label>
+                <Textarea id="notes-appel" placeholder="Notes de l'appel..." />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsAppelOpen(false)}>
+                Annuler
+              </Button>
+              <Button onClick={() => setIsAppelOpen(false)}>
+                <Phone className="mr-2 h-4 w-4" />
+                Programmer
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Modal Nouvelle Opportunité (kept as is for now) */}
+        <Dialog open={isNouvelleOppOpen} onOpenChange={setIsNouvelleOppOpen}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Nouvelle opportunité</DialogTitle>
+              <DialogDescription>Créez une nouvelle opportunité pour {entreprise.raisonSocial}</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="titre-opp">Titre</Label>
+                <Input id="titre-opp" placeholder="Titre de l'opportunité" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="description-opp">Description</Label>
+                <Textarea id="description-opp" placeholder="Description de l'opportunité..." />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="probabilite-opp">Probabilité de succès (%)</Label>
+                  <Input id="probabilite-opp" type="number" min="0" max="100" defaultValue="50" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="etape-opp">Étape du pipeline</Label>
+                  <Select defaultValue="qualification">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner une étape" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="qualification">Qualification</SelectItem>
+                      <SelectItem value="proposition">Proposition</SelectItem>
+                      <SelectItem value="négociation">Négociation</SelectItem>
+                      <SelectItem value="fermé">Fermé</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="contact-opp">Contact principal</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner un contact" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {contacts.map((contact) => (
+                      <SelectItem key={contact.id} value={contact.id.toString()}>
+                        {contact.prenom} {contact.nom}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsNouvelleOppOpen(false)}>
+                Annuler
+              </Button>
+              <Button onClick={() => setIsNouvelleOppOpen(false)}>Créer</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Modal Nouveau Contact (kept as is for now) */}
+        <Dialog open={isNouveauContactOpen} onOpenChange={setIsNouveauContactOpen}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Nouveau contact</DialogTitle>
+              <DialogDescription>Ajoutez un nouveau contact pour {entreprise.raisonSocial}</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="prenom-contact">Prénom</Label>
+                  <Input id="prenom-contact" placeholder="Prénom" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="nom-contact">Nom</Label>
+                  <Input id="nom-contact" placeholder="Nom" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email-contact">Email</Label>
+                <Input id="email-contact" type="email" placeholder="Email" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="telephone-contact">Téléphone</Label>
+                <Input id="telephone-contact" placeholder="Téléphone" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="fonction-contact">Fonction</Label>
+                <Input id="fonction-contact" placeholder="Fonction" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsNouveauContactOpen(false)}>
+                Annuler
+              </Button>
+              <Button onClick={() => setIsNouveauContactOpen(false)}>Ajouter</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Modal Nouvelle Interaction (kept as is for now) */}
+        <Dialog open={isNouvelleInteractionOpen} onOpenChange={setIsNouvelleInteractionOpen}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Nouvelle interaction</DialogTitle>
+              <DialogDescription>Enregistrez une nouvelle interaction pour {entreprise.raisonSocial}</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="type-interaction">Type d'interaction</Label>
+                <Select defaultValue="appel">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner un type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="appel">Appel téléphonique</SelectItem>
+                    <SelectItem value="email">Email</SelectItem>
+                    <SelectItem value="réunion">Réunion</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="contact-interaction">Contact</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner un contact" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {contacts.map((contact) => (
+                      <SelectItem key={contact.id} value={contact.id.toString()}>
+                        {contact.prenom} {contact.nom}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="date-interaction">Date et heure</Label>
+                <Input id="date-interaction" type="datetime-local" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="contenu-interaction">Contenu</Label>
+                <Textarea id="contenu-interaction" placeholder="Détails de l'interaction..." className="min-h-[100px]" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="fichier-joint">Fichier joint</Label>
+                <Input id="fichier-joint" type="file" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsNouvelleInteractionOpen(false)}>
+                Annuler
+              </Button>
+              <Button onClick={() => setIsNouvelleInteractionOpen(false)}>Enregistrer</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )

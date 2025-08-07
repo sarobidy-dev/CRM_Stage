@@ -1,17 +1,18 @@
-from sqlalchemy import Column, Integer, String, Text, Date, Boolean, DateTime, ForeignKey
+# models/tache.py
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from database import Base  # ton declarative base
+from datetime import datetime
+from database import Base
+ # ou votre Base declarative
 
 class Tache(Base):
-    __tablename__ = "tache"
+    __tablename__ = "taches"
 
-    id_tache = Column(Integer, primary_key=True, index=True)
-    titre = Column(String(100), nullable=False)
+    id = Column(Integer, primary_key=True, index=True)
+    titre = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
-    date_echeance = Column(Date, nullable=True)
-    est_recurrente = Column(Boolean, default=False)
-    rappel = Column(DateTime, nullable=True)
-    statut = Column(String(30), nullable=True)
-    id_opportunite = Column(Integer, ForeignKey("opportunites.id_opportunite"), nullable=False)
-    opportunites = relationship("Opportunite", back_populates="tache")
-
+    date_echeance = Column(DateTime, nullable=True)
+    statut = Column(String(50), default="en attente")
+    contact_id = Column(Integer, ForeignKey("contact.id", ondelete="CASCADE"), nullable=False) 
+    contact = relationship("Contact", back_populates="taches")
+    date_creation = Column(DateTime, default=datetime.utcnow)

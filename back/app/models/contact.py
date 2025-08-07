@@ -19,6 +19,5 @@ class Contact(Base):
     ha_contacts = relationship("HAContact", back_populates="contact")
 
     emails = relationship("EmailEnvoye", back_populates="contact", cascade="all, delete-orphan")
-
-    
+    taches = relationship("Tache", back_populates="contact", cascade="all, delete") 
     sms_envoyes = relationship("SMS", back_populates="contact", cascade="all, delete-orphan")

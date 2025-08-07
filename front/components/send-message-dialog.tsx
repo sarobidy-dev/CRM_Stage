@@ -56,7 +56,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
   const [sendResult, setSendResult] = useState<SendResult | null>(null)
   const [error, setError] = useState<string>("")
 
-  // Votre numéro pour les SMS
   const myPhoneNumber = "0385805381"
 
   const handleSend = async () => {
@@ -70,7 +69,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
       return
     }
 
-    // Validation spécifique pour SMS
     if (messageType === "sms") {
       const invalidPhones = selectedContacts.filter((contact) => !validateMalagasyPhone(contact.telephone))
       if (invalidPhones.length > 0) {
@@ -92,7 +90,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
       let result: SendResult
 
       if (messageType === "email") {
-        // Code email existant - INCHANGÉ
         result = await sendEmailDirect({
           contacts: selectedContacts,
           subject: subject,
@@ -106,7 +103,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
           throw new Error(result.message || "Erreur lors de l'envoi")
         }
 
-        // Ajouter les données dans la table "envoyee" pour les emails
         const now = new Date().toISOString()
         const payloads = selectedContacts.map((contact) => ({
           id_contact: contact.id,
@@ -131,13 +127,20 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
           }),
         )
       } else {
-        // Code SMS utilisant l'API FastAPI
         console.log("🚀 Envoi SMS via API FastAPI...")
 
-        result = await sendSMSDirect({
-          contacts: selectedContacts,
+        const smsPayload = {
+          contacts: selectedContacts.map((contact) => ({
+            ...contact,
+            expediteur: myPhoneNumber,
+          })),
           message: message,
-        })
+          expediteur: myPhoneNumber,
+        }
+
+        console.log("📤 Données envoyées au service SMS:", smsPayload)
+
+        result = await sendSMSDirect(smsPayload)
 
         console.log("✅ Résultat de l'envoi SMS:", result)
       }
@@ -145,10 +148,7 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
       setSendResult(result)
 
       if (result.success) {
-        // Déclencher l'événement pour actualiser l'historique
         window.dispatchEvent(new CustomEvent("newEmailSent"))
-
-        // Déclencher aussi un événement spécifique pour les SMS
         if (messageType === "sms") {
           window.dispatchEvent(new CustomEvent("newSMSSent"))
         }
@@ -161,7 +161,7 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
         }, 3000)
       }
     } catch (error) {
-      console.error(`❌ Erreur lors de l'envoi ${messageType}:`, error)
+      console.error("Erreur lors de l'envoi:", error)
       setError(error instanceof Error ? error.message : `Erreur lors de l'envoi du ${messageType}`)
     } finally {
       setSending(false)
@@ -178,22 +178,16 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
     }
   }
 
-  const getInitials = (prenom: string, nom: string) => {
-    return `${prenom.charAt(0)}${nom.charAt(0)}`.toUpperCase()
-  }
+  const getInitials = (prenom: string, nom: string) => `${prenom.charAt(0)}${nom.charAt(0)}`.toUpperCase()
 
   const getMessagePlaceholder = () => {
-    if (messageType === "email") {
-      return "Rédigez votre email ici...\n\nBonjour [Prénom],\n\nJ'espère que vous allez bien...\n\nCordialement,\n[Votre nom]\n\nVariables disponibles:\n[Prénom] [Nom] [Fonction]"
-    } else {
-      return `Rédigez votre SMS ici... (160 caractères max)\n\nExemple:\nBonjour [Prénom], j'espère que vous allez bien. Cordialement.\n\nEnvoyé depuis: ${myPhoneNumber}`
-    }
+    return messageType === "email"
+      ? "Rédigez votre email ici...\n\nBonjour [Prénom],\n\nJ'espère que vous allez bien...\n\nCordialement,\n[Votre nom]\n\nVariables disponibles:\n[Prénom] [Nom] [Fonction]"
+      : `Rédigez votre SMS ici... (160 caractères max)\n\nExemple:\nBonjour [Prénom], j'espère que vous allez bien. Cordialement.\n\nEnvoyé depuis: ${myPhoneNumber}`
   }
 
-  // Compter les contacts avec des numéros valides pour SMS
   const validSMSContacts = selectedContacts.filter((contact) => validateMalagasyPhone(contact.telephone))
   const invalidSMSContacts = selectedContacts.filter((contact) => !validateMalagasyPhone(contact.telephone))
-
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
@@ -290,165 +284,88 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
           {/* Informations SMS */}
           {messageType === "sms" && (
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-              <div className="flex items-center gap-2 mb-2">
-                <Phone className="h-4 w-4 text-blue-600" />
-                <span className="text-sm font-medium text-blue-800">Informations SMS (API FastAPI)</span>
-              </div>
-              <div className="text-sm text-blue-700 space-y-1">
-                <p>
-                  <strong>Expéditeur:</strong> {myPhoneNumber}
+              <p className="text-sm text-blue-700">
+                Nombre total de contacts sélectionnés: {selectedContacts.length}
+              </p>
+              <p className="text-sm text-blue-700">
+                Contacts avec numéros valides: {validSMSContacts.length}
+              </p>
+              {invalidSMSContacts.length > 0 && (
+                <p className="text-sm text-red-600">
+                  Contacts avec numéros invalides: {invalidSMSContacts.map((c) => c.telephone).join(", ")}
                 </p>
-                <p>
-                  <strong>API:</strong> http://127.0.0.1:8000/sms/send-bulk
-                </p>
-                <p>
-                  <strong>Contacts valides:</strong> {validSMSContacts.length}/{selectedContacts.length}
-                </p>
-                {invalidSMSContacts.length > 0 && (
-                  <p className="text-red-600">
-                    <strong>Numéros invalides:</strong> {invalidSMSContacts.map((c) => c.telephone).join(", ")}
-                  </p>
-                )}
-              </div>
+              )}
             </div>
           )}
 
-          {/* Liste des destinataires */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              <Label>Destinataires ({messageType === "sms" ? validSMSContacts.length : selectedContacts.length})</Label>
-            </div>
-            <div className="max-h-32 overflow-y-auto border rounded-lg p-3 space-y-2">
-              {selectedContacts.map((contact) => {
-                const isValidForSMS = messageType === "email" || validateMalagasyPhone(contact.telephone)
-                return (
-                  <div key={contact.id} className={`flex items-center gap-3 ${!isValidForSMS ? "opacity-50" : ""}`}>
-                    <Avatar className="h-6 w-6">
-                      <AvatarFallback className="text-xs bg-blue-100 text-blue-600">
-                        {getInitials(contact.prenom, contact.nom)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm font-medium">
-                      {contact.prenom} {contact.nom}
-                    </span>
-                    <Badge variant="secondary" className="text-xs">
-                      {messageType === "email" ? contact.email : contact.telephone}
-                    </Badge>
-                    {messageType === "sms" && !isValidForSMS && (
-                      <Badge variant="destructive" className="text-xs">
-                        Numéro invalide
-                      </Badge>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Champ sujet (email seulement) */}
+          {/* Sujet (email uniquement) */}
           {messageType === "email" && (
-            <div className="space-y-2">
-              <Label htmlFor="subject">Sujet *</Label>
+            <div className="space-y-1">
+              <Label htmlFor="subject">Objet</Label>
               <Input
                 id="subject"
+                type="text"
+                placeholder="Objet de l'email"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                placeholder="Objet de votre email"
                 disabled={sending}
-                required
               />
             </div>
           )}
 
-          {/* Champ message */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="message">Message *</Label>
-              {messageType === "sms" && (
-                <span className={`text-xs ${message.length > 160 ? "text-red-500" : "text-gray-500"}`}>
-                  {message.length}/160 caractères
-                </span>
-              )}
-            </div>
-            <Textarea
-              id="message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder={getMessagePlaceholder()}
-              rows={messageType === "email" ? 8 : 4}
-              maxLength={messageType === "sms" ? 160 : undefined}
-              disabled={sending}
-              required
-            />
-            <p className="text-xs text-gray-500">
-              {messageType === "email"
-                ? "Vous pouvez utiliser [Prénom], [Nom] et [Fonction] pour personnaliser votre message"
-                : "Les SMS sont limités à 160 caractères. Variables disponibles: [Prénom], [Nom]"}
-            </p>
+          {/* Message */}
+          <div className="space-y-1">
+            <Label htmlFor="message">Message</Label>
+            {messageType === "email" ? (
+              <Textarea
+                id="message"
+                placeholder={getMessagePlaceholder()}
+                rows={8}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                disabled={sending}
+                className="resize-y"
+              />
+            ) : (
+              <Textarea
+                id="message"
+                placeholder={getMessagePlaceholder()}
+                rows={4}
+                maxLength={160}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                disabled={sending}
+                className="resize-y"
+              />
+            )}
           </div>
 
-          {/* Aperçu */}
-          {((messageType === "email" && subject && message) || (messageType === "sms" && message)) &&
-            selectedContacts.length > 0 && (
-              <div className="border rounded-lg p-4 bg-gray-50">
-                <h4 className="text-sm font-medium mb-2">Aperçu</h4>
-                <div className="text-sm space-y-1">
-                  {messageType === "email" && (
-                    <p>
-                      <strong>Sujet:</strong>{" "}
-                      {subject
-                        .replace(/\[Prénom\]/g, selectedContacts[0]?.prenom || "[Prénom]")
-                        .replace(/\[Nom\]/g, selectedContacts[0]?.nom || "[Nom]")}
-                    </p>
-                  )}
-                  <p>
-                    <strong>Message:</strong>
-                  </p>
-                  <div className="bg-white p-2 rounded border text-xs whitespace-pre-wrap">
-                    {message
-                      .replace(/\[Prénom\]/g, selectedContacts[0]?.prenom || "[Prénom]")
-                      .replace(/\[Nom\]/g, selectedContacts[0]?.nom || "[Nom]")
-                      .replace(/\[Fonction\]/g, selectedContacts[0]?.fonction || "[Fonction]")}
-                  </div>
-                  {messageType === "sms" && (
-                    <div className="text-xs text-gray-500 mt-2 space-y-1">
-                      <p>Envoyé depuis: {myPhoneNumber}</p>
-                      <p>Via API: FastAPI SMS Service</p>
-                    </div>
-                  )}
+          {/* Liste des contacts sélectionnés */}
+          <div className="border rounded-md p-3 max-h-40 overflow-y-auto">
+            {selectedContacts.map((contact) => (
+              <div key={contact.id} className="flex items-center gap-2 py-1 border-b last:border-b-0">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback>{getInitials(contact.prenom, contact.nom)}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col flex-grow">
+                  <span className="font-medium">{contact.prenom} {contact.nom}</span>
+                  <span className="text-sm text-muted-foreground">{contact.fonction}</span>
                 </div>
+                {messageType === "email" ? (
+                  <Badge variant="secondary">{contact.email}</Badge>
+                ) : (
+                  <Badge variant="secondary">{contact.telephone}</Badge>
+                )}
               </div>
-            )}
+            ))}
+          </div>
         </div>
-
-        <DialogFooter className="gap-2">
-          <Button type="button" variant="outline" onClick={handleClose} disabled={sending}>
+        <DialogFooter>
+          <Button variant="outline" onClick={handleClose} disabled={sending}>
             Annuler
           </Button>
-          <Button
-            type="button"
-            onClick={handleSend}
-            disabled={
-              !message.trim() ||
-              (messageType === "email" && !subject.trim()) ||
-              (messageType === "sms" && validSMSContacts.length === 0) ||
-              sending ||
-              selectedContacts.length === 0
-            }
-          >
-            {sending ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                {messageType === "sms" ? "Envoi SMS via API..." : "Envoi en cours..."}
-              </>
-            ) : (
-              <>
-                <Send className="h-4 w-4 mr-2" />
-                Envoyer {messageType === "email" ? "l'email" : "le SMS"}
-                {messageType === "sms" && ` (${validSMSContacts.length})`}
-              </>
-            )}
+          <Button onClick={handleSend} disabled={sending}>
+            {sending ? "Envoi..." : <><Send className="mr-2 h-4 w-4" />Envoyer</>}
           </Button>
         </DialogFooter>
       </DialogContent>

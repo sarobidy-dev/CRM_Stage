@@ -1,21 +1,6 @@
 "use client"
-
 import { useState, useEffect } from "react"
-import {
-  Search,
-  Filter,
-  Plus,
-  MoreHorizontal,
-  Mail,
-  Edit,
-  Trash2,
-  MessageSquare,
-  X,
-  History,
-  Phone,
-  Copy,
-  User,
-} from "lucide-react"
+import { Search, Filter, Plus, MoreHorizontal, Mail, Edit, Trash2, MessageSquare, X, History, Phone, Copy, User, ListTodo } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -24,21 +9,43 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog" // Import Dialog components
+import { Label } from "@/components/ui/label" // Import Label
+import { Textarea } from "@/components/ui/textarea" // Import Textarea
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select" // Import Select components
 import { ContactForm } from "@/components/contact-form"
 import { DeleteConfirmDialog } from "@/components/delete-confirm-dialog"
 import { SendMessageDialog } from "@/components/send-message-dialog"
 import { FilterDialog } from "@/components/filter-dialog"
-import { ContactHistoryDialog } from "@/components/contact-historique-dialog"
+
 import { getAllContacts } from "@/service/Contact.service"
 import { getAllEntreprises } from "@/service/Entreprise.service"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle } from 'lucide-react'
 import Navbar from "@/components/navbarLink/nav"
 import AddHistoriqueDialog from "@/components/DialogueHistorique"
 import { getAllCampagnes } from "@/service/campagne.service"
 import { toast } from "@/hooks/use-toast"
 import type { Campagne } from "@/types/campagne.type"
+import { createTache } from "@/service/tache.service" // Import createTache
+import type { TacheCreate } from "@/types/Tache.type" // Import TacheCreate
+import { format } from "date-fns" // Import format for date-fns
+import { TaskHistoryDialog } from "@/components/contact-historique-dialog"
+
 
 interface Contact {
   id: number
@@ -82,6 +89,10 @@ export default function ContactsPage() {
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null)
   const [contactToCall, setContactToCall] = useState<Contact | null>(null)
   const [campagnes, setCampagnes] = useState<Campagne[]>([])
+
+  // New state for Add Task Dialog
+  const [showAddTaskDialog, setShowAddTaskDialog] = useState(false)
+  const [taskFormContactIds, setTaskFormContactIds] = useState<number[]>([])
 
   useEffect(() => {
     const fetchCampagnes = async () => {
@@ -175,7 +186,6 @@ export default function ContactsPage() {
     if (activeFilters.fonction.length > 0) {
       filtered = filtered.filter((contact) => activeFilters.fonction.includes(contact.fonction))
     }
-
     setFilteredContacts(filtered)
   }, [searchTerm, contacts, activeFilters])
 
@@ -251,7 +261,6 @@ export default function ContactsPage() {
   const getInitials = (prenom: string, nom: string) => {
     const prenomSafe = prenom && typeof prenom === "string" ? prenom.trim() : ""
     const nomSafe = nom && typeof nom === "string" ? nom.trim() : ""
-
     if (!prenomSafe || !nomSafe) {
       return prenomSafe
         ? prenomSafe.charAt(0).toUpperCase() + "?"
@@ -259,7 +268,6 @@ export default function ContactsPage() {
           ? "?" + nomSafe.charAt(0).toUpperCase()
           : "??"
     }
-
     return `${prenomSafe.charAt(0)}${nomSafe.charAt(0)}`.toUpperCase()
   }
 
@@ -276,6 +284,52 @@ export default function ContactsPage() {
   const getEntrepriseName = (id: number) => {
     const ent = entreprises.find((e) => e.id === id)
     return ent ? (ent.nom ?? ent.raisonSocial ?? "") : ""
+  }
+
+  // New function to handle adding tasks from selected contacts
+  const handleAddTaskClick = () => {
+    setTaskFormContactIds(selectedContacts)
+    setShowAddTaskDialog(true)
+  }
+
+  const handleCreateTaskFromContacts = async (event: React.FormEvent) => {
+    event.preventDefault()
+    setLoading(true)
+    setError(null)
+
+    const formData = new FormData(event.currentTarget as HTMLFormElement)
+    const titre = formData.get("titre") as string
+    const description = formData.get("description") as string
+    const date_echeance = formData.get("date_echeance") as string
+    const statut = formData.get("statut") as string
+
+    if (!titre) {
+      toast({ title: "Erreur", description: "Le titre de la tâche est requis.", variant: "destructive" })
+      setLoading(false)
+      return
+    }
+
+    try {
+      for (const contactId of taskFormContactIds) {
+        const tacheData: TacheCreate = {
+          titre,
+          description: description || null,
+          date_echeance: date_echeance || null,
+          statut,
+          contact_id: contactId,
+        }
+        await createTache(tacheData)
+      }
+      toast({ title: "Succès", description: `Tâche(s) ajoutée(s) pour ${taskFormContactIds.length} contact(s).`, variant: "success" })
+      setShowAddTaskDialog(false)
+      setSelectedContacts([]) // Clear selection after adding tasks
+    } catch (err: any) {
+      setError(`Échec de l'ajout de la tâche: ${err.message}`)
+      toast({ title: "Erreur", description: `Échec de l'ajout de la tâche: ${err.message}`, variant: "destructive" })
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (loading) {
@@ -299,7 +353,6 @@ export default function ContactsPage() {
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
-
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <h1 className="text-2xl font-bold">Contacts</h1>
@@ -313,7 +366,6 @@ export default function ContactsPage() {
               />
             </div>
           </div>
-
           <div className="flex items-center space-x-2">
             <Button variant="outline" size="sm" onClick={() => setShowFilterDialog(true)} className="relative">
               <Filter className="h-4 w-4 mr-2" />
@@ -330,7 +382,6 @@ export default function ContactsPage() {
             </Button>
           </div>
         </div>
-
         {getActiveFiltersCount() > 0 && (
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm text-gray-600">Filtres actifs:</span>
@@ -353,12 +404,10 @@ export default function ContactsPage() {
             </Button>
           </div>
         )}
-
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList>
             <TabsTrigger value="all">All Contacts ({filteredContacts.length})</TabsTrigger>
           </TabsList>
-
           <TabsContent value="all" className="space-y-4">
             {selectedContacts.length > 0 && (
               <div className="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
@@ -371,6 +420,11 @@ export default function ContactsPage() {
                   <Button variant="outline" size="sm" onClick={handleBulkDelete}>
                     <Trash2 className="h-4 w-4 mr-2" />
                     Supprimer
+                  </Button>
+                  {/* New "Add to Task" button */}
+                  <Button variant="outline" size="sm" onClick={handleAddTaskClick}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Ajouter à la tâche
                   </Button>
                   {/* Afficher le bouton Ajouter historique seulement si exactement 1 contact est sélectionné */}
                   {selectedContacts.length === 1 && (
@@ -385,7 +439,6 @@ export default function ContactsPage() {
                 </div>
               </div>
             )}
-
             <div className="border rounded-lg">
               <Table>
                 <TableHeader>
@@ -445,15 +498,17 @@ export default function ContactsPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <ContactHistoryDialog
+                           
+                          
+                            <TaskHistoryDialog
                               contactId={contact.id}
                               contactName={`${contact.prenom} ${contact.nom}`}
                             >
                               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                <History className="h-4 w-4 mr-2" />
-                                Voir l'historique
+                                <ListTodo className="h-4 w-4 mr-2" />
+                                Voir l'historique des tâches
                               </DropdownMenuItem>
-                            </ContactHistoryDialog>
+                            </TaskHistoryDialog>
                             <DropdownMenuItem onClick={() => handleCallContact(contact)}>
                               <Phone className="h-4 w-4 mr-2" />
                               Appeler
@@ -478,7 +533,6 @@ export default function ContactsPage() {
                 </TableBody>
               </Table>
             </div>
-
             {filteredContacts.length === 0 && (
               <div className="text-center py-12">
                 <p className="text-gray-500">Aucun contact trouvé</p>
@@ -518,14 +572,12 @@ export default function ContactsPage() {
                     <p className="text-gray-600">{getEntrepriseName(contactToCall.entreprise_id)}</p>
                   </div>
                 </div>
-
                 {/* Numéro de téléphone */}
                 <div className="text-center space-y-4">
                   <div className="p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border-2 border-green-200">
                     <p className="text-sm text-gray-600 mb-2">Numéro de téléphone</p>
                     <p className="text-3xl font-bold text-green-700 tracking-wider">{contactToCall.telephone}</p>
                   </div>
-
                   {/* Boutons d'action */}
                   <div className="flex gap-3 justify-center">
                     <Button
@@ -545,7 +597,6 @@ export default function ContactsPage() {
                     </Button>
                   </div>
                 </div>
-
                 {/* Informations supplémentaires */}
                 <div className="text-center text-sm text-gray-500 border-t pt-4">
                   <p>💡 Vous pouvez copier le numéro et l'utiliser dans votre application d'appel</p>
@@ -555,13 +606,91 @@ export default function ContactsPage() {
           </DialogContent>
         </Dialog>
 
+        {/* New Dialog for Adding Task */}
+        <Dialog open={showAddTaskDialog} onOpenChange={setShowAddTaskDialog}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Ajouter une Nouvelle Tâche</DialogTitle>
+              <DialogDescription>
+                Remplissez les informations pour créer une nouvelle tâche pour le(s) contact(s) sélectionné(s).
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleCreateTaskFromContacts} className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="titre" className="text-right">
+                  Titre
+                </Label>
+                <Input id="titre" name="titre" className="col-span-3" required />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="description" className="text-right">
+                  Description
+                </Label>
+                <Textarea id="description" name="description" className="col-span-3" />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="date_echeance" className="text-right">
+                  Date d'échéance
+                </Label>
+                <Input
+                  id="date_echeance"
+                  name="date_echeance"
+                  type="datetime-local"
+                  defaultValue={format(new Date(), "yyyy-MM-dd'T'HH:mm")} // Default to current date/time
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="statut" className="text-right">
+                  Statut
+                </Label>
+                <Select name="statut" defaultValue="en attente">
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Sélectionner un statut" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="en attente">En attente</SelectItem>
+                    <SelectItem value="en cours">En cours</SelectItem>
+                    <SelectItem value="terminée">Terminée</SelectItem>
+                    <SelectItem value="annulée">Annulée</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {/* Display selected contacts, but do not allow changing them */}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="selected_contacts_display" className="text-right">
+                  Contact(s)
+                </Label>
+                <div className="col-span-3 flex flex-wrap gap-2">
+                  {taskFormContactIds.length > 0 ? (
+                    taskFormContactIds.map((id) => {
+                      const contact = contacts.find((c) => c.id === id)
+                      return (
+                        <Badge key={`task-contact-${id}`} variant="secondary">
+                          {contact ? `${contact.prenom} ${contact.nom}` : `ID: ${id}`}
+                        </Badge>
+                      )
+                    })
+                  ) : (
+                    <span className="text-muted-foreground">Aucun contact sélectionné</span>
+                  )}
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Création..." : "Créer la Tâche(s)"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+
         <ContactForm
           open={showContactForm}
           onOpenChange={setShowContactForm}
           contact={editingContact}
           onSave={handleSaveContact}
         />
-
         <DeleteConfirmDialog
           open={showDeleteDialog}
           onOpenChange={setShowDeleteDialog}
@@ -572,7 +701,6 @@ export default function ContactsPage() {
           contactId={contactToDelete?.id}
           contactIds={selectedContacts}
         />
-
         <SendMessageDialog
           open={showMessageDialog}
           onOpenChange={setShowMessageDialog}
@@ -580,7 +708,6 @@ export default function ContactsPage() {
             selectedContacts.length > 0 ? filteredContacts.filter((c) => selectedContacts.includes(c.id)) : []
           }
         />
-
         <FilterDialog
           open={showFilterDialog}
           onOpenChange={setShowFilterDialog}

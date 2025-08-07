@@ -1012,22 +1012,6 @@ const AccueilPage = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-0 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-orange-700">Vente Moyenne</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-3xl font-bold text-orange-900">{stats.pourcentageVenteMoyen}%</span>
-                        </div>
-                        <p className="text-xs text-orange-600 mt-1">Pourcentage moyen</p>
-                      </div>
-                      <div className="p-3 bg-orange-200 rounded-full">
-                        <DollarSign className="h-6 w-6 text-orange-700" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
               </div>
 
               {/* Charts Section */}

@@ -9,6 +9,15 @@ export interface Contact {
   fonction: string
   entreprise_id: number
 }
+export interface ContactOut {
+  id: number;
+  nom: string;
+  prenom: string;
+  telephone?: string | null;
+  email?: string | null;
+  // Ajoutez d'autres champs si nécessaire
+}
+
 
 // Type pour la réponse API
 export interface ContactResponse {
