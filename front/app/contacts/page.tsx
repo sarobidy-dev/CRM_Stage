@@ -31,7 +31,6 @@ import { ContactForm } from "@/components/contact-form"
 import { DeleteConfirmDialog } from "@/components/delete-confirm-dialog"
 import { SendMessageDialog } from "@/components/send-message-dialog"
 import { FilterDialog } from "@/components/filter-dialog"
-
 import { getAllContacts } from "@/service/Contact.service"
 import { getAllEntreprises } from "@/service/Entreprise.service"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -186,6 +185,7 @@ export default function ContactsPage() {
     if (activeFilters.fonction.length > 0) {
       filtered = filtered.filter((contact) => activeFilters.fonction.includes(contact.fonction))
     }
+
     setFilteredContacts(filtered)
   }, [searchTerm, contacts, activeFilters])
 
@@ -261,6 +261,7 @@ export default function ContactsPage() {
   const getInitials = (prenom: string, nom: string) => {
     const prenomSafe = prenom && typeof prenom === "string" ? prenom.trim() : ""
     const nomSafe = nom && typeof nom === "string" ? nom.trim() : ""
+
     if (!prenomSafe || !nomSafe) {
       return prenomSafe
         ? prenomSafe.charAt(0).toUpperCase() + "?"
@@ -268,6 +269,7 @@ export default function ContactsPage() {
           ? "?" + nomSafe.charAt(0).toUpperCase()
           : "??"
     }
+
     return `${prenomSafe.charAt(0)}${nomSafe.charAt(0)}`.toUpperCase()
   }
 
@@ -366,6 +368,7 @@ export default function ContactsPage() {
               />
             </div>
           </div>
+
           <div className="flex items-center space-x-2">
             <Button variant="outline" size="sm" onClick={() => setShowFilterDialog(true)} className="relative">
               <Filter className="h-4 w-4 mr-2" />
@@ -408,6 +411,7 @@ export default function ContactsPage() {
           <TabsList>
             <TabsTrigger value="all">All Contacts ({filteredContacts.length})</TabsTrigger>
           </TabsList>
+
           <TabsContent value="all" className="space-y-4">
             {selectedContacts.length > 0 && (
               <div className="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
@@ -691,6 +695,7 @@ export default function ContactsPage() {
           contact={editingContact}
           onSave={handleSaveContact}
         />
+
         <DeleteConfirmDialog
           open={showDeleteDialog}
           onOpenChange={setShowDeleteDialog}
@@ -701,6 +706,7 @@ export default function ContactsPage() {
           contactId={contactToDelete?.id}
           contactIds={selectedContacts}
         />
+
         <SendMessageDialog
           open={showMessageDialog}
           onOpenChange={setShowMessageDialog}
@@ -708,6 +714,7 @@ export default function ContactsPage() {
             selectedContacts.length > 0 ? filteredContacts.filter((c) => selectedContacts.includes(c.id)) : []
           }
         />
+
         <FilterDialog
           open={showFilterDialog}
           onOpenChange={setShowFilterDialog}

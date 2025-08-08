@@ -762,7 +762,6 @@ const AccueilPage = () => {
                     })}
                   </div>
 
-
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm">
@@ -775,7 +774,6 @@ const AccueilPage = () => {
                         Paramètres
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
-
                       <DropdownMenuItem onClick={() => setShowProfileModal(true)} className="cursor-pointer">
                         <User className="h-4 w-4 mr-2" />
                         <div className="flex flex-col">

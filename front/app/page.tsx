@@ -10,7 +10,6 @@ import { FaFacebook, FaGlobe, FaEye, FaEyeSlash } from "react-icons/fa"
 type LoginValues = {
   email: string
   password: string
-
 }
 
 // Fonction améliorée pour sauvegarder les cookies avec photo_profil
