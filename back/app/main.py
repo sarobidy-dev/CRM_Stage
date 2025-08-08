@@ -21,7 +21,7 @@ from api import (
     sms,
     email,   
     email_controller, 
-    openia,
+    
     tache
 )
 
@@ -56,11 +56,10 @@ app.include_router(utilisateur.router)
 app.include_router(email_controller.router)
 app.include_router(email.router)
 app.include_router(sms.router)
-app.include_router(openia.router)
 app.include_router(tache.router)
 app.mount("/media", StaticFiles(directory="media"), name="media")
 
-# Création des tables à la startup
+
 @app.on_event("startup")
 async def on_startup():
     async with engine.begin() as conn:
