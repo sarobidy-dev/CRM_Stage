@@ -48,7 +48,7 @@ const links = {
   Historique: [
     { name: "Historiques d'action", href: "/historique", icon: History }, // 🕒 Historique actions - plus spécifique
     { name: "Historiques email envoyés", href: "/historiqueEmail", icon: Send },
-    { name: "Historiques de la tache", href: "/tache", icon: Send }, // 📤 Emails envoyés - plus précis
+    { name: "Taches", href: "/tache", icon: Megaphone }, // 📤 Emails envoyés - plus précis
   ],
 }
 

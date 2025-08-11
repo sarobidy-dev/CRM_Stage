@@ -1,44 +1,47 @@
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
-from services.sms import save_sms_to_db, send_sms_via_mapi
+from sqlalchemy.future import select
+from typing import List
 from database import get_async_session
-from schemas.sms import SendSMSRequest, SMSOut, Settings
-from datetime import datetime
-import random
+from schemas.sms import SendSMSRequest, SMSOut
+from models.sms import SMS
+from fastapi import APIRouter, HTTPException
+from schemas.sms import SendSMSRequest
+from services.sms import send_sms_to_mapi
+
 
 router = APIRouter()
-settings = Settings()  # Assure-toi que MAPI_TOKEN est bien dans le fichier .env
+# --- Auth models ---
+class LoginRequest(BaseModel):
+    Username: str
+    Password: str
 
-@router.post("/send", response_model=SMSOut)
-async def send_sms_endpoint(sms: SendSMSRequest, db: AsyncSession = Depends(get_async_session)):
+class LoginResponse(BaseModel):
+    token: str
+
+# --- Route login ---
+@router.post("/api/auth/login", response_model=LoginResponse)
+async def login(data: LoginRequest):
+    # Ici, tu remplaces par ta vraie logique d’authentification
+    if data.username == "1234567890" and data.password == "Bidy28032005@":
+        # Ici, génère un vrai token JWT ou autre
+        token = "fake-jwt-token"
+        return LoginResponse(token=token)
+    raise HTTPException(status_code=401, detail="Identifiants invalides")
+
+# --- Route envoi SMS ---
+
+
+@router.post("/send")
+def send_sms(data: SendSMSRequest):
     try:
-        # Envoi SMS via l'API MAPI
-        await send_sms_via_mapi(
-            numero=sms.expediteur,
-            message=sms.message,
-            token=settings.MAPI_TOKEN
-        )
-
-        # Sauvegarde en base
-        sms_record = await save_sms_to_db(db=db, sms_data=sms, statut="envoyé")
-
-        return sms_record
-
+        result = send_sms_to_mapi(data.recipient, data.message, data.channel)
+        return {"status": "success", "mapi_response": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    
-    
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-from database import get_async_session
-from schemas.sms import SMSOut
-from models.sms import SMS
-from typing import List
-
-# ... (ta route POST déjà présente ici)
-
+# --- Route récupération SMS ---
 @router.get("/messages", response_model=List[SMSOut])
 async def list_sent_sms(db: AsyncSession = Depends(get_async_session)):
     try:

@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { Send, Mail, MessageSquare, Users, AlertCircle, CheckCircle, Phone } from "lucide-react"
+import { Send, Mail, MessageSquare, AlertCircle, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -18,7 +18,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { sendEmailDirect } from "@/service/email.sercive"
-import { sendSMSDirect, validateMalagasyPhone } from "@/service/sms.service"
+import { validateMalagasyPhone } from "@/service/sms.service"
 
 interface Contact {
   id: number
@@ -48,6 +48,39 @@ interface SendMessageDialogProps {
   selectedContacts: Contact[]
 }
 
+// Nouvelle fonction pour envoyer SMS directement au backend
+const sendSMSToBackend = async (contact: Contact, message: string): Promise<{ success: boolean; error?: string }> => {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        Recipient: contact.telephone, // Utilise l'alias Pydantic
+        Message: message, // Utilise l'alias Pydantic
+        Channel: "sms", // Utilise l'alias Pydantic
+      }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.detail || `HTTP ${response.status}`)
+    }
+
+    const result = await response.json()
+    console.log(`✅ SMS envoyé avec succès à ${contact.prenom} ${contact.nom}:`, result)
+    return { success: true }
+  } catch (error) {
+    console.error(`❌ Erreur envoi SMS à ${contact.prenom} ${contact.nom}:`, error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Erreur inconnue",
+    }
+  }
+}
+
 export function SendMessageDialog({ open, onOpenChange, selectedContacts }: SendMessageDialogProps) {
   const [messageType, setMessageType] = useState<"email" | "sms">("email")
   const [subject, setSubject] = useState("")
@@ -55,7 +88,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
   const [sending, setSending] = useState(false)
   const [sendResult, setSendResult] = useState<SendResult | null>(null)
   const [error, setError] = useState<string>("")
-
   const myPhoneNumber = "0385805381"
 
   const handleSend = async () => {
@@ -63,12 +95,10 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
       setError("Veuillez remplir tous les champs requis")
       return
     }
-
     if (selectedContacts.length === 0) {
       setError("Aucun contact sélectionné")
       return
     }
-
     if (messageType === "sms") {
       const invalidPhones = selectedContacts.filter((contact) => !validateMalagasyPhone(contact.telephone))
       if (invalidPhones.length > 0) {
@@ -81,7 +111,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
 
     console.log(`=== DÉBUT ENVOI ${messageType.toUpperCase()} ===`)
     console.log("Contacts sélectionnés:", selectedContacts)
-
     setSending(true)
     setError("")
     setSendResult(null)
@@ -96,13 +125,9 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
           message: message,
           type: messageType,
         })
-
         console.log("Résultat de l'envoi email:", result)
 
-        if (!result.success && !result.results?.some((r) => r.success)) {
-          throw new Error(result.message || "Erreur lors de l'envoi")
-        }
-
+        // Enregistrement en base pour les emails
         const now = new Date().toISOString()
         const payloads = selectedContacts.map((contact) => ({
           id_contact: contact.id,
@@ -110,7 +135,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
           message: message,
           date_envoyee: now,
         }))
-
         await Promise.all(
           payloads.map(async (payload) => {
             try {
@@ -127,21 +151,32 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
           }),
         )
       } else {
-        console.log("🚀 Envoi SMS via API FastAPI...")
+        // Nouveau: envoi SMS directement au backend un par un
+        console.log("🚀 Envoi SMS via backend FastAPI...")
+        const results = []
 
-        const smsPayload = {
-          contacts: selectedContacts.map((contact) => ({
-            ...contact,
-            expediteur: myPhoneNumber,
-          })),
-          message: message,
-          expediteur: myPhoneNumber,
+        for (const contact of selectedContacts) {
+          // Personnalisation du message avec les balises
+          let personalizedMessage = message
+          if (contact.prenom) personalizedMessage = personalizedMessage.replace(/\[Prénom\]/g, contact.prenom)
+          if (contact.nom) personalizedMessage = personalizedMessage.replace(/\[Nom\]/g, contact.nom)
+          if (contact.fonction) personalizedMessage = personalizedMessage.replace(/\[Fonction\]/g, contact.fonction)
+
+          const smsResult = await sendSMSToBackend(contact, personalizedMessage)
+          results.push({
+            success: smsResult.success,
+            contactName: `${contact.prenom} ${contact.nom}`,
+            recipient: contact.telephone,
+            error: smsResult.error,
+          })
         }
 
-        console.log("📤 Données envoyées au service SMS:", smsPayload)
-
-        result = await sendSMSDirect(smsPayload)
-
+        const allSuccess = results.every((r) => r.success)
+        result = {
+          success: allSuccess,
+          message: allSuccess ? "Tous les SMS ont été envoyés" : "Certains SMS ont échoué",
+          results,
+        }
         console.log("✅ Résultat de l'envoi SMS:", result)
       }
 
@@ -152,7 +187,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
         if (messageType === "sms") {
           window.dispatchEvent(new CustomEvent("newSMSSent"))
         }
-
         setTimeout(() => {
           setSubject("")
           setMessage("")
@@ -183,11 +217,12 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
   const getMessagePlaceholder = () => {
     return messageType === "email"
       ? "Rédigez votre email ici...\n\nBonjour [Prénom],\n\nJ'espère que vous allez bien...\n\nCordialement,\n[Votre nom]\n\nVariables disponibles:\n[Prénom] [Nom] [Fonction]"
-      : `Rédigez votre SMS ici... (160 caractères max)\n\nExemple:\nBonjour [Prénom], j'espère que vous allez bien. Cordialement.\n\nEnvoyé depuis: ${myPhoneNumber}`
+      : `Rédigez votre SMS ici... (160 caractères max)\n\nExemple:\nBonjour [Prénom], j'espère que vous allez bien. Cordialement.\n\nVariables disponibles:\n[Prénom] [Nom] [Fonction]`
   }
 
   const validSMSContacts = selectedContacts.filter((contact) => validateMalagasyPhone(contact.telephone))
   const invalidSMSContacts = selectedContacts.filter((contact) => !validateMalagasyPhone(contact.telephone))
+
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
@@ -210,7 +245,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
             </div>
           </div>
         </DialogHeader>
-
         <div className="space-y-6">
           {error && (
             <Alert variant="destructive">
@@ -218,7 +252,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-
           {sendResult && (
             <Alert variant={sendResult.success ? "default" : "destructive"}>
               {sendResult.success ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
@@ -246,7 +279,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
               </AlertDescription>
             </Alert>
           )}
-
           {/* Sélecteur de type de message */}
           <div className="space-y-2">
             <Label>Type de message</Label>
@@ -274,22 +306,17 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
                 <SelectItem value="sms">
                   <div className="flex items-center gap-2">
                     <MessageSquare className="h-4 w-4" />
-                    SMS (via API FastAPI)
+                    SMS (via Backend FastAPI)
                   </div>
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
-
           {/* Informations SMS */}
           {messageType === "sms" && (
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-              <p className="text-sm text-blue-700">
-                Nombre total de contacts sélectionnés: {selectedContacts.length}
-              </p>
-              <p className="text-sm text-blue-700">
-                Contacts avec numéros valides: {validSMSContacts.length}
-              </p>
+              <p className="text-sm text-blue-700">Nombre total de contacts sélectionnés: {selectedContacts.length}</p>
+              <p className="text-sm text-blue-700">Contacts avec numéros valides: {validSMSContacts.length}</p>
               {invalidSMSContacts.length > 0 && (
                 <p className="text-sm text-red-600">
                   Contacts avec numéros invalides: {invalidSMSContacts.map((c) => c.telephone).join(", ")}
@@ -297,7 +324,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
               )}
             </div>
           )}
-
           {/* Sujet (email uniquement) */}
           {messageType === "email" && (
             <div className="space-y-1">
@@ -312,7 +338,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
               />
             </div>
           )}
-
           {/* Message */}
           <div className="space-y-1">
             <Label htmlFor="message">Message</Label>
@@ -339,7 +364,6 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
               />
             )}
           </div>
-
           {/* Liste des contacts sélectionnés */}
           <div className="border rounded-md p-3 max-h-40 overflow-y-auto">
             {selectedContacts.map((contact) => (
@@ -348,7 +372,9 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
                   <AvatarFallback>{getInitials(contact.prenom, contact.nom)}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col flex-grow">
-                  <span className="font-medium">{contact.prenom} {contact.nom}</span>
+                  <span className="font-medium">
+                    {contact.prenom} {contact.nom}
+                  </span>
                   <span className="text-sm text-muted-foreground">{contact.fonction}</span>
                 </div>
                 {messageType === "email" ? (
@@ -365,7 +391,14 @@ export function SendMessageDialog({ open, onOpenChange, selectedContacts }: Send
             Annuler
           </Button>
           <Button onClick={handleSend} disabled={sending}>
-            {sending ? "Envoi..." : <><Send className="mr-2 h-4 w-4" />Envoyer</>}
+            {sending ? (
+              "Envoi..."
+            ) : (
+              <>
+                <Send className="mr-2 h-4 w-4" />
+                Envoyer
+              </>
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

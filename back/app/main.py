@@ -21,8 +21,8 @@ from api import (
     sms,
     email,   
     email_controller, 
-    
-    tache
+    tache,
+    gpt
 )
 
 # Création du dossier media si nécessaire
@@ -57,6 +57,7 @@ app.include_router(email_controller.router)
 app.include_router(email.router)
 app.include_router(sms.router)
 app.include_router(tache.router)
+app.include_router(gpt.router)
 app.mount("/media", StaticFiles(directory="media"), name="media")
 
 
