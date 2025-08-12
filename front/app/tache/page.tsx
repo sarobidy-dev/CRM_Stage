@@ -1,20 +1,14 @@
 "use client"
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { getAllContacts } from '@/service/Contact.service';
-import { TacheOut, TacheCreate, TacheUpdate } from '@/types/Tache.type';
-import { Contact } from '@/types/Contact.type';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import type React from "react"
+import { useState, useEffect, useCallback } from "react"
+import { getAllContacts } from "@/service/Contact.service"
+import type { TacheOut, TacheCreate, TacheUpdate } from "@/types/Tache.type"
+import type { Contact } from "@/types/Contact.type"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
   Dialog,
   DialogContent,
@@ -22,128 +16,116 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'; // Removed DialogTrigger
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { format } from 'date-fns';
-import { Pencil, Trash2, Search, Calendar, Phone, BellRing } from 'lucide-react'; // Removed PlusCircle
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { createTache, deleteTache, getTachesByContact, updateTache } from '@/service/tache.service';
-import Navbar from '@/components/navbarLink/nav';
+} from "@/components/ui/dialog"
+
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { format } from "date-fns"
+import { Pencil, Trash2, Search, Calendar, Phone, BellRing, Volume2, VolumeX } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { createTache, deleteTache, getTachesByContact, updateTache } from "@/service/tache.service"
+import Navbar from "@/components/navbarLink/nav"
+import voiceService from "@/service/voice.services"
 
 export default function TachePage() {
-  const [taches, setTaches] = useState<TacheOut[]>([]);
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentTache, setCurrentTache] = useState<TacheOut | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
-  const [selectedContactFilterId, setSelectedContactFilterId] = useState<string>('all');
-  const [displayedPhoneNumber, setDisplayedPhoneNumber] = useState<string | null>(null);
-  const [reminders, setReminders] = useState<TacheOut[]>([]);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false); // Nouveau state pour contrôler la lecture audio
-
-  // Initialisation de l'audio
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      audioRef.current = new Audio('/musique/alerte.mp3');
-      audioRef.current.loop = true;
-    }
-  }, []);
+  const [taches, setTaches] = useState<TacheOut[]>([])
+  const [contacts, setContacts] = useState<Contact[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [currentTache, setCurrentTache] = useState<TacheOut | null>(null)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [startDate, setStartDate] = useState<string>("")
+  const [endDate, setEndDate] = useState<string>("")
+  const [selectedContactFilterId, setSelectedContactFilterId] = useState<string>("all")
+  const [displayedPhoneNumber, setDisplayedPhoneNumber] = useState<string | null>(null)
+  const [reminders, setReminders] = useState<TacheOut[]>([])
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState(true)
+  const [hasSpokenReminders, setHasSpokenReminders] = useState<Set<number>>(new Set())
 
   // Fonction pour récupérer les contacts
   const fetchContacts = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      const data = await getAllContacts();
+      const data = await getAllContacts()
       if (Array.isArray(data)) {
-        setContacts(data);
+        setContacts(data)
       } else if (data && typeof data === "object" && Array.isArray((data as any).data)) {
-        setContacts((data as any).data);
+        setContacts((data as any).data)
       } else {
-        throw new Error("Format de réponse invalide pour les contacts.");
+        throw new Error("Format de réponse invalide pour les contacts.")
       }
     } catch (err) {
-      console.error("Erreur lors du chargement des contacts:", err);
-      setError("Échec du chargement des contacts.");
-      setContacts([]);
+      console.error("Erreur lors du chargement des contacts:", err)
+      setError("Échec du chargement des contacts.")
+      setContacts([])
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, []);
+  }, [])
 
   // Fonction pour récupérer les tâches (dépend du filtre de contact)
   const fetchTaches = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      let data: TacheOut[] = [];
-      if (selectedContactFilterId === 'all') {
-        const allContactsTaches: TacheOut[] = [];
+      let data: TacheOut[] = []
+      if (selectedContactFilterId === "all") {
+        const allContactsTaches: TacheOut[] = []
         for (const contact of contacts) {
           try {
-            const tachesForContact = await getTachesByContact(contact.id);
-            allContactsTaches.push(...tachesForContact);
+            const tachesForContact = await getTachesByContact(contact.id)
+            allContactsTaches.push(...tachesForContact)
           } catch (e) {
-            console.warn(`Could not fetch tasks for contact ${contact.id}:`, e);
+            console.warn(`Could not fetch tasks for contact ${contact.id}:`, e)
           }
         }
-        data = allContactsTaches;
+        data = allContactsTaches
       } else {
-        data = await getTachesByContact(parseInt(selectedContactFilterId));
+        data = await getTachesByContact(Number.parseInt(selectedContactFilterId))
       }
 
-      const enrichedTaches = data.map(tache => {
-        const contact = contacts.find(c => c.id === tache.contact_id);
+      const enrichedTaches = data.map((tache) => {
+        const contact = contacts.find((c) => c.id === tache.contact_id)
         return {
           ...tache,
-          contact_name: contact ? `${contact.nom} ${contact.prenom}` : 'Contact Inconnu',
+          contact_name: contact ? `${contact.nom} ${contact.prenom}` : "Contact Inconnu",
           contact_phone: contact ? contact.telephone : null,
-        };
-      });
-      setTaches(enrichedTaches);
+        }
+      })
+      setTaches(enrichedTaches)
     } catch (err) {
-      setError('Failed to fetch tasks. Please check your API connection.');
-      console.error(err);
+      setError("Failed to fetch tasks. Please check your API connection.")
+      console.error(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [selectedContactFilterId, contacts]);
+  }, [selectedContactFilterId, contacts])
 
   // Effet pour charger les contacts au montage
   useEffect(() => {
-    fetchContacts();
-  }, [fetchContacts]);
+    fetchContacts()
+  }, [fetchContacts])
 
   // Effet pour charger les tâches lorsque les contacts sont chargés ou le filtre change
   useEffect(() => {
-    if (contacts.length > 0 || selectedContactFilterId === 'all') {
-      fetchTaches();
+    if (contacts.length > 0 || selectedContactFilterId === "all") {
+      fetchTaches()
     }
-  }, [fetchTaches, contacts, selectedContactFilterId]);
+  }, [fetchTaches, contacts, selectedContactFilterId])
 
   const handleCreateOrUpdateTache = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setLoading(true);
-    setError(null);
+    event.preventDefault()
+    setLoading(true)
+    setError(null)
 
-    const formData = new FormData(event.currentTarget as HTMLFormElement);
-    const titre = formData.get('titre') as string;
-    const description = formData.get('description') as string;
-    const date_echeance = formData.get('date_echeance') as string;
-    const statut = formData.get('statut') as string;
-    const contact_id = parseInt(formData.get('contact_id') as string);
+    const formData = new FormData(event.currentTarget as HTMLFormElement)
+    const titre = formData.get("titre") as string
+    const description = formData.get("description") as string
+    const date_echeance = formData.get("date_echeance") as string
+    const statut = formData.get("statut") as string
+    const contact_id = Number.parseInt(formData.get("contact_id") as string)
 
     const tacheData: TacheCreate | TacheUpdate = {
       titre,
@@ -151,228 +133,213 @@ export default function TachePage() {
       date_echeance: date_echeance || null,
       statut,
       contact_id,
-    };
+    }
 
     try {
       if (currentTache) {
-        await updateTache(currentTache.id, tacheData as TacheUpdate);
+        await updateTache(currentTache.id, tacheData as TacheUpdate)
       } else {
-        // This branch should ideally not be hit if creation is only from ContactsPage
-        await createTache(tacheData as TacheCreate);
+        await createTache(tacheData as TacheCreate)
       }
-      setIsDialogOpen(false);
-      setTimeout(() => fetchTaches(), 100); // Delayed re-fetch
+      setIsDialogOpen(false)
+      setTimeout(() => fetchTaches(), 100)
     } catch (err) {
-      setError(`Failed to ${currentTache ? 'update' : 'create'} task.`);
-      console.error(err);
+      setError(`Failed to ${currentTache ? "update" : "create"} task.`)
+      console.error(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleDeleteTache = async (id: number) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?')) {
-      return;
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer cette tâche ?")) {
+      return
     }
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      await deleteTache(id);
-      setTimeout(() => fetchTaches(), 100); // Delayed re-fetch
+      await deleteTache(id)
+      setTimeout(() => fetchTaches(), 100)
     } catch (err) {
-      setError('Failed to delete task.');
-      console.error(err);
+      setError("Failed to delete task.")
+      console.error(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleSearch = async () => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      let filteredTaches: TacheOut[] = [];
-      if (selectedContactFilterId === 'all') {
-        const allContactsTaches: TacheOut[] = [];
+      let filteredTaches: TacheOut[] = []
+      if (selectedContactFilterId === "all") {
+        const allContactsTaches: TacheOut[] = []
         for (const contact of contacts) {
           try {
-            const tachesForContact = await getTachesByContact(contact.id);
-            allContactsTaches.push(...tachesForContact);
+            const tachesForContact = await getTachesByContact(contact.id)
+            allContactsTaches.push(...tachesForContact)
           } catch (e) {
-            console.warn(`Could not fetch tasks for contact ${contact.id}:`, e);
+            console.warn(`Could not fetch tasks for contact ${contact.id}:`, e)
           }
         }
-        filteredTaches = allContactsTaches;
+        filteredTaches = allContactsTaches
       } else {
-        filteredTaches = await getTachesByContact(parseInt(selectedContactFilterId));
+        filteredTaches = await getTachesByContact(Number.parseInt(selectedContactFilterId))
       }
 
-      filteredTaches = filteredTaches.map(tache => {
-        const contact = contacts.find(c => c.id === tache.contact_id);
+      filteredTaches = filteredTaches.map((tache) => {
+        const contact = contacts.find((c) => c.id === tache.contact_id)
         return {
           ...tache,
-          contact_name: contact ? `${contact.nom} ${contact.prenom}` : 'Contact Inconnu',
+          contact_name: contact ? `${contact.nom} ${contact.prenom}` : "Contact Inconnu",
           contact_phone: contact ? contact.telephone : null,
-        };
-      });
+        }
+      })
 
       if (searchTerm) {
-        const lowerCaseSearchTerm = searchTerm.toLowerCase();
-        filteredTaches = filteredTaches.filter(tache =>
-          tache.titre.toLowerCase().includes(lowerCaseSearchTerm) ||
-          (tache.description && tache.description.toLowerCase().includes(lowerCaseSearchTerm))
-        );
+        const lowerCaseSearchTerm = searchTerm.toLowerCase()
+        filteredTaches = filteredTaches.filter(
+          (tache) =>
+            tache.titre.toLowerCase().includes(lowerCaseSearchTerm) ||
+            (tache.description && tache.description.toLowerCase().includes(lowerCaseSearchTerm)),
+        )
       }
 
       if (startDate || endDate) {
-        filteredTaches = filteredTaches.filter(tache => {
-          if (!tache.date_echeance) return false;
-          const tacheDate = new Date(tache.date_echeance);
-          let matchesStartDate = true;
-          let matchesEndDate = true;
+        filteredTaches = filteredTaches.filter((tache) => {
+          if (!tache.date_echeance) return false
+          const tacheDate = new Date(tache.date_echeance)
+          let matchesStartDate = true
+          let matchesEndDate = true
 
           if (startDate) {
-            const start = new Date(startDate);
-            matchesStartDate = tacheDate >= start;
+            const start = new Date(startDate)
+            matchesStartDate = tacheDate >= start
           }
           if (endDate) {
-            const end = new Date(endDate);
-            end.setHours(23, 59, 59, 999);
-            matchesEndDate = tacheDate <= end;
+            const end = new Date(endDate)
+            end.setHours(23, 59, 59, 999)
+            matchesEndDate = tacheDate <= end
           }
-          return matchesStartDate && matchesEndDate;
-        });
+          return matchesStartDate && matchesEndDate
+        })
       }
-      setTaches(filteredTaches);
+      setTaches(filteredTaches)
     } catch (err) {
-      setError('Failed to perform search.');
-      console.error(err);
+      setError("Failed to perform search.")
+      console.error(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleResetSearch = () => {
-    setSearchTerm('');
-    setStartDate('');
-    setEndDate('');
-    setSelectedContactFilterId('all');
-    fetchTaches();
-  };
-
-  // openCreateDialog is no longer called from this page
-  // const openCreateDialog = () => {
-  //   setCurrentTache(null);
-  //   setIsDialogOpen(true);
-  // };
+    setSearchTerm("")
+    setStartDate("")
+    setEndDate("")
+    setSelectedContactFilterId("all")
+    fetchTaches()
+  }
 
   const openEditDialog = (tache: TacheOut) => {
-    setCurrentTache(tache);
-    setIsDialogOpen(true);
-  };
+    setCurrentTache(tache)
+    setIsDialogOpen(true)
+  }
 
   const handleCallContact = async (tache: TacheOut) => {
     if (!tache.contact_phone) {
-      alert("Numéro de téléphone non disponible pour ce contact.");
-      return;
+      alert("Numéro de téléphone non disponible pour ce contact.")
+      return
     }
-    setDisplayedPhoneNumber(tache.contact_phone);
+    setDisplayedPhoneNumber(tache.contact_phone)
     try {
-      // Optimistic update: update local state immediately
-      setTaches(prevTaches =>
-        prevTaches.map(t =>
-          t.id === tache.id ? { ...t, statut: 'terminée' } : t
-        )
-      );
-      // Call API to update status
-      await updateTache(tache.id, { statut: 'terminée' });
-      // Re-fetch to ensure consistency, but not immediately blocking
-      setTimeout(() => fetchTaches(), 100);
+      setTaches((prevTaches) => prevTaches.map((t) => (t.id === tache.id ? { ...t, statut: "terminée" } : t)))
+      await updateTache(tache.id, { statut: "terminée" })
+      setTimeout(() => fetchTaches(), 100)
     } catch (err) {
-      setError('Failed to update task status.');
-      console.error(err);
-      // Revert optimistic update if API call fails
-      setTaches(prevTaches =>
-        prevTaches.map(t =>
-          t.id === tache.id ? { ...t, statut: tache.statut } : t
-        )
-      );
+      setError("Failed to update task status.")
+      console.error(err)
+      setTaches((prevTaches) => prevTaches.map((t) => (t.id === tache.id ? { ...t, statut: tache.statut } : t)))
     }
-  };
+  }
 
-  // Logique de l'horloge de rappel: identifie les rappels et met à jour l'état `reminders`
+  // Logique de l'horloge de rappel avec synthèse vocale
   useEffect(() => {
     const interval = setInterval(() => {
-      const now = new Date();
-      const activeReminders: TacheOut[] = [];
+      const now = new Date()
+      const activeReminders: TacheOut[] = []
 
-      taches.forEach(tache => {
-        // Seules les tâches non terminées et non annulées peuvent être des rappels
-        if (tache.date_echeance && tache.statut !== 'terminée' && tache.statut !== 'en cours') {
-          const dueDate = new Date(tache.date_echeance);
+      taches.forEach((tache) => {
+        if (tache.date_echeance && tache.statut !== "terminée" && tache.statut !== "en cours") {
+          const dueDate = new Date(tache.date_echeance)
           if (dueDate <= now) {
-            activeReminders.push(tache);
+            activeReminders.push(tache)
           }
         }
-      });
+      })
 
-      // Met à jour la liste des rappels en s'assurant qu'elle ne contient que les rappels actifs
-      setReminders(prevReminders => {
-        const currentActiveIds = new Set(activeReminders.map(r => r.id));
-        // Garde les rappels qui sont toujours actifs et ajoute les nouveaux
-        const filteredPrev = prevReminders.filter(r => currentActiveIds.has(r.id));
-        const newOnes = activeReminders.filter(r => !prevReminders.some(pr => pr.id === r.id));
-        return [...filteredPrev, ...newOnes];
-      });
+      setReminders((prevReminders) => {
+        const currentActiveIds = new Set(activeReminders.map((r) => r.id))
+        const filteredPrev = prevReminders.filter((r) => currentActiveIds.has(r.id))
+        const newOnes = activeReminders.filter((r) => !prevReminders.some((pr) => pr.id === r.id))
+        return [...filteredPrev, ...newOnes]
+      })
+    }, 1000)
 
-    }, 1000);
+    return () => clearInterval(interval)
+  }, [taches])
 
-    return () => clearInterval(interval);
-  }, [taches]); // Dépend de `taches` pour que la logique de rappel se rafraîchisse avec les dernières données
-
-  // Effet pour contrôler la lecture/pause de l'audio en fonction de l'état `reminders`
+  // Effet pour la synthèse vocale des rappels
   useEffect(() => {
-    if (audioRef.current) {
-      if (reminders.length > 0 && !isAudioPlaying) {
-        audioRef.current.play().catch(e => console.error("Error playing audio:", e));
-        setIsAudioPlaying(true);
-      } else if (reminders.length === 0 && isAudioPlaying) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-        setIsAudioPlaying(false);
+    if (reminders.length > 0 && isVoiceEnabled) {
+      // Identifier les nouveaux rappels qui n'ont pas encore été lus
+      const newReminders = reminders.filter((r) => !hasSpokenReminders.has(r.id))
+
+      if (newReminders.length > 0) {
+        const notificationText = voiceService.generateTaskNotificationText(newReminders)
+
+        voiceService.speak(notificationText).catch((error) => {
+          console.error("Erreur lors de la synthèse vocale:", error)
+        })
+
+        // Marquer ces rappels comme lus
+        setHasSpokenReminders((prev) => {
+          const newSet = new Set(prev)
+          newReminders.forEach((r) => newSet.add(r.id))
+          return newSet
+        })
       }
     }
-  }, [reminders, isAudioPlaying]); // Dépend de `reminders` et `isAudioPlaying`
+  }, [reminders, isVoiceEnabled, hasSpokenReminders])
 
   const dismissReminder = async (id: number) => {
-    const taskToDismiss = taches.find(t => t.id === id);
-    if (!taskToDismiss) return;
+    const taskToDismiss = taches.find((t) => t.id === id)
+    if (!taskToDismiss) return
 
-    // Optimistic update: remove from reminders list and update main tasks list
-    setReminders(prev => prev.filter(r => r.id !== id));
-    setTaches(prevTaches =>
-      prevTaches.map(t =>
-        t.id === id ? { ...t, statut: 'en cours' } : t
-      )
-    );
+    // Arrêter la synthèse vocale si en cours
+    voiceService.stop()
+
+    // Retirer de la liste des rappels lus
+    setHasSpokenReminders((prev) => {
+      const newSet = new Set(prev)
+      newSet.delete(id)
+      return newSet
+    })
+
+    setReminders((prev) => prev.filter((r) => r.id !== id))
+    setTaches((prevTaches) => prevTaches.map((t) => (t.id === id ? { ...t, statut: "en cours" } : t)))
 
     try {
-      await updateTache(id, { statut: 'en cours' });
-      // Re-fetch to ensure consistency after successful API call
-      setTimeout(() => fetchTaches(), 100);
+      await updateTache(id, { statut: "en cours" })
+      setTimeout(() => fetchTaches(), 100)
     } catch (err) {
-      setError('Failed to dismiss reminder and update task status.');
-      console.error(err);
-      // Revert optimistic update if API call fails
-      setTaches(prevTaches =>
-        prevTaches.map(t =>
-          t.id === id ? { ...t, statut: taskToDismiss.statut } : t
-        )
-      );
-      // Re-add to reminders if update failed
-      setReminders(prev => [...prev, taskToDismiss]);
+      setError("Failed to dismiss reminder and update task status.")
+      console.error(err)
+      setTaches((prevTaches) => prevTaches.map((t) => (t.id === id ? { ...t, statut: taskToDismiss.statut } : t)))
+      setReminders((prev) => [...prev, taskToDismiss])
     }
-  };
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -382,15 +349,23 @@ export default function TachePage() {
         {reminders.length > 0 && (
           <Card className="mb-6 bg-red-50 border-red-200 text-red-800 shadow-lg">
             <CardHeader>
-              <CardTitle className="text-xl font-bold flex items-center">
-                <BellRing className="mr-2 h-6 w-6 animate-pulse" /> Rappels de Tâches !
+              <CardTitle className="text-xl font-bold flex items-center justify-between">
+                <div className="flex items-center">
+                  <BellRing className="mr-2 h-6 w-6 animate-pulse" />
+                  Rappels de Tâches !
+                </div>
+                
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {reminders.map(r => (
-                <div key={r.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-2 border-b last:border-b-0 last:pb-0">
+              {reminders.map((r) => (
+                <div
+                  key={r.id}
+                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-2 border-b last:border-b-0 last:pb-0"
+                >
                   <p className="mb-2 sm:mb-0">
-                    <span className="font-semibold">{r.titre}</span> (Contact: {r.contact_name}) - Échéance: {r.date_echeance ? format(new Date(r.date_echeance), 'dd/MM/yyyy HH:mm') : 'N/A'}
+                    <span className="font-semibold">{r.titre}</span> <span>{r.description}</span> (Contact: {r.contact_name}) - Échéance:{" "}
+                    {r.date_echeance ? format(new Date(r.date_echeance), "dd/MM/yyyy HH:mm") : "N/A"}
                   </p>
                   <Button variant="outline" size="sm" onClick={() => dismissReminder(r.id)}>
                     Ignorer
@@ -406,7 +381,8 @@ export default function TachePage() {
           <Card className="mb-6 bg-blue-50 border-blue-200 text-blue-800 shadow-lg">
             <CardContent className="p-4 flex items-center justify-between">
               <p className="font-semibold text-lg flex items-center">
-                <Phone className="mr-2 h-5 w-5" /> Numéro à appeler : <span className="ml-2 font-mono text-xl">{displayedPhoneNumber}</span>
+                <Phone className="mr-2 h-5 w-5" /> Numéro à appeler :{" "}
+                <span className="ml-2 font-mono text-xl">{displayedPhoneNumber}</span>
               </p>
               <Button variant="ghost" size="icon" onClick={() => setDisplayedPhoneNumber(null)}>
                 X
@@ -419,12 +395,13 @@ export default function TachePage() {
           <CardHeader className="flex flex-col md:flex-row md:justify-between md:items-center">
             <CardTitle className="text-2xl font-bold mb-4 md:mb-0">Gestion des Tâches</CardTitle>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              {/* The DialogTrigger and "Ajouter une Tâche" button are removed from here */}
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                  <DialogTitle>{currentTache ? 'Modifier la Tâche' : 'Ajouter une Nouvelle Tâche'}</DialogTitle>
+                  <DialogTitle>{currentTache ? "Modifier la Tâche" : "Ajouter une Nouvelle Tâche"}</DialogTitle>
                   <DialogDescription>
-                    {currentTache ? 'Modifiez les détails de la tâche.' : 'Remplissez les informations pour créer une nouvelle tâche.'}
+                    {currentTache
+                      ? "Modifiez les détails de la tâche."
+                      : "Remplissez les informations pour créer une nouvelle tâche."}
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleCreateOrUpdateTache} className="grid gap-4 py-4">
@@ -435,7 +412,7 @@ export default function TachePage() {
                     <Input
                       id="titre"
                       name="titre"
-                      defaultValue={currentTache?.titre || ''}
+                      defaultValue={currentTache?.titre || ""}
                       className="col-span-3"
                       required
                     />
@@ -447,7 +424,7 @@ export default function TachePage() {
                     <Textarea
                       id="description"
                       name="description"
-                      defaultValue={currentTache?.description || ''}
+                      defaultValue={currentTache?.description || ""}
                       className="col-span-3"
                     />
                   </div>
@@ -459,7 +436,11 @@ export default function TachePage() {
                       id="date_echeance"
                       name="date_echeance"
                       type="datetime-local"
-                      defaultValue={currentTache?.date_echeance ? format(new Date(currentTache.date_echeance), "yyyy-MM-dd'T'HH:mm") : ''}
+                      defaultValue={
+                        currentTache?.date_echeance
+                          ? format(new Date(currentTache.date_echeance), "yyyy-MM-dd'T'HH:mm")
+                          : ""
+                      }
                       className="col-span-3"
                     />
                   </div>
@@ -467,7 +448,7 @@ export default function TachePage() {
                     <Label htmlFor="statut" className="text-right">
                       Statut
                     </Label>
-                    <Select name="statut" defaultValue={currentTache?.statut || 'en attente'}>
+                    <Select name="statut" defaultValue={currentTache?.statut || "en attente"}>
                       <SelectTrigger className="col-span-3">
                         <SelectValue placeholder="Sélectionner un statut" />
                       </SelectTrigger>
@@ -485,7 +466,9 @@ export default function TachePage() {
                     </Label>
                     <Select
                       name="contact_id"
-                      defaultValue={currentTache?.contact_id?.toString() || (contacts.length > 0 ? contacts[0].id.toString() : '')}
+                      defaultValue={
+                        currentTache?.contact_id?.toString() || (contacts.length > 0 ? contacts[0].id.toString() : "")
+                      }
                       required
                     >
                       <SelectTrigger className="col-span-3">
@@ -499,27 +482,31 @@ export default function TachePage() {
                             </SelectItem>
                           ))
                         ) : (
-                          <SelectItem disabled value="none">Aucun contact disponible</SelectItem>
+                          <SelectItem disabled value="none">
+                            Aucun contact disponible
+                          </SelectItem>
                         )}
                       </SelectContent>
                     </Select>
                   </div>
                   <DialogFooter>
                     <Button type="submit" disabled={loading}>
-                      {loading ? 'Enregistrement...' : (currentTache ? 'Enregistrer les modifications' : 'Créer la Tâche')}
+                      {loading
+                        ? "Enregistrement..."
+                        : currentTache
+                          ? "Enregistrer les modifications"
+                          : "Créer la Tâche"}
                     </Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
             </Dialog>
           </CardHeader>
+          
           <CardContent>
             <div className="flex flex-col md:flex-row gap-4 mb-6">
               <div className="relative flex-1">
-                <Select
-                  value={selectedContactFilterId}
-                  onValueChange={setSelectedContactFilterId}
-                >
+                <Select value={selectedContactFilterId} onValueChange={setSelectedContactFilterId}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Filtrer par contact" />
                   </SelectTrigger>
@@ -544,24 +531,18 @@ export default function TachePage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               </div>
               <div className="relative flex-1">
-                <Input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="pl-10"
-                />
+                <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="pl-10" />
                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Label htmlFor="startDate" className="sr-only">Date de début</Label>
+                <Label htmlFor="startDate" className="sr-only">
+                  Date de début
+                </Label>
               </div>
               <div className="relative flex-1">
-                <Input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="pl-10"
-                />
+                <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="pl-10" />
                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Label htmlFor="endDate" className="sr-only">Date de fin</Label>
+                <Label htmlFor="endDate" className="sr-only">
+                  Date de fin
+                </Label>
               </div>
               <Button onClick={handleSearch} disabled={loading}>
                 Rechercher
@@ -597,29 +578,28 @@ export default function TachePage() {
                       <TableRow key={tache.id}>
                         <TableCell className="font-medium">{tache.titre}</TableCell>
                         <TableCell className="hidden md:table-cell max-w-[200px] truncate">
-                          {tache.description || 'N/A'}
+                          {tache.description || "N/A"}
                         </TableCell>
                         <TableCell>
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                              tache.statut === 'terminée' ? 'bg-green-100 text-green-800' :
-                              tache.statut === 'en cours' ? 'bg-blue-100 text-blue-800' :
-                              tache.statut === 'annulée' ? 'bg-red-100 text-red-800' :
-                              'bg-yellow-100 text-yellow-800'
+                              tache.statut === "terminée"
+                                ? "bg-green-100 text-green-800"
+                                : tache.statut === "en cours"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : tache.statut === "annulée"
+                                    ? "bg-red-100 text-red-800"
+                                    : "bg-yellow-100 text-yellow-800"
                             }`}
                           >
                             {tache.statut}
                           </span>
                         </TableCell>
                         <TableCell>
-                          {tache.date_echeance ? format(new Date(tache.date_echeance), 'dd/MM/yyyy HH:mm') : 'N/A'}
+                          {tache.date_echeance ? format(new Date(tache.date_echeance), "dd/MM/yyyy HH:mm") : "N/A"}
                         </TableCell>
-                        <TableCell>
-                          {tache.contact_name || 'N/A'}
-                        </TableCell>
-                        <TableCell>
-                          {format(new Date(tache.date_creation), 'dd/MM/yyyy HH:mm')}
-                        </TableCell>
+                        <TableCell>{tache.contact_name || "N/A"}</TableCell>
+                        <TableCell>{format(new Date(tache.date_creation), "dd/MM/yyyy HH:mm")}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
                             <Button
@@ -642,7 +622,7 @@ export default function TachePage() {
                               variant="outline"
                               size="sm"
                               onClick={() => handleCallContact(tache)}
-                              disabled={!tache.contact_phone || tache.statut === 'terminée'}
+                              disabled={!tache.contact_phone || tache.statut === "terminée"}
                               aria-label="Call contact"
                             >
                               <Phone className="h-4 w-4 mr-1" /> Rappeler
@@ -659,5 +639,5 @@ export default function TachePage() {
         </Card>
       </div>
     </div>
-  );
+  )
 }

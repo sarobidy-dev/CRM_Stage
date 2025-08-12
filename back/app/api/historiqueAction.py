@@ -1,9 +1,11 @@
+from typing import Optional
 from models.historiqueAction import HistoriqueAction
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from database import get_async_session
 from datetime import datetime,date
+from sqlalchemy import func
 from services.historiqueAction import (
     create_historique_action,
     get_all_historique_actions,
@@ -22,7 +24,20 @@ router = APIRouter(
     prefix="/historiqueActions",
     tags=["HistoriqueActions"]
 )
+@router.get("/nombre-entreprises-actives-aujourdhui", response_model=dict)
+async def nombre_entreprises_actives_aujourdhui(db: AsyncSession = Depends(get_async_session)):
+    today = date.today()
+    
+    # Requête pour compter le nombre distinct d'entreprise ayant une action aujourd'hui
+    query = (
+        select(func.count(func.distinct(HistoriqueAction.entreprise_id)))
+        .where(func.date(HistoriqueAction.date) == today)
+    )
 
+    result = await db.execute(query)
+    nombre_entreprises = result.scalar() or 0
+
+    return {"nombre_entreprises_actives_aujourdhui": nombre_entreprises}
 
 @router.post("/", response_model=dict)
 async def create(item: HistoriqueActionCreate, db: AsyncSession = Depends(get_async_session)):
@@ -36,20 +51,21 @@ async def get_all(db: AsyncSession = Depends(get_async_session)):
     return response(True, "Liste des historiques récupérée", [HistoriqueActionRead.from_orm(i).dict() for i in items])
 
 @router.get("/statistiques")
-async def get_statistiques(db: AsyncSession = Depends(get_async_session)):
-    result = await db.execute(select(HistoriqueAction))
-    historiques = result.scalars().all()
+async def get_statistiques(
+    campagne_id: Optional[int] = None,
+    db: AsyncSession = Depends(get_async_session)
+):
+    query = select(HistoriqueAction).where(HistoriqueAction.campagne_id == campagne_id)
 
-    # Date actuelle sans l'heure
+    result = await db.execute(query)
+    historiques = result.scalars().all()
     today = date.today()
 
-    # Filtrer les actions créées aujourd’hui
     historiques_aujourdhui = [
         h for h in historiques
         if (h.date.date() if isinstance(h.date, datetime) else h.date) == today
     ]
 
-    # Compter selon le pourcentage de vente
     gagnes = sum(1 for h in historiques_aujourdhui if h.pourcentageVente is not None and h.pourcentageVente >= 80)
     encours = sum(1 for h in historiques_aujourdhui if h.pourcentageVente is not None and 30 <= h.pourcentageVente < 80)
     perdus = sum(1 for h in historiques_aujourdhui if h.pourcentageVente is not None and h.pourcentageVente < 30)
@@ -59,6 +75,7 @@ async def get_statistiques(db: AsyncSession = Depends(get_async_session)):
         "encours": encours,
         "perdus": perdus
     }
+
 @router.get("/{id}", response_model=dict)
 async def get_one(id: int, db: AsyncSession = Depends(get_async_session)):
     item = await get_historique_action_by_id(db, id)

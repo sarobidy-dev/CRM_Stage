@@ -18,10 +18,50 @@ export interface StatistiqueData {
   perdus: number
 }
 
-export async function getStatistiques(): Promise<StatistiqueData> {
-  const res = await fetch(`${apiUrl}/historiqueActions/statistiques`)
-  if (!res.ok) throw new Error("Erreur lors de la récupération des statistiques")
-  return await res.json()
+export interface NombreEntreprisesActivesResponse {
+  nombre_entreprises_actives_aujourdhui: number;
+}
+
+export async function getNombreEntreprisesActivesAujourdHui(): Promise<NombreEntreprisesActivesResponse> {
+  const res = await fetch(`${apiUrl}/historiqueActions/nombre-entreprises-actives-aujourdhui`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Erreur lors de la récupération du nombre d'entreprises actives aujourd'hui: ${res.status} ${errorText}`);
+  }
+
+  const data = await res.json();
+  return data as NombreEntreprisesActivesResponse;
+}
+
+export async function getStatistiques(campagne_id?: number | null): Promise<StatistiqueData> {
+  try {
+    const url = `${apiUrl}/historiqueActions/statistiques${campagne_id ? `?campagne_id=${campagne_id}` : ""}`;
+    console.log(`Fetching statistics from: ${url}`); // Log URL for debugging
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text(); // Get response body for more context
+      console.error(`HTTP error! Status: ${res.status}, Response: ${errorText}`);
+      throw new Error(`Erreur lors de la récupération des statistiques: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    console.log('Statistics received:', data); // Log response for debugging
+    return data as StatistiqueData;
+  } catch (error) {
+    console.error('Erreur dans getStatistiques:', error);
+    throw new Error(`Erreur lors de la récupération des statistiques: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
+  }
 }
 export async function createHistorique(data: Omit<HistoriqueAction, "id">): Promise<ApiResponse<HistoriqueAction>> {
   const res = await fetch(`${apiUrl}/historiqueActions`, {

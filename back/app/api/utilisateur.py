@@ -10,7 +10,9 @@ from fastapi import (
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
-import os, uuid, aiofiles
+import os
+import uuid
+import aiofiles
 
 from database import get_async_session
 from schemas.Utilisateur import UtilisateurRead
@@ -20,11 +22,17 @@ from services.utilisateur import (
     create_utilisateur,
     update_utilisateur,
     delete_utilisateur,
+    email_existe,
+    email_existe_pour_un_autre,
 )
+
+from services.email_service import EmailService
 
 router = APIRouter()
 UPLOAD_DIR = "media/photos"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+email_service = EmailService()
 
 async def _save_photo(file: UploadFile) -> str:
     ext = os.path.splitext(file.filename)[1]
@@ -38,6 +46,7 @@ async def _save_photo(file: UploadFile) -> str:
 @router.get("/utilisateurs", response_model=List[UtilisateurRead])
 async def read_utilisateurs(db: AsyncSession = Depends(get_async_session)):
     return await get_utilisateurs(db)
+
 
 @router.get("/utilisateurs/{utilisateur_id}", response_model=UtilisateurRead)
 async def read_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_async_session)):
@@ -56,8 +65,6 @@ async def read_utilisateur(utilisateur_id: int, db: AsyncSession = Depends(get_a
         content={"success": True, "message": "Utilisateur trouvé", "data": utilisateur_data},
     )
 
-
-from services.utilisateur import email_existe
 
 @router.post("/utilisateurs", response_model=UtilisateurRead, status_code=status.HTTP_201_CREATED)
 async def create_utilisateur_endpoint(
@@ -84,10 +91,9 @@ async def create_utilisateur_endpoint(
         "actif": actif,
         "photo_profil": photo_path,
     }
-    return await create_utilisateur(db, data)
+    utilisateur = await create_utilisateur(db, data)
+    return utilisateur
 
-
-from services.utilisateur import email_existe_pour_un_autre
 
 @router.put("/utilisateurs/{utilisateur_id}", response_model=UtilisateurRead)
 async def update_utilisateur_endpoint(
@@ -100,6 +106,11 @@ async def update_utilisateur_endpoint(
     photo_profil: UploadFile | None = File(None),
     db: AsyncSession = Depends(get_async_session),
 ):
+    # Récupérer l'utilisateur AVANT mise à jour pour avoir l'ancienne adresse email
+    utilisateur_avant = await get_utilisateur(db, utilisateur_id)
+    if not utilisateur_avant:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+
     if email and await email_existe_pour_un_autre(db, email, utilisateur_id):
         raise HTTPException(
             status_code=400,
@@ -122,7 +133,23 @@ async def update_utilisateur_endpoint(
     if not utilisateur:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
 
+    # Envoyer email à l'ancienne adresse email (avant mise à jour)
+    sujet = "Votre compte a été modifié"
+    corps = f"Bonjour {utilisateur.nom},\n\nUne personne a modifié votre compte CRM.\n\nCordialement,\nL'équipe."
+
+    send_email_func = email_service.send_email
+    if callable(getattr(send_email_func, "__await__", None)):  # async
+        email_envoye = await send_email_func(utilisateur_avant.email, sujet, corps)
+    else:
+        email_envoye = send_email_func(utilisateur_avant.email, sujet, corps)
+
+    if email_envoye:
+        print(f"Email envoyé à l'ancienne adresse : {utilisateur_avant.email}")
+    else:
+        print(f"Échec de l'envoi de l'email à {utilisateur_avant.email}")
+
     return utilisateur
+
 
 @router.delete("/utilisateurs/{utilisateur_id}", response_model=UtilisateurRead)
 async def delete_utilisateur_endpoint(utilisateur_id: int, db: AsyncSession = Depends(get_async_session)):

@@ -45,7 +45,6 @@ async def update_utilisateur(db: AsyncSession, utilisateur_id: int, update_data:
     utilisateur = await get_utilisateur(db, utilisateur_id)
     if not utilisateur:
         return None
-
     for key, value in update_data.items():
         setattr(utilisateur, key, value)
 

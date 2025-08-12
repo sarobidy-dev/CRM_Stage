@@ -34,9 +34,6 @@ export const fetchUtilisateurs = async (): Promise<Utilisateur[]> => {
   }
 }
 
-/**
- * Crée un nouvel utilisateur
- */
 export const createUtilisateur = async (userData: CreateUtilisateurRequest): Promise<Utilisateur> => {
   const formData = new FormData()
   formData.append("nom", userData.nom)

@@ -1,12 +1,13 @@
+
 "use client"
 
 import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,6 +41,35 @@ import {
   Mail,
   Phone,
   Calendar,
+  HelpCircle,
+  LayoutDashboard,
+  FileText,
+  BarChart as BarChartIcon,
+  PieChart as PieChartIcon,
+  LineChart as LineChartIcon,
+  Table as TableIcon,
+  Database,
+  UserPlus,
+  UserMinus,
+  Edit,
+  Trash2,
+  Upload,
+  DownloadCloud,
+  Printer,
+  Share2,
+  Lock,
+  Unlock,
+  Eye,
+  EyeOff,
+  BellRing,
+  BellOff,
+  Languages,
+  HelpCircle as HelpIcon,
+  Info as InfoIcon,
+  AlertTriangle,
+  Check,
+  XCircle,
+  Loader2,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { toast } from "@/hooks/use-toast"
@@ -50,7 +80,7 @@ import { fetchUtilisateurs } from "@/service/Utlisateur.service"
 import { getAllContacts } from "@/service/Contact.service"
 import { getAllEntreprises } from "@/service/Entreprise.service"
 import { getAllCampagnes } from "@/service/campagne.service"
-import { getAllHistoriques, getStatistiques } from "@/service/historiqueAction.service"
+import { getAllHistoriques, getNombreEntreprisesActivesAujourdHui, getStatistiques } from "@/service/historiqueAction.service"
 import {
   Bar,
   BarChart,
@@ -68,8 +98,50 @@ import {
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import { Slider } from "@/components/ui/slider"
+import { Checkbox } from "@/components/ui/checkbox"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
 
-// Interfaces
+// Multi-language support
+const languages = {
+  fr: {
+    dashboard: "Dashboard",
+    system: "Système de gestion client - Données en temps réel",
+    contacts: "Contacts",
+    entreprises: "Entreprises",
+    campagnes: "Campagnes",
+    actions: "Actions",
+    pourcentageVenteMoyen: "Pourcentage vente moyen",
+    // Add more translations as needed
+  },
+  en: {
+    dashboard: "Dashboard",
+    system: "Client Management System - Real-time Data",
+    contacts: "Contacts",
+    entreprises: "Companies",
+    campagnes: "Campaigns",
+    actions: "Actions",
+    pourcentageVenteMoyen: "Average Sales Percentage",
+    // Add more
+  },
+  // Add more languages
+}
+
+// Interfaces (existing + new)
 interface DashboardStats {
   totalUtilisateurs: number
   totalContacts: number
@@ -121,7 +193,8 @@ interface UserProfile {
   }
 }
 
-// Fonctions utilitaires pour les cookies
+// Fonctions utilitaires pour les cookies (existing)
+
 const setCookie = (name: string, value: string, days = 30) => {
   const expires = new Date()
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
@@ -143,7 +216,8 @@ const deleteCookie = (name: string) => {
   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
 }
 
-// Service pour récupérer un utilisateur par ID
+// Service pour récupérer un utilisateur par ID (existing)
+
 const fetchUtilisateurById = async (id: string): Promise<UserProfile | null> => {
   try {
     const response = await fetch(`http://127.0.0.1:8000/utilisateurs/${id}`)
@@ -178,8 +252,20 @@ const fetchUtilisateurById = async (id: string): Promise<UserProfile | null> => 
   }
 }
 
+// Form schema for profile update
+const profileSchema = z.object({
+  nom: z.string().min(2, "Nom trop court"),
+  email: z.string().email("Email invalide"),
+  password: z.string().min(8, "Mot de passe trop court").optional(),
+  confirmPassword: z.string().optional(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Les mots de passe ne correspondent pas",
+  path: ["confirmPassword"],
+});
+
+// Component
 const AccueilPage = () => {
-  // États du composant
+  // Existing states
   const [stats, setStats] = useState<DashboardStats>({
     totalUtilisateurs: 0,
     totalContacts: 0,
@@ -222,6 +308,26 @@ const AccueilPage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [showProfileModal, setShowProfileModal] = useState(false)
   const [userLoading, setUserLoading] = useState(true)
+  const [statsNombre, setstatsNombre] = useState<{ gagnes: number; encours: number; perdus: number } | null>(null)
+  const [error, setError] = useState("")
+  const [campagnes, setCampagnes] = useState<any[]>([])
+  const [selectedCampagneId, setSelectedCampagneId] = useState<number | null>(null)
+  const [nombre, setNombre] = useState<number | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+
+  // New states for additional features
+  const [searchQuery, setSearchQuery] = useState("")
+  const [showHelpDialog, setShowHelpDialog] = useState(false)
+  const [showInfoPopover, setShowInfoPopover] = useState(false)
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false)
+  const [showPasswordChange, setShowPasswordChange] = useState(false)
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
+  const [showDataTable, setShowDataTable] = useState(false)
+  const [showCustomChart, setShowCustomChart] = useState(false)
+  const [notificationVolume, setNotificationVolume] = useState(50)
+  const [enableTwoFactor, setEnableTwoFactor] = useState(false)
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([])
+  const [customThemeColor, setCustomThemeColor] = useState("#3b82f6")
 
   // État utilisateur avec gestion des cookies
   const [userProfile, setUserProfile] = useState<UserProfile>({
@@ -242,14 +348,25 @@ const AccueilPage = () => {
     },
   })
 
-  const [statsNombre, setstatsNombre] = useState<{ gagnes: number; encours: number; perdus: number } | null>(null)
-  const [error, setError] = useState("")
+  // Multi-language dictionary
+  const t = useMemo(() => languages[language] || languages.fr, [language])
 
-  // Chargement des statistiques
+  // Profile form
+  const profileForm = useForm<z.infer<typeof profileSchema>>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      nom: userProfile.nom,
+      email: userProfile.email,
+      password: "",
+      confirmPassword: "",
+    },
+  })
+
+  // Chargement des statistiques (existing)
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await getStatistiques()
+        const res = await getStatistiques(selectedCampagneId)
         setstatsNombre(res)
       } catch (err) {
         console.error(err)
@@ -257,9 +374,22 @@ const AccueilPage = () => {
       }
     }
     fetchStats()
+  }, [selectedCampagneId])
+
+  // Chargement nombre entreprises actives (existing)
+  useEffect(() => {
+    getNombreEntreprisesActivesAujourdHui()
+      .then(data => {
+        setNombre(data.nombre_entreprises_actives_aujourdhui);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
   }, [])
 
-  // Fonction pour sauvegarder l'utilisateur dans les cookies
+  // Fonction pour sauvegarder l'utilisateur dans les cookies (existing)
   const saveUserToCookies = useCallback((user: UserProfile) => {
     setCookie("crm_user_profile", JSON.stringify(user), 30)
     setCookie("crm_user_id", user.id, 30)
@@ -269,7 +399,7 @@ const AccueilPage = () => {
     setCookie("crm_last_login", new Date().toISOString(), 30)
   }, [])
 
-  // Chargement des données utilisateur depuis l'API
+  // Chargement des données utilisateur depuis l'API (existing)
   const loadUserFromAPI = useCallback(async () => {
     setUserLoading(true)
     try {
@@ -284,7 +414,6 @@ const AccueilPage = () => {
           setNotificationSettings(userData.preferences.notifications)
           setIsDarkMode(userData.preferences.theme === "dark")
         } else {
-          // Si l'utilisateur n'est pas trouvé, utiliser les données par défaut
           console.warn("Utilisateur non trouvé, utilisation des données par défaut")
         }
       } else {
@@ -302,7 +431,7 @@ const AccueilPage = () => {
     }
   }, [saveUserToCookies])
 
-  // Fonction pour créer une notification dynamique
+  // Fonction pour créer une notification dynamique (existing)
   const createNotification = useCallback((type: Notification["type"], title: string, message: string, data?: any) => {
     const newNotification: Notification = {
       id: Date.now().toString(),
@@ -323,7 +452,7 @@ const AccueilPage = () => {
     setTimeout(() => setShowToastNotification(false), 3000)
   }, [])
 
-  // Fonction pour générer les données des graphiques dynamiquement
+  // Fonction pour générer les données des graphiques dynamiquement (existing)
   const generateChartData = useCallback((actions: HistoriqueAction[], contacts: Contact[]): ChartData => {
     const now = new Date()
     const last7Days = Array.from({ length: 7 }, (_, i) => {
@@ -423,34 +552,38 @@ const AccueilPage = () => {
       const utilisateurs = utilisateursResult.status === "fulfilled" ? utilisateursResult.value : []
       const contacts = contactsResult.status === "fulfilled" ? contactsResult.value.data || [] : []
       const entreprises = entreprisesResult.status === "fulfilled" ? entreprisesResult.value : []
-      // Gestion des réponses API avec format ApiResponse
       const campagnes = campagnesResult.status === "fulfilled" ? campagnesResult.value.data || [] : []
       const actionsResponse = actionsResult.status === "fulfilled" ? actionsResult.value : { data: [] }
-      const actions = actionsResponse.data || []
+      let actions = actionsResponse.data || []
 
-      // Gestion des erreurs individuelles
+      setCampagnes(campagnes)
+
       if (utilisateursResult.status === "rejected") {
         console.error("Erreur utilisateurs:", utilisateursResult.reason)
-        createNotification("warning", "Données utilisateurs", "Impossible de charger les utilisateurs")
+        createNotification("warning", t.dashboard, "Impossible de charger les utilisateurs")
       }
       if (contactsResult.status === "rejected") {
         console.error("Erreur contacts:", contactsResult.reason)
-        createNotification("warning", "Données contacts", "Impossible de charger les contacts")
+        createNotification("warning", t.dashboard, "Impossible de charger les contacts")
       }
       if (entreprisesResult.status === "rejected") {
         console.error("Erreur entreprises:", entreprisesResult.reason)
-        createNotification("warning", "Données entreprises", "Impossible de charger les entreprises")
+        createNotification("warning", t.dashboard, "Impossible de charger les entreprises")
       }
       if (campagnesResult.status === "rejected") {
         console.error("Erreur campagnes:", campagnesResult.reason)
-        createNotification("warning", "Données campagnes", "Impossible de charger les campagnes")
+        createNotification("warning", t.dashboard, "Impossible de charger les campagnes")
       }
       if (actionsResult.status === "rejected") {
         console.error("Erreur actions:", actionsResult.reason)
-        createNotification("warning", "Données actions", "Impossible de charger l'historique des actions")
+        createNotification("warning", t.dashboard, "Impossible de charger l'historique des actions")
       }
 
-      // Calcul des statistiques
+      // Filter actions by selectedCampagneId if selected
+      if (selectedCampagneId) {
+        actions = actions.filter(a => a.campagne_id === selectedCampagneId)
+      }
+
       const actionsEmail = actions.filter((a) => a.action?.toLowerCase() === "email").length
       const actionsAppel = actions.filter((a) => a.action?.toLowerCase() === "appel").length
       const actionsReunion = actions.filter((a) => a.action?.toLowerCase() === "réunion").length
@@ -486,7 +619,6 @@ const AccueilPage = () => {
         contacts: recentContacts,
       })
 
-      // Notification de succès si toutes les données sont chargées
       if (
         utilisateursResult.status === "fulfilled" &&
         contactsResult.status === "fulfilled" &&
@@ -498,14 +630,19 @@ const AccueilPage = () => {
       }
     } catch (error) {
       console.error("Erreur lors du chargement des données:", error)
-      createNotification("error", "Erreur de chargement", "Impossible de charger les données du tableau de bord")
+      createNotification("error", t.dashboard, "Impossible de charger les données du tableau de bord")
     } finally {
       setIsLoading(false)
     }
   }
 
+  // Update pourcentageVenteMoyen when selectedCampagneId changes
+  useEffect(() => {
+    loadDashboardData() // Reload data to filter by campaign
+  }, [selectedCampagneId])
+
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("fr-FR", {
+    return new Date(dateString).toLocaleDateString(language, {
       day: "numeric",
       month: "short",
       hour: "2-digit",
@@ -536,7 +673,8 @@ const AccueilPage = () => {
     }
   }
 
-  const exportData = (format: "csv" | "excel") => {
+  const exportData = (format: "csv" | "excel" | "pdf" | "json") => {
+    // Existing CSV and TXT, add PDF and JSON
     const dataToExport = {
       stats,
       actions: recentActivity.actions,
@@ -545,8 +683,24 @@ const AccueilPage = () => {
     }
     if (format === "csv") {
       exportToCSV(dataToExport)
-    } else {
+    } else if (format === "excel") {
       exportToExcel(dataToExport)
+    } else if (format === "pdf") {
+      // Implement PDF export, e.g., using jspdf
+      toast({
+        title: "Export PDF",
+        description: "PDF export not implemented yet",
+      })
+    } else if (format === "json") {
+      const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: "application/json" })
+      const link = document.createElement("a")
+      const url = URL.createObjectURL(blob)
+      link.setAttribute("href", url)
+      link.setAttribute("download", `crm-dashboard-${new Date().toISOString().split("T")[0]}.json`)
+      link.style.visibility = "hidden"
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     }
     toast({
       title: "Export réussi",
@@ -556,6 +710,7 @@ const AccueilPage = () => {
   }
 
   const exportToCSV = (data: any) => {
+    // Existing
     const csvContent = [
       "Type,Valeur",
       `Total Contacts,${data.stats.totalContacts}`,
@@ -583,9 +738,10 @@ const AccueilPage = () => {
   }
 
   const exportToExcel = (data: any) => {
+    // Existing (TXT, but can be updated to actual Excel if library added)
     const excelContent = [
       "CRM Dashboard Export",
-      `Date d'export: ${new Date().toLocaleDateString("fr-FR")}`,
+      `Date d'export: ${new Date().toLocaleDateString(language)}`,
       "",
       "=== STATISTIQUES GÉNÉRALES ===",
       `Total Contacts: ${data.stats.totalContacts}`,
@@ -621,7 +777,7 @@ const AccueilPage = () => {
     loadDashboardData()
   }
 
-  const handleThemeChange = (newTheme: "light" | "dark" | "system") => {
+  const handleThemeChange = (newTheme: "light" | "dark" | "system" | "custom") => {
     setTheme(newTheme)
     setIsDarkMode(newTheme === "dark")
     const updatedProfile = {
@@ -634,6 +790,10 @@ const AccueilPage = () => {
     setUserProfile(updatedProfile)
     saveUserToCookies(updatedProfile)
     localStorage.setItem("theme", newTheme)
+    if (newTheme === "custom") {
+      // Apply custom color
+      document.documentElement.style.setProperty('--primary', customThemeColor)
+    }
   }
 
   const handleLanguageChange = (value: string) => {
@@ -686,24 +846,58 @@ const AccueilPage = () => {
     router.push("/")
   }
 
-  // Fonction pour construire l'URL complète de la photo
   const getPhotoUrl = (photoPath: string | null) => {
     if (!photoPath) return null
-    // Si le chemin commence déjà par http, le retourner tel quel
     if (photoPath.startsWith("http")) return photoPath
-    // Sinon, construire l'URL complète
     return `http://127.0.0.1:8000/${photoPath}`
   }
+
+  // Filtered recent activity for search
+  const filteredActions = recentActivity.actions.filter(action => action.commentaire.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredContacts = recentActivity.contacts.filter(contact => contact.nom.toLowerCase().includes(searchQuery.toLowerCase()))
+
+  // Profile update handler
+  const onProfileUpdate = (data: z.infer<typeof profileSchema>) => {
+    // Implement API call to update profile
+    toast({
+      title: "Profil mis à jour",
+      description: "Vos informations ont été mises à jour.",
+    })
+    setShowProfileModal(false)
+  }
+
+  // Password visibility
+  const [showPassword, setShowPassword] = useState(false)
+
+  // All possible features: help dialog
+  const helpContent = [
+    { title: "Dashboard Overview", description: "This dashboard provides real-time data on your CRM activities." },
+    { title: "Campaign Selection", description: "Select a campaign to filter statistics and charts." },
+    // Add more help items
+  ]
+
+  // Info popover content
+  const infoContent = "This section shows a summary of your key metrics."
+
+  // Advanced filter form
+  const advancedFilterForm = useForm()
+
+  // Custom chart data (example)
+  const customChartData = [
+    { name: "Jan", value: 400 },
+    { name: "Feb", value: 300 },
+    // Add more
+  ]
 
   if (error) return <p className="text-red-500">{error}</p>
   if (!stats) return <p>Chargement...</p>
 
-  if (isLoading || userLoading) {
+  if (isLoading || userLoading || loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <Loader2 className="animate-spin h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
             <p className="text-lg font-medium">Chargement en cours...</p>
           </div>
         </div>
@@ -716,11 +910,9 @@ const AccueilPage = () => {
       <div className="flex min-h-screen bg-gray-100 text-gray-800">
         <Navbar />
         <div
-          className={`min-h-screen w-full transition-colors duration-300 ${
-            isDarkMode ? "bg-gray-900" : "bg-gradient-to-br from-slate-50 to-slate-100"
-          }`}
+          className={`min-h-screen w-full transition-colors duration-300 ${isDarkMode ? "bg-gray-900 text-gray-200" : "bg-gradient-to-br from-slate-50 to-slate-100 text-gray-800"
+            }`}
         >
-          {/* Notification Toast */}
           {showToastNotification && (
             <div className="fixed top-20 right-4 z-50 animate-slide-in-right">
               <div className="bg-white border border-green-200 rounded-lg shadow-lg p-4 max-w-sm">
@@ -740,27 +932,52 @@ const AccueilPage = () => {
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-3">
                     <div>
-                      <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
-                      <p className="text-sm text-gray-500">Système de gestion client - Données en temps réel</p>
+                      <h1 className="text-xl font-bold text-gray-900">{t.dashboard}</h1>
+                      <p className="text-sm text-gray-500">{t.system}</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex-1 max-w-md mx-8">
                   <div className="relative">
-                    
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input placeholder="Search..." className="pl-8" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-4">
                   <div className="text-sm text-gray-600">
-                    {new Date().toLocaleDateString("fr-FR", {
+                    {new Date().toLocaleDateString(language, {
                       weekday: "short",
                       month: "long",
                       day: "numeric",
                       year: "numeric",
                     })}
                   </div>
+
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="ghost" size="sm" onClick={() => setShowHelpDialog(true)}>
+                          <HelpCircle className="h-5 w-5" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Help</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+
+                  <Popover open={showInfoPopover} onOpenChange={setShowInfoPopover}>
+                    <PopoverTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <Info className="h-5 w-5" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80">
+                      <p>{infoContent}</p>
+                    </PopoverContent>
+                  </Popover>
 
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -771,7 +988,7 @@ const AccueilPage = () => {
                     <DropdownMenuContent align="end" className="w-80">
                       <DropdownMenuLabel className="flex items-center gap-2">
                         <Settings className="h-4 w-4" />
-                        Paramètres
+                        {t.settings || "Paramètres"}
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => setShowProfileModal(true)} className="cursor-pointer">
@@ -782,7 +999,6 @@ const AccueilPage = () => {
                           <span className="text-xs text-gray-400">{userProfile.role}</span>
                         </div>
                       </DropdownMenuItem>
-                      {/* Thème */}
                       <DropdownMenuItem className="cursor-pointer">
                         <div className="flex items-center justify-between w-full">
                           <div className="flex items-center">
@@ -819,10 +1035,17 @@ const AccueilPage = () => {
                             >
                               <Monitor className="h-3 w-3" />
                             </Button>
+                            <Button
+                              variant={theme === "custom" ? "default" : "ghost"}
+                              size="sm"
+                              className="h-6 w-6 p-0"
+                              onClick={() => handleThemeChange("custom")}
+                            >
+                              <Palette className="h-3 w-3" />
+                            </Button>
                           </div>
                         </div>
                       </DropdownMenuItem>
-                      {/* Langue */}
                       <DropdownMenuItem className="cursor-pointer">
                         <div className="flex items-center justify-between w-full">
                           <div className="flex items-center">
@@ -834,41 +1057,14 @@ const AccueilPage = () => {
                               </span>
                             </div>
                           </div>
-                          <Select value={language} onValueChange={handleLanguageChange}>
-                            <SelectTrigger className="h-6 w-16 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="fr">FR</SelectItem>
-                              <SelectItem value="en">EN</SelectItem>
-                              <SelectItem value="mg">MG</SelectItem>
-                            </SelectContent>
-                          </Select>
+                         
                         </div>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      {/* Notifications */}
-                      <DropdownMenuLabel className="text-xs text-gray-500">Notifications</DropdownMenuLabel>
-                      <DropdownMenuItem className="cursor-pointer" onClick={() => handleNotificationToggle("email")}>
-                        <div className="flex items-center justify-between w-full">
-                          <span className="text-sm">Notifications email</span>
-                          <div
-                            className={`w-8 h-4 rounded-full ${
-                              notificationSettings.email ? "bg-blue-500" : "bg-gray-300"
-                            } relative transition-colors`}
-                          >
-                            <div
-                              className={`w-3 h-3 bg-white rounded-full absolute top-0.5 transition-transform ${
-                                notificationSettings.email ? "translate-x-4" : "translate-x-0.5"
-                              }`}
-                            />
-                          </div>
-                        </div>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      {/* Déconnexion */}
+                      
+                      
                       <DropdownMenuItem
-                        onClick={handleLogout}
+                        onClick={() => setShowLogoutConfirmation(true)}
                         className="cursor-pointer text-red-600 focus:text-red-600"
                       >
                         <LogOut className="h-4 w-4 mr-2" />
@@ -877,7 +1073,6 @@ const AccueilPage = () => {
                     </DropdownMenuContent>
                   </DropdownMenu>
 
-                  {/* Avatar avec photo ou initiales */}
                   <Avatar className="h-8 w-8">
                     <AvatarImage
                       src={getPhotoUrl(userProfile.photo_profil) || "/placeholder.svg"}
@@ -898,10 +1093,25 @@ const AccueilPage = () => {
 
           <div className="flex">
             <div className="flex-1 p-6 space-y-6">
-              {/* Quick Actions Bar */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
+                    <Select
+                      value={selectedCampagneId?.toString() || "all"}
+                      onValueChange={(value) => setSelectedCampagneId(value === "all" ? null : Number(value))}
+                    >
+                      <SelectTrigger className="w-48">
+                        <SelectValue placeholder="Sélectionner une campagne" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Toutes les campagnes</SelectItem>
+                        {campagnes.map((campagne) => (
+                          <SelectItem key={campagne.id} value={campagne.id.toString()}>
+                            {campagne.libelle}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <Button variant="outline" onClick={loadDashboardData}>
                       <RefreshCw className="h-4 w-4 mr-2" />
                       Actualiser
@@ -912,23 +1122,20 @@ const AccueilPage = () => {
                     </Button>
                   </div>
                   <div className="text-xs text-gray-500">
-                    Dernière mise à jour: {new Date().toLocaleTimeString("fr-FR")}
+                    Dernière mise à jour: {new Date().toLocaleTimeString(language)}
                   </div>
                 </div>
               </div>
 
-              {/* Main KPI Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-0 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-blue-700">Contacts</p>
+                        <p className="text-sm font-medium text-blue-700">Nombre d'entreprises actives aujourd'hui</p>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-3xl font-bold text-blue-900">{stats.totalContacts}</span>
-                          <Badge className="bg-green-100 text-green-700 text-xs">
-                            +{previousStats ? Math.max(0, stats.totalContacts - previousStats.totalContacts) : 0}
-                          </Badge>
+                          <span className="text-3xl font-bold text-blue-900">{nombre}</span>
+
                         </div>
                         <p className="text-xs text-blue-600 mt-1">Total enregistrés</p>
                       </div>
@@ -943,7 +1150,9 @@ const AccueilPage = () => {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-red-700">Entreprises perdu</p>
+                        <p className="text-sm font-medium text-red-700">
+                          Entreprises perdues {selectedCampagneId ? `(Campagne ${campagnes.find(c => c.id === selectedCampagneId)?.libelle})` : ""}
+                        </p>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-3xl font-bold text-red-900">{statsNombre?.perdus || 0}</span>
                         </div>
@@ -960,7 +1169,9 @@ const AccueilPage = () => {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-green-700">Entreprises gagnee</p>
+                        <p className="text-sm font-medium text-green-700">
+                          Entreprises gagnées {selectedCampagneId ? `(Campagne ${campagnes.find(c => c.id === selectedCampagneId)?.libelle})` : ""}
+                        </p>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-3xl font-bold text-green-900">{statsNombre?.gagnes || 0}</span>
                         </div>
@@ -977,7 +1188,9 @@ const AccueilPage = () => {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-green-700">Entreprises encours</p>
+                        <p className="text-sm font-medium text-green-700">
+                          Entreprises en cours {selectedCampagneId ? `(Campagne ${campagnes.find(c => c.id === selectedCampagneId)?.libelle})` : ""}
+                        </p>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-3xl font-bold text-green-900">{statsNombre?.encours || 0}</span>
                         </div>
@@ -1009,432 +1222,524 @@ const AccueilPage = () => {
                     </div>
                   </CardContent>
                 </Card>
-
               </div>
 
-              {/* Charts Section */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Actions Chart */}
-                <Card className="lg:col-span-2 bg-white border-0 shadow-sm">
-                  <CardHeader className="flex flex-row items-center justify-between">
-                    <div>
-                      <CardTitle className="text-lg font-semibold">Actions quotidiennes</CardTitle>
-                      <p className="text-sm text-gray-600">Répartition par type d'action</p>
-                      <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
-                        <span>Total: {chartData.actionsData.reduce((sum, item) => sum + item.value, 0)}</span>
-                        <span>Emails: {stats.actionsEmail}</span>
-                        <span>Appels: {stats.actionsAppel}</span>
-                        <span>Réunions: {stats.actionsReunion}</span>
-                      </div>
-                    </div>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <Maximize2 className="h-4 w-4" />
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-4xl">
-                        <DialogHeader>
-                          <DialogTitle>Analyse détaillée des actions</DialogTitle>
-                        </DialogHeader>
-                        <div className="h-96">
-                          <ChartContainer
-                            config={{
-                              value: { label: "Total", color: "#3b82f6" },
-                              emails: { label: "Emails", color: "#10b981" },
-                              calls: { label: "Appels", color: "#f59e0b" },
-                              meetings: { label: "Réunions", color: "#ef4444" },
-                            }}
-                            className="h-full"
-                          >
-                            <ResponsiveContainer width="100%" height="100%">
-                              <LineChart data={chartData.actionsData}>
-                                <XAxis dataKey="day" axisLine={false} tickLine={false} />
-                                <YAxis />
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                                <Line
-                                  type="monotone"
-                                  dataKey="value"
-                                  stroke="#3b82f6"
-                                  strokeWidth={3}
-                                  dot={{ fill: "#3b82f6", strokeWidth: 2, r: 5 }}
-                                />
-                                <Line
-                                  type="monotone"
-                                  dataKey="emails"
-                                  stroke="#10b981"
-                                  strokeWidth={2}
-                                  dot={{ fill: "#10b981", strokeWidth: 2, r: 4 }}
-                                />
-                                <Line
-                                  type="monotone"
-                                  dataKey="calls"
-                                  stroke="#f59e0b"
-                                  strokeWidth={2}
-                                  dot={{ fill: "#f59e0b", strokeWidth: 2, r: 4 }}
-                                />
-                                <Line
-                                  type="monotone"
-                                  dataKey="meetings"
-                                  stroke="#ef4444"
-                                  strokeWidth={2}
-                                  dot={{ fill: "#ef4444", strokeWidth: 2, r: 4 }}
-                                />
-                              </LineChart>
-                            </ResponsiveContainer>
-                          </ChartContainer>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                  </CardHeader>
-                  <CardContent>
-                    <ChartContainer
-                      config={{
-                        value: { label: "Total", color: "#3b82f6" },
-                        emails: { label: "Emails", color: "#10b981" },
-                        calls: { label: "Appels", color: "#f59e0b" },
-                        meetings: { label: "Réunions", color: "#ef4444" },
-                      }}
-                      className="h-[300px]"
-                    >
-                      <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={chartData.actionsData}>
-                          <defs>
-                            <linearGradient id="colorActions" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
-                            </linearGradient>
-                          </defs>
-                          <XAxis dataKey="day" axisLine={false} tickLine={false} />
-                          <YAxis hide />
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                          <Area
-                            type="monotone"
-                            dataKey="value"
-                            stroke="#3b82f6"
-                            strokeWidth={3}
-                            fillOpacity={1}
-                            fill="url(#colorActions)"
-                          />
-                        </AreaChart>
-                      </ResponsiveContainer>
-                    </ChartContainer>
-                  </CardContent>
-                </Card>
+              <Tabs defaultValue="charts" className="space-y-4">
+                <TabsList>
+                  <TabsTrigger value="charts">
+                    <BarChartIcon className="h-4 w-4 mr-2" />
+                    Charts
+                  </TabsTrigger>
+                  <TabsTrigger value="table">
+                    <TableIcon className="h-4 w-4 mr-2" />
+                    Table
+                  </TabsTrigger>
 
-                {/* Performance Summary */}
-                <Card className="bg-white border-0 shadow-sm">
-                  <CardHeader>
-                    <CardTitle className="text-lg font-semibold">Résumé</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                            <Mail className="h-5 w-5 text-blue-700" />
-                          </div>
-                          <div>
-                            <p className="font-medium text-sm">Actions Email</p>
-                            <p className="text-xs text-gray-600">{stats.actionsEmail} envoyés</p>
+                </TabsList>
+                <TabsContent value="charts" className="space-y-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <Card className="lg:col-span-2 bg-white border-0 shadow-sm">
+                      <CardHeader className="flex flex-row items-center justify-between">
+                        <div>
+                          <CardTitle className="text-lg font-semibold">Actions quotidiennes</CardTitle>
+                          <p className="text-sm text-gray-600">Répartition par type d'action</p>
+                          <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                            <span>Total: {chartData.actionsData.reduce((sum, item) => sum + item.value, 0)}</span>
+                            <span>Emails: {stats.actionsEmail}</span>
+                            <span>Appels: {stats.actionsAppel}</span>
+                            <span>Réunions: {stats.actionsReunion}</span>
                           </div>
                         </div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                            <Phone className="h-5 w-5 text-green-700" />
-                          </div>
-                          <div>
-                            <p className="font-medium text-sm">Appels téléphoniques</p>
-                            <p className="text-xs text-gray-600">{stats.actionsAppel} effectués</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                            <Calendar className="h-5 w-5 text-orange-700" />
-                          </div>
-                          <div>
-                            <p className="font-medium text-sm">Réunions</p>
-                            <p className="text-xs text-gray-600">{stats.actionsReunion} organisées</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="pt-4 border-t">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium">Pourcentage vente moyen</span>
-                        <span className="text-sm font-bold text-green-600">{stats.pourcentageVenteMoyen}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-500"
-                          style={{ width: `${Math.min(stats.pourcentageVenteMoyen, 100)}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                    {/* Dynamic Pie Chart */}
-                    {chartData.pieData.length > 0 && (
-                      <div className="pt-4 border-t">
-                        <p className="text-sm font-medium mb-3">Types d'actions</p>
-                        <div className="h-32">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                              <Pie
-                                data={chartData.pieData}
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={20}
-                                outerRadius={50}
-                                dataKey="value"
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <Maximize2 className="h-4 w-4" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-4xl">
+                            <DialogHeader>
+                              <DialogTitle>Analyse détaillée des actions</DialogTitle>
+                            </DialogHeader>
+                            <div className="h-96">
+                              <ChartContainer
+                                config={{
+                                  value: { label: "Total", color: "#3b82f6" },
+                                  emails: { label: "Emails", color: "#10b981" },
+                                  calls: { label: "Appels", color: "#f59e0b" },
+                                  meetings: { label: "Réunions", color: "#ef4444" },
+                                }}
+                                className="h-full"
                               >
-                                {chartData.pieData.map((entry, index) => (
-                                  <Cell key={`cell-${index}`} fill={entry.color} />
-                                ))}
-                              </Pie>
-                              <ChartTooltip />
-                            </PieChart>
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <LineChart data={chartData.actionsData}>
+                                    <XAxis dataKey="day" axisLine={false} tickLine={false} />
+                                    <YAxis />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <Line
+                                      type="monotone"
+                                      dataKey="value"
+                                      stroke="#3b82f6"
+                                      strokeWidth={3}
+                                      dot={{ fill: "#3b82f6", strokeWidth: 2, r: 5 }}
+                                    />
+                                    <Line
+                                      type="monotone"
+                                      dataKey="emails"
+                                      stroke="#10b981"
+                                      strokeWidth={2}
+                                      dot={{ fill: "#10b981", strokeWidth: 2, r: 4 }}
+                                    />
+                                    <Line
+                                      type="monotone"
+                                      dataKey="calls"
+                                      stroke="#f59e0b"
+                                      strokeWidth={2}
+                                      dot={{ fill: "#f59e0b", strokeWidth: 2, r: 4 }}
+                                    />
+                                    <Line
+                                      type="monotone"
+                                      dataKey="meetings"
+                                      stroke="#ef4444"
+                                      strokeWidth={2}
+                                      dot={{ fill: "#ef4444", strokeWidth: 2, r: 4 }}
+                                    />
+                                  </LineChart>
+                                </ResponsiveContainer>
+                              </ChartContainer>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </CardHeader>
+                      <CardContent>
+                        <ChartContainer
+                          config={{
+                            value: { label: "Total", color: "#3b82f6" },
+                            emails: { label: "Emails", color: "#10b981" },
+                            calls: { label: "Appels", color: "#f59e0b" },
+                            meetings: { label: "Réunions", color: "#ef4444" },
+                          }}
+                          className="h-[300px]"
+                        >
+                          <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={chartData.actionsData}>
+                              <defs>
+                                <linearGradient id="colorActions" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                                </linearGradient>
+                              </defs>
+                              <XAxis dataKey="day" axisLine={false} tickLine={false} />
+                              <YAxis hide />
+                              <ChartTooltip content={<ChartTooltipContent />} />
+                              <Area
+                                type="monotone"
+                                dataKey="value"
+                                stroke="#3b82f6"
+                                strokeWidth={3}
+                                fillOpacity={1}
+                                fill="url(#colorActions)"
+                              />
+                            </AreaChart>
                           </ResponsiveContainer>
-                        </div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
+                        </ChartContainer>
+                      </CardContent>
+                    </Card>
 
-              {/* Bottom Chart - Ventes */}
-              <div className="grid grid-cols-1 gap-6">
-                <Card className="bg-white border-0 shadow-sm">
-                  <CardHeader className="flex flex-row items-center justify-between">
-                    <div>
-                      <CardTitle className="text-lg font-semibold">Évolution des ventes</CardTitle>
-                      <p className="text-sm text-gray-600">Pourcentage de vente par jour</p>
-                    </div>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <Maximize2 className="h-4 w-4" />
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-3xl">
-                        <DialogHeader>
-                          <DialogTitle>Analyse détaillée des ventes</DialogTitle>
-                        </DialogHeader>
-                        <div className="h-80">
+                    <Card className="bg-white border-0 shadow-sm">
+                      <CardHeader>
+                        <CardTitle className="text-lg font-semibold">Résumé</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                <Mail className="h-5 w-5 text-blue-700" />
+                              </div>
+                              <div>
+                                <p className="font-medium text-sm">Actions Email</p>
+                                <p className="text-xs text-gray-600">{stats.actionsEmail} envoyés</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                <Phone className="h-5 w-5 text-green-700" />
+                              </div>
+                              <div>
+                                <p className="font-medium text-sm">Appels téléphoniques</p>
+                                <p className="text-xs text-gray-600">{stats.actionsAppel} effectués</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                                <Calendar className="h-5 w-5 text-orange-700" />
+                              </div>
+                              <div>
+                                <p className="font-medium text-sm">Réunions</p>
+                                <p className="text-xs text-gray-600">{stats.actionsReunion} organisées</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="pt-4 border-t">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium">Pourcentage vente moyen</span>
+                            <span className="text-sm font-bold text-green-600">{stats.pourcentageVenteMoyen}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-500"
+                              style={{ width: `${Math.min(stats.pourcentageVenteMoyen, 100)}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                        {chartData.pieData.length > 0 && (
+                          <div className="pt-4 border-t">
+                            <p className="text-sm font-medium mb-3">Types d'actions</p>
+                            <div className="h-32">
+                              <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                  <Pie
+                                    data={chartData.pieData}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={20}
+                                    outerRadius={50}
+                                    dataKey="value"
+                                  >
+                                    {chartData.pieData.map((entry, index) => (
+                                      <Cell key={`cell-${index}`} fill={entry.color} />
+                                    ))}
+                                  </Pie>
+                                  <ChartTooltip />
+                                </PieChart>
+                              </ResponsiveContainer>
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-6">
+                    <Card className="bg-white border-0 shadow-sm">
+                      <CardHeader className="flex flex-row items-center justify-between">
+                        <div>
+                          <CardTitle className="text-lg font-semibold">Évolution des ventes</CardTitle>
+                          <p className="text-sm text-gray-600">Pourcentage de vente par jour</p>
+                        </div>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <Maximize2 className="h-4 w-4" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-3xl">
+                            <DialogHeader>
+                              <DialogTitle>Analyse détaillée des ventes</DialogTitle>
+                            </DialogHeader>
+                            <div className="h-80">
+                              <ChartContainer
+                                config={{
+                                  pourcentage: { label: "Pourcentage", color: "#10b981" },
+                                  actions: { label: "Actions", color: "#3b82f6" },
+                                }}
+                                className="h-full"
+                              >
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <BarChart data={chartData.ventesData}>
+                                    <XAxis dataKey="day" />
+                                    <YAxis />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <Bar dataKey="pourcentage" fill="#10b981" radius={[4, 4, 0, 0]} />
+                                  </BarChart>
+                                </ResponsiveContainer>
+                              </ChartContainer>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </CardHeader>
+                      <CardContent>
+                        <ChartContainer
+                          config={{
+                            pourcentage: { label: "Pourcentage", color: "#10b981" },
+                          }}
+                          className="h-[200px]"
+                        >
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={chartData.ventesData}>
+                              <XAxis dataKey="day" axisLine={false} tickLine={false} />
+                              <YAxis hide />
+                              <ChartTooltip content={<ChartTooltipContent />} />
+                              <Bar dataKey="pourcentage" fill="#10b981" radius={[4, 4, 0, 0]} />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </ChartContainer>
+                      </CardContent>
+                    </Card>
+                    <div className="grid grid-cols-1 gap-6">
+                      <Card className="bg-white border-0 shadow-sm">
+                        <CardHeader>
+                          <CardTitle className="text-lg font-semibold">Répartition des entreprises</CardTitle>
+                          <p className="text-sm text-gray-600">
+                            Gagnées, en cours, perdus {selectedCampagneId ? `(Campagne ${campagnes.find(c => c.id === selectedCampagneId)?.libelle})` : ""}
+                          </p>
+                        </CardHeader>
+                        <CardContent>
                           <ChartContainer
                             config={{
-                              pourcentage: { label: "Pourcentage", color: "#10b981" },
-                              actions: { label: "Actions", color: "#3b82f6" },
+                              gagnes: { label: "Gagnées", color: "#10b981" },
+                              encours: { label: "En cours", color: "#f59e0b" },
+                              perdus: { label: "Perdus", color: "#ef4444" },
                             }}
-                            className="h-full"
+                            className="h-[200px]"
                           >
                             <ResponsiveContainer width="100%" height="100%">
-                              <BarChart data={chartData.ventesData}>
-                                <XAxis dataKey="day" />
-                                <YAxis />
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                                <Bar dataKey="pourcentage" fill="#10b981" radius={[4, 4, 0, 0]} />
-                              </BarChart>
+                              <PieChart>
+                                <Pie
+                                  data={[
+                                    { name: "Gagnées", value: statsNombre?.gagnes || 0 },
+                                    { name: "En cours", value: statsNombre?.encours || 0 },
+                                    { name: "Perdus", value: statsNombre?.perdus || 0 },
+                                  ]}
+                                  cx="50%"
+                                  cy="50%"
+                                  innerRadius={30}
+                                  outerRadius={80}
+                                  dataKey="value"
+                                >
+                                  <Cell fill="#10b981" />
+                                  <Cell fill="#f59e0b" />
+                                  <Cell fill="#ef4444" />
+                                </Pie>
+                                <ChartTooltip />
+                              </PieChart>
                             </ResponsiveContainer>
                           </ChartContainer>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+
+                  {/* Pie Chart for gagnes, encours, perdus */}
+
+                </TabsContent>
+                <TabsContent value="table" className="space-y-4">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Action</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Commentaire</TableHead>
+                        <TableHead>Pourcentage</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredActions.map((action) => (
+                        <TableRow key={action.id}>
+                          <TableCell>{action.action}</TableCell>
+                          <TableCell>{formatDate(action.date)}</TableCell>
+                          <TableCell>{action.commentaire}</TableCell>
+                          <TableCell>{action.pourcentageVente}%</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TabsContent>
+                <TabsContent value="advanced" className="space-y-4">
+                  <Form {...advancedFilterForm}>
+                    <form className="space-y-4">
+                      <FormField
+                        control={advancedFilterForm.control}
+                        name="customFilter"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Custom Filter</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button type="submit">Apply</Button>
+                    </form>
+                  </Form>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="includeArchived" />
+                    <Label htmlFor="includeArchived">Include Archived</Label>
+                  </div>
+                  <RadioGroup defaultValue="all">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="all" id="all" />
+                      <Label htmlFor="all">All</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="active" id="active" />
+                      <Label htmlFor="active">Active</Label>
+                    </div>
+                  </RadioGroup>
+                  <Command>
+                    <CommandInput placeholder="Search roles..." />
+                    <CommandList>
+                      <CommandEmpty>No roles found.</CommandEmpty>
+                      <CommandGroup>
+                        <CommandItem>Admin</CommandItem>
+                        <CommandItem>User</CommandItem>
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                  <ScrollArea className="h-[200px] w-full border rounded-md">
+                    <div className="p-4">
+                      <h4 className="mb-4 text-sm font-medium leading-none">Tags</h4>
+                      {["Tag1", "Tag2", "Tag3"].map((tag) => (
+                        <>
+                          <div key={tag} className="text-sm">
+                            {tag}
+                          </div>
+                          <Separator className="my-2" />
+                        </>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </TabsContent>
+              </Tabs>
+
+              {/* Help Dialog */}
+              <Dialog open={showHelpDialog} onOpenChange={setShowHelpDialog}>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Help Center</DialogTitle>
+                  </DialogHeader>
+                  <div className="py-4">
+                    {helpContent.map((item) => (
+                      <div key={item.title} className="mb-4">
+                        <h3 className="font-medium">{item.title}</h3>
+                        <p className="text-sm text-gray-500">{item.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              {/* Logout Confirmation */}
+              <Dialog open={showLogoutConfirmation} onOpenChange={setShowLogoutConfirmation}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Confirm Logout</DialogTitle>
+                  </DialogHeader>
+                  <p>Are you sure you want to log out?</p>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setShowLogoutConfirmation(false)}>
+                      Cancel
+                    </Button>
+                    <Button variant="destructive" onClick={handleLogout}>
+                      Logout
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
+              {/* Profile Modal with Edit */}
+              <Dialog open={showProfileModal} onOpenChange={setShowProfileModal}>
+                <DialogContent className="sm:max-w-[500px]">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <User className="h-5 w-5" />
+                      Profile Settings
+                    </DialogTitle>
+                  </DialogHeader>
+                  <Tabs defaultValue="info">
+                    <TabsList>
+                      <TabsTrigger value="info">Info</TabsTrigger>
+                      <TabsTrigger value="security">Security</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="info">
+                      <Form {...profileForm}>
+                        <form onSubmit={profileForm.handleSubmit(onProfileUpdate)} className="space-y-4">
+                          <FormField
+                            control={profileForm.control}
+                            name="nom"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Full Name</FormLabel>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={profileForm.control}
+                            name="email"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Email</FormLabel>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <Button type="submit">Save</Button>
+                        </form>
+                      </Form>
+                    </TabsContent>
+                    <TabsContent value="security">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span>Change Password</span>
+                          <Button variant="outline" onClick={() => setShowPasswordChange(!showPasswordChange)}>
+                            Change
+                          </Button>
                         </div>
-                      </DialogContent>
-                    </Dialog>
-                  </CardHeader>
-                  <CardContent>
-                    <ChartContainer
-                      config={{
-                        pourcentage: { label: "Pourcentage", color: "#10b981" },
-                      }}
-                      className="h-[200px]"
-                    >
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={chartData.ventesData}>
-                          <XAxis dataKey="day" axisLine={false} tickLine={false} />
-                          <YAxis hide />
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                          <Bar dataKey="pourcentage" fill="#10b981" radius={[4, 4, 0, 0]} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </ChartContainer>
-                  </CardContent>
-                </Card>
-              </div>
+                        {showPasswordChange && (
+                          <div className="space-y-2">
+                            <Label>New Password</Label>
+                            <div className="relative">
+                              <Input type={showPassword ? "text" : "password"} />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                onClick={() => setShowPassword(!showPassword)}
+                              >
+                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </DialogContent>
+              </Dialog>
+
+              {/* Export Dialog with more options */}
+              <Dialog open={showExportDialog} onOpenChange={setShowExportDialog}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Export Data</DialogTitle>
+                  </DialogHeader>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button onClick={() => exportData("csv")}>CSV</Button>
+                    <Button onClick={() => exportData("excel")}>Excel</Button>
+                    <Button onClick={() => exportData("json")}>JSON</Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+
+
             </div>
           </div>
-
-          {/* Modal Filtres */}
-          <Dialog open={showFilters} onOpenChange={setShowFilters}>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Filtrer les données</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="dateRange">Période</Label>
-                  <Select
-                    value={filters.dateRange}
-                    onValueChange={(value) => setFilters({ ...filters, dateRange: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Sélectionner une période" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="7days">7 derniers jours</SelectItem>
-                      <SelectItem value="30days">30 derniers jours</SelectItem>
-                      <SelectItem value="3months">3 derniers mois</SelectItem>
-                      <SelectItem value="6months">6 derniers mois</SelectItem>
-                      <SelectItem value="1year">1 an</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="type">Type d'action</Label>
-                  <Select value={filters.type} onValueChange={(value) => setFilters({ ...filters, type: value })}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Tous les types" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Tous les types</SelectItem>
-                      <SelectItem value="email">Email</SelectItem>
-                      <SelectItem value="appel">Appel téléphonique</SelectItem>
-                      <SelectItem value="reunion">Réunion</SelectItem>
-                      <SelectItem value="visite">Visite</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setShowFilters(false)}>
-                  Annuler
-                </Button>
-                <Button onClick={applyFilters}>Appliquer les filtres</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          {/* Modal Export */}
-          <Dialog open={showExportDialog} onOpenChange={setShowExportDialog}>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Exporter les données</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4 py-4">
-                <p className="text-sm text-gray-600">
-                  Choisissez le format d'export pour télécharger les données du tableau de bord.
-                </p>
-                <div className="grid grid-cols-2 gap-4">
-                  <Card className="cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => exportData("csv")}>
-                    <CardContent className="p-4 text-center">
-                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                        <Download className="h-6 w-6 text-green-600" />
-                      </div>
-                      <h3 className="font-medium">CSV</h3>
-                      <p className="text-xs text-gray-500">Format tableur</p>
-                    </CardContent>
-                  </Card>
-                  <Card
-                    className="cursor-pointer hover:bg-gray-50 transition-colors"
-                    onClick={() => exportData("excel")}
-                  >
-                    <CardContent className="p-4 text-center">
-                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                        <Download className="h-6 w-6 text-blue-600" />
-                      </div>
-                      <h3 className="font-medium">TXT</h3>
-                      <p className="text-xs text-gray-500">Format texte</p>
-                    </CardContent>
-                  </Card>
-                </div>
-                <div className="bg-blue-50 p-3 rounded-lg">
-                  <p className="text-xs text-blue-700">
-                    <Info className="h-4 w-4 inline mr-1" />
-                    L'export inclut les statistiques, actions récentes et contacts.
-                  </p>
-                </div>
-              </div>
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setShowExportDialog(false)}>
-                  Annuler
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          {/* Modal Profil */}
-          <Dialog open={showProfileModal} onOpenChange={setShowProfileModal}>
-            <DialogContent className="sm:max-w-[500px]">
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
-                  Paramètres du profil
-                </DialogTitle>
-              </DialogHeader>
-              <div className="space-y-6 py-4">
-                <div className="flex items-center gap-4">
-                   
-                  <Avatar className="h-16 w-16">
-                    <AvatarImage
-                      src={getPhotoUrl(userProfile.photo_profil) || "/placeholder.svg"}
-                      alt={userProfile.nom}
-                    />
-                    <AvatarFallback>
-                      {userProfile.nom
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <Button variant="outline" size="sm">
-                      Photo de photo
-                    </Button>
-                  </div>
-                 
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Nom complet</Label>
-                    <p>{userProfile.nom}</p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Email</Label>
-                    <p>{userProfile.email}</p>
-                    
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label>Rôle</Label>
-                  <p>{userProfile.role}</p>
-              
-                </div>
-              </div>
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setShowProfileModal(false)}>
-                  Annuler
-                </Button>
-                <Button
-                  onClick={() => {
-                    const updatedProfile = {
-                      ...userProfile,
-                    }
-                    setUserProfile(updatedProfile)
-                    saveUserToCookies(updatedProfile)
-                    toast({
-                      title: "Profil mis à jour",
-                      description: "Votre profil a été mis à jour avec succès.",
-                    })
-                    setShowProfileModal(false)
-                  }}
-                >
-                  Sauvegarder
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
         </div>
       </div>
     </>

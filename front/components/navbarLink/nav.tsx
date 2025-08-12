@@ -28,6 +28,8 @@ import {
   UserCheck,
   UserPlus,
   Zap,
+  MessageSquare,
+  CheckSquare
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -48,9 +50,11 @@ const links = {
   Historique: [
     { name: "Historiques d'action", href: "/historique", icon: History }, // 🕒 Historique actions - plus spécifique
     { name: "Historiques email envoyés", href: "/historiqueEmail", icon: Send },
-    { name: "Taches", href: "/tache", icon: Megaphone }, // 📤 Emails envoyés - plus précis
+    { name: "Taches", href: "/tache", icon: CheckSquare }, // 📤 Emails envoyés - plus précis
   ],
-}
+   Discussion: [
+    { name: "Chat ", href: "/chat", icon: MessageSquare }// 📤 Emails envoyés - plus précis
+  ] }
 
 // Association lettre -> icône (gardée pour compatibilité mais pas utilisée maintenant)
 const letterIcons: Record<string, React.ComponentType<any>> = {

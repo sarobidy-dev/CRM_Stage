@@ -530,18 +530,7 @@ export default function HistoriqueEmails() {
                   ))}
                 </SelectContent>
               </Select>
-              <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filtrer par période" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Toutes les périodes</SelectItem>
-                  <SelectItem value="today">Aujourd'hui</SelectItem>
-                  <SelectItem value="week">Cette semaine</SelectItem>
-                  <SelectItem value="month">Ce mois</SelectItem>
-                  <SelectItem value="3months">3 derniers mois</SelectItem>
-                </SelectContent>
-              </Select>
+              
             </div>
           </CardContent>
         </Card>
