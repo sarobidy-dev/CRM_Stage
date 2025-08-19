@@ -11,7 +11,6 @@ from api import utilisateur
 # Routes
 from api import (
     adresse,
-    modificationUtilisateur,
     campagne,
     campagneEntreprise,
     contact,
@@ -60,7 +59,6 @@ app.include_router(email.router)
 app.include_router(sms.router)
 app.include_router(tache.router)
 app.include_router(gpt.router)
-app.include_router(modificationUtilisateur.router)
 app.mount("/media", StaticFiles(directory="media"), name="media")
 
 

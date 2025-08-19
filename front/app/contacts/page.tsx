@@ -517,10 +517,7 @@ export default function ContactsPage() {
                               <Phone className="h-4 w-4 mr-2" />
                               Appeler
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setShowMessageDialog(true)}>
-                              <MessageSquare className="h-4 w-4 mr-2" />
-                              Envoyer un message
-                            </DropdownMenuItem>
+                          
                             <DropdownMenuItem onClick={() => handleEditContact(contact)}>
                               <Edit className="h-4 w-4 mr-2" />
                               Modifier contact
@@ -654,9 +651,6 @@ export default function ContactsPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="en attente">En attente</SelectItem>
-                    <SelectItem value="en cours">En cours</SelectItem>
-                    <SelectItem value="terminée">Terminée</SelectItem>
-                    <SelectItem value="annulée">Annulée</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
